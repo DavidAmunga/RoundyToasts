@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_record_exit"
+    tools:context="miles.identigate.soja.UserInterface.RecordExit">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
+        android:gravity="center_horizontal"
+        android:padding="10dp"
+        android:id="@+id/brand"
+        android:orientation="vertical">
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:text="RECORD EXIT"
+            />
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/brand"
+        android:id="@+id/line"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/colorPrimary"/>
+    <LinearLayout
+        android:layout_below="@+id/line"
+        android:id="@+id/userProfile"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight=".5"
+                android:id="@+id/name"
+                android:text="OBADIAH OBARE"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight=".5"
+                android:id="@+id/idNumber"
+                android:text="ID: 33166582"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight=".5"
+                android:id="@+id/entry"
+                android:text="ENTRY: 08:50AM"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight=".5"
+                android:id="@+id/car"
+                android:text="CAR:KCB 3535J"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/userProfile"
+        android:paddingTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/modeSection"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MODE"
+            android:layout_gravity="center_vertical"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:id="@+id/mode"
+            android:background="@drawable/border"
+            android:layout_height="60dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:id="@+id/commentSection"
+        android:layout_gravity="center"
+        android:layout_below="@+id/modeSection"
+        android:orientation="vertical">
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="10.0dip"
+            android:text="COMMENT"/>
+        <EditText
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/comment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="Any details regarding the visitor?"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textCursorDrawable="@null"
+            android:background="@drawable/border"
+            android:ems="10"
+            android:padding="10dp"
+            android:singleLine="false"
+            android:inputType="text" />
+    </LinearLayout>
+    <Button
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/commentSection"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:text="RECORD"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:background="@color/colorPrimary"
+        android:id="@+id/commentRecord"
+        />
+</RelativeLayout>
+</ScrollView>

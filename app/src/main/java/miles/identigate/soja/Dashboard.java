@@ -1,0 +1,354 @@
+package miles.identigate.soja;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import miles.identigate.soja.Fragments.CheckIn;
+import miles.identigate.soja.Fragments.CheckOut;
+import miles.identigate.soja.Fragments.Logs;
+import miles.identigate.soja.Helpers.CheckConnection;
+import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.DatabaseHandler;
+import miles.identigate.soja.Helpers.NetworkHandler;
+import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.Helpers.SojaActivity;
+import miles.identigate.soja.Receivers.ConnectivityChangeReceiver;
+import miles.identigate.soja.Services.SyncService;
+import miles.identigate.soja.UserInterface.Login;
+
+public class Dashboard extends SojaActivity {
+
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    private ViewPager mViewPager;
+    DatabaseHandler handler;
+    String visitorResult;
+    String providerResult;
+    String incidentsResult;
+    String houseResult;
+    Preferences preferences;
+    private BroadcastReceiver receiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                String string = bundle.getString(SyncService.MESSAGE);
+                int resultCode = bundle.getInt(SyncService.RESULT);
+                if (resultCode == RESULT_OK) {
+                    Toast.makeText(Dashboard.this, string,Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(Dashboard.this,string,Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dashboard);
+        handler=new DatabaseHandler(this);
+        //handler.DeleteData();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        preferences=new Preferences(this);
+       // new FetchDetails().execute();
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+        SharedPreferences getPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+        boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+        if (isFirstStart&&preferences.isLoggedin()) {
+            if (new CheckConnection().check(this)) {
+                new FetchDetails().execute();
+                SharedPreferences.Editor e = getPrefs.edit();
+                e.putBoolean("firstStart", false);
+                e.apply();
+            }else {
+                new MaterialDialog.Builder(Dashboard.this)
+                        .title("Soja")
+                        .titleGravity(GravityEnum.CENTER)
+                        .titleColor(getResources().getColor(R.color.ColorPrimary))
+                        .content("It seems you have a poor internet connection.Please try again later.")
+                        .cancelable(true)
+                        .positiveText("EXIT")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                preferences.setIsLoggedin(false);
+                                SharedPreferences getPrefs = PreferenceManager
+                                        .getDefaultSharedPreferences(getBaseContext());
+                                SharedPreferences.Editor e = getPrefs.edit();
+                                e.putBoolean("firstStart", true);
+                                e.apply();
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .widgetColorRes(R.color.colorPrimary)
+                        .build()
+                        .show();
+            }
+        }else if(isFirstStart&& !preferences.isLoggedin()){
+           startActivity(new Intent(getApplicationContext(), Login.class));
+        }else {
+
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.logout) {
+            new MaterialDialog.Builder(Dashboard.this)
+                    .title("Logout")
+                    .content("You are about to logout of Soja.\nYou will need to login next time you use the app.Are you sure?")
+                    .positiveText("Ok")
+                    .negativeText("Cancel")
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            preferences.setIsLoggedin(false);
+                            preferences.setDeviceId(null);
+                            SharedPreferences getPrefs = PreferenceManager
+                                    .getDefaultSharedPreferences(getBaseContext());
+                            SharedPreferences.Editor e = getPrefs.edit();
+                            e.putBoolean("firstStart", true);
+                            e.apply();
+                           finish();
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position){
+                case 0:
+                    CheckIn checkIn=new CheckIn();
+                    return checkIn;
+                case 1:
+                    CheckOut checkOut=new CheckOut();
+                    return checkOut;
+
+                case 2:
+                    Logs logs=new Logs();
+                    return logs;
+
+                default:
+                    return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "CHECK IN";
+                case 1:
+                    return "CHECK OUT";
+                case 2:
+                    return "LOGS";
+            }
+            return null;
+        }
+    }
+    private class FetchDetails extends AsyncTask<Void, String, String> {
+        MaterialDialog builder=new MaterialDialog.Builder(Dashboard.this)
+                .title("Soja")
+                .titleGravity(GravityEnum.CENTER)
+                .titleColor(getResources().getColor(R.color.ColorPrimary))
+                .content("Please wait while we initialize the application.\nThis might take time depending on your internet.")
+                .progress(true, 0)
+                .cancelable(true)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+        @Override
+        protected String doInBackground(Void... params) {
+            visitorResult=new NetworkHandler().GET(Constants.BASE_URL+"visitor-types");
+            providerResult=new NetworkHandler().GET(Constants.BASE_URL+"service-providers");
+            incidentsResult=new NetworkHandler().GET(Constants.BASE_URL+"incident-types");
+            houseResult=new NetworkHandler().GET(Constants.BASE_URL+"houses-blocks/zone/"+preferences.getPremise());
+            return "success";
+        }
+
+        protected void onPostExecute(String result) {
+            builder.dismiss();
+            getAllData();
+            //Log.v("DASH",houseResult);
+
+        }
+    }
+    public void getAllData(){
+        if(visitorResult==null||providerResult==null||incidentsResult==null||houseResult==null){
+            Toast.makeText(getApplicationContext(),"An error occurred",Toast.LENGTH_LONG).show();
+        }else {
+            try {
+                JSONObject visitorObject = new JSONObject(visitorResult);
+                JSONObject providerObject = new JSONObject(providerResult);
+                JSONObject incidentsObject = new JSONObject(incidentsResult);
+                JSONObject housesObject=new JSONObject(houseResult);
+
+                SQLiteDatabase db = handler.getWritableDatabase();
+                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
+
+                db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
+                db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);
+                db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS_TYPES);
+                db.execSQL(handler.CREATE_TABLE_HOUSES);
+                /*db.execSQL(handler.CREATE_TABLE_DRIVE_IN);
+                db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS);
+                db.execSQL(handler.CREATE_TABLE_RESIDENTS);
+                db.execSQL(handler.CREATE_TABLE_INCIDENTS);*/
+                //Visitor types
+                if (visitorObject.getInt("result_code") == 0 && visitorObject.getString("result_text").equals("OK")) {
+                    JSONArray visitorArray = visitorObject.getJSONArray("result_content");
+                    for (int i = 0; i < visitorArray.length(); i++) {
+                        JSONObject visitorType = visitorArray.getJSONObject(i);
+                        handler.insertVisitorType(visitorType.getString("id"), visitorType.getString("name"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve visitor types", Toast.LENGTH_SHORT).show();
+                }
+                //Provider Types
+                if (providerObject.getInt("result_code") == 0 && providerObject.getString("result_text").equals("OK")) {
+                    JSONArray providerArray = providerObject.getJSONArray("result_content");
+                    for (int i = 0; i < providerArray.length(); i++) {
+                        JSONObject provider = providerArray.getJSONObject(i);
+                        handler.insertServiceProviderType(provider.getString("id"), provider.getString("name"), provider.getString("Description"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve service providers", Toast.LENGTH_SHORT).show();
+                }
+                //INCIDENTS
+                if (incidentsObject.getInt("result_code") == 0 && incidentsObject.getString("result_text").equals("OK")) {
+                    JSONArray incidentsArray = incidentsObject.getJSONArray("result_content");
+                    for (int i = 0; i < incidentsArray.length(); i++) {
+                        JSONObject incident = incidentsArray.getJSONObject(i);
+                        handler.insertIncidentTypes(incident.getString("id"), incident.getString("description"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve incident types", Toast.LENGTH_SHORT).show();
+                }
+
+                //Houses
+                if (housesObject.getInt("result_code") == 0 && incidentsObject.getString("result_text").equals("OK")) {
+                    JSONArray housesArray = housesObject.getJSONArray("result_content");
+                    for (int i = 0; i < housesArray.length(); i++) {
+                        JSONObject house = housesArray.getJSONObject(i);
+                        handler.insertHouse(house.getString("house_id"), house.getString("house_description"),house.getString("block_description"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve houses", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
+
+    }
+
+}

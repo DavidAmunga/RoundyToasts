@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#D32F2F</color>
+    <color name="colorPrimaryDark">#cf2819</color>
+    <color name="colorAccent">#f15a49</color>
+    <color name="ColorPrimary">#d6ff000d</color>
+    <color name="brown">#fdecec</color>
+    <color name="white">#FFFFFF</color>
+    <color name="toolbar">#03A9F4</color>
+    <color name="primary_text">#FFFF</color>
+    <color name="divider">#616161</color>
+    <color name="blue">#3F51B5</color>
+
+    <color name="black_overlay">#66000000</color>
+</resources>

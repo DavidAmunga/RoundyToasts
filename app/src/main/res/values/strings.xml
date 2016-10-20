@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Soja</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="title_activity_record_drive_in">Record Drive In</string>
+    <string-array name="visitor_types">
+        <item>Visitor</item>
+        <item>V.I.P</item>
+        <item>Staff</item>
+        <item>Service Provider</item>
+    </string-array>
+    <string-array name="host">
+        <item>House 1</item>
+        <item>House 2</item>
+        <item>House 3</item>
+        <item>House 4</item>
+        <item>House 5</item>
+    </string-array>
+    <string name="title_activity_record_walk_in">RecordWalkIn</string>
+    <string name="strSendImageForLearning">If there are constant errors in character recognition for the same document, please, help us improve recognition quality by sending anonymous data packet.</string>
+    <string name="title_activity_record_exit">RecordExit</string>
+    <string name="title_activity_visitors">Visitors</string>
+    <string name="title_activity_dashboard">Soja</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_record_resident">RecordResident</string>
+    <string name="title_activity_service_provider">ServiceProvider</string>
+    <string name="title_activity_search_results">Search Results</string>
+    <string name="title_activity_traffic">Traffic</string>
+    <string-array name="id_types">
+        <item>NID</item>
+        <item>PS</item>
+        <item>SID</item>
+        <item>OTHER</item>
+    </string-array>
+    <string name="title_activity_pedestrian">Pedestrian</string>
+    <string name="title_activity_provider">Provider</string>
+    <string name="title_activity_incidents">Incidents</string>
+    <string name="title_activity_incident">Incident</string>
+    <string name="scan_id">Tap icon to scan ID</string>
+    <string name="manual_entry">Choose Photo</string>
+    <string name="title_activity_scan">Soja</string>
+    <string name="title_activity_results">ResultsActivity</string>
+    <string name="title_activity_entry_type">EntryTypeActivity</string>
+</resources>

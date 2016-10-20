@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_record_drive_in"
+    tools:context="miles.identigate.soja.UserInterface.RecordDriveIn">
+    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_bar"
+        android:gravity="center_horizontal"
+        android:padding="20dp"
+        android:id="@+id/brand"
+        android:orientation="vertical">
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:text="RECORD DRIVE IN"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/brand"
+        android:layout_height="wrap_content"
+        android:id="@+id/iprn_profile"
+        android:orientation="vertical">
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:id="@+id/typeLabel"
+            android:layout_marginBottom="5.0dip"
+            android:text="VISITOR TYPE"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:id="@+id/visitor_type"
+            android:background="@drawable/border"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content">
+
+        </Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iprn_profile"
+        android:id="@+id/car_profile"
+        android:visibility="visible"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/brand"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:id="@+id/carLabel"
+                android:layout_marginBottom="10.0dip"
+                android:text="ENTER CAR NUMBER"/>
+            <EditText
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/car_number"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="CAR NUMBER"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:inputType="textCapCharacters" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:id="@+id/numberOfPeopleLabel"
+                android:layout_marginBottom="5.0dip"
+                android:text="Number of People in car"/>
+            <EditText
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/numberOfPeople"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter a number"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:inputType="number" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:id="@+id/hostLabel"
+                android:layout_marginBottom="5.0dip"
+                android:text="HOST"/>
+            <Spinner
+                android:layout_width="match_parent"
+                android:id="@+id/host"
+                android:background="@drawable/border"
+                android:layout_marginBottom="10dp"
+                android:layout_height="50dp">
+
+            </Spinner>
+        </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="visible"
+            android:layout_marginTop="10dp"
+            android:id="@+id/record"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:text="RECORD"/>
+    </LinearLayout>
+</RelativeLayout>
+</ScrollView>
