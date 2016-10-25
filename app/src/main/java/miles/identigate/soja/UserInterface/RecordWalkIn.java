@@ -101,7 +101,25 @@ public class RecordWalkIn extends SojaActivity {
     public void recordInternt(){
         String urlParameters = null;
         try {
-            String idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+            String idN="000000000";
+            String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+            if(classCode.equals("ID")){
+                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+            }else if (classCode.equals("P")){
+                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+            }
+          /*  if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number) != null){
+                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+            }else {
+                if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Passport_Number) != null){
+                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Passport_Number).bufText.replace("^", "\n");
+                }else {
+                    if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Visa_Number) != null){
+                        idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Visa_Number).bufText.replace("^", "\n");
+                    }
+                }
+            }*/
+            //Log.e("CLASS CODE",idN);
             String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
             urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
@@ -124,6 +142,13 @@ public class RecordWalkIn extends SojaActivity {
     }
     public void recordOffline(){
         //Insert to local database
+        String idN="000000000";
+        String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+        if(classCode.equals("ID")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+        }else if (classCode.equals("P")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+        }
         DriveIn driveIn=new DriveIn();
         driveIn.setVisitorType(selectedType);
         driveIn.setCarNumber("NULL");
@@ -133,7 +158,7 @@ public class RecordWalkIn extends SojaActivity {
         driveIn.setStatus("IN");
         driveIn.setExitTime("NULL");
         driveIn.setHouseID(selectedHouse);
-        driveIn.setNationalId(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n"));
+        driveIn.setNationalId(idN);
         driveIn.setDob(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"));
         driveIn.setSex(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n"));
         driveIn.setName(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"));
@@ -264,7 +289,13 @@ public class RecordWalkIn extends SojaActivity {
                             @Override
                             public void onNegative(MaterialDialog dialog) {
                                 dialog.dismiss();
-                                String idN = DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                String idN="000000000";
+                                String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+                                if(classCode.equals("ID")){
+                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                }else if (classCode.equals("P")){
+                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+                                }
                                 String urlParameters = null;
                                 try {
                                     urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length() - 1), "UTF-8") +

@@ -129,7 +129,13 @@ public class RecordDriveIn extends SojaActivity {
 
         String urlParameters = null;
         try {
-            String idN=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+            String idN="000000000";
+            String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+            if(classCode.equals("ID")){
+                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+            }else if (classCode.equals("P")){
+                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+            }
             String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
             urlParameters =
                     "visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
@@ -155,6 +161,13 @@ public class RecordDriveIn extends SojaActivity {
 
     public void recordOffline(){
         //Insert to local database
+        String idN="000000000";
+        String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+        if(classCode.equals("ID")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+        }else if (classCode.equals("P")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+        }
         DriveIn driveIn=new DriveIn();
         vehicleNo=vehicleRegNo.getText().toString();
         driveIn.setVisitorType(selectedType);
@@ -165,7 +178,7 @@ public class RecordDriveIn extends SojaActivity {
         driveIn.setRecordType("DRIVE");
         driveIn.setExitTime("NULL");
         driveIn.setHouseID(selectedHouse);
-        driveIn.setNationalId(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n"));
+        driveIn.setNationalId(idN);
         driveIn.setDob(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"));
         driveIn.setSex(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n"));
         driveIn.setName(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"));
@@ -285,7 +298,13 @@ public class RecordDriveIn extends SojaActivity {
                             @Override
                             public void onNegative(MaterialDialog dialog){
                                 String urlParameters =null;
-                                String idN=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                String idN="000000000";
+                                String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+                                if(classCode.equals("ID")){
+                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                }else if (classCode.equals("P")){
+                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+                                }
                                 try {
                                     urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                             "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +

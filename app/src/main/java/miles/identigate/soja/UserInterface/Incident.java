@@ -5,12 +5,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.regula.sdk.DocumentReader;
@@ -217,7 +219,6 @@ public class Incident extends SojaActivity {;
         protected void onPostExecute(String result) {
             builder.dismiss();
             if(result !=null){
-                //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
                 try {
                     Object json=new JSONTokener(result).nextValue();
                     if (json instanceof JSONObject){

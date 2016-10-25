@@ -108,7 +108,13 @@ public class ServiceProvider extends SojaActivity {
         });
     }
     public void recordOnline(){
-        String idN=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+        String idN="000000000";
+        String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+        if(classCode.equals("ID")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+        }else if (classCode.equals("P")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+        }
         String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
         String urlParameters = null;
         try {
@@ -131,13 +137,20 @@ public class ServiceProvider extends SojaActivity {
         }
     }
     public void recordOffline(){
+        String idN="000000000";
+        String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+        if(classCode.equals("ID")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+        }else if (classCode.equals("P")){
+            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+        }
         ServiceProviderModel item=new ServiceProviderModel();
         item.setEntryTime(new Constants().getCurrentTimeStamp());
         item.setExitTime("NULL");
         item.setCompanyName(providerId);
         item.setProviderName(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"));
         item.setProviderImage("NULL");
-        item.setNationalId(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n"));
+        item.setNationalId(idN);
         item.setDob(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"));
         item.setSex(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n"));
         item.setOtherNames(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"));
@@ -254,7 +267,13 @@ public class ServiceProvider extends SojaActivity {
 
                             @Override
                             public void onNegative(MaterialDialog dialog){
-                                String idN=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                String idN="000000000";
+                                String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+                                if(classCode.equals("ID")){
+                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                }else if (classCode.equals("P")){
+                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+                                }
                                 String urlParameters =null;
                                 try {
                                     urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
