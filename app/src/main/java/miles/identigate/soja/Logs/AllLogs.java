@@ -3,6 +3,7 @@ package miles.identigate.soja.Logs;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +32,7 @@ public class AllLogs extends SojaActivity {
     ArrayList<ServiceProviderModel> serviceProviderModels;
     ArrayList<Resident> residents;
     TextView type;
+    ContentLoadingProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,9 @@ public class AllLogs extends SojaActivity {
         serviceProviderModels=new ArrayList<>();
         residents=new ArrayList<>();
         lv=(ListView)findViewById(R.id.visitors);
+        lv.setVisibility(View.VISIBLE);
+        progressBar=(ContentLoadingProgressBar)findViewById(R.id.loading);
+        progressBar.setVisibility(View.GONE);
         lv.setEmptyView(findViewById(R.id.empty));
         type=(TextView)findViewById(R.id.type);
         handler=new DatabaseHandler(this);

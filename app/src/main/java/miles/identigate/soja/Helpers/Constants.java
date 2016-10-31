@@ -10,6 +10,7 @@ import java.util.HashMap;
  */
 public class Constants {
     public static String BASE_URL="http://soja.co.ke/soja-rest/api/visits/";
+    public static String GET_VISITORS_URL="http://soja.co.ke/soja-rest/api/visitors/visitors_in/";
     public static final String WALK="WALKING";
     public static final String DRIVE="DRIVING";
     public static HashMap<String,String> fieldItems=new HashMap<>();

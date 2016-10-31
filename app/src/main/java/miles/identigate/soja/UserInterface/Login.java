@@ -8,14 +8,10 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.afollestad.materialdialogs.MaterialDialog;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
@@ -119,7 +115,7 @@ public class Login extends AppCompatActivity {
                             String firstname=object.getString("firstname");
                             String lastname=object.getString("lastname");
                             String deviceId=object.getString("device_id");
-                            String premiseZoneId=object.getString("premise_zone_id");
+                            String premiseZoneId=object.getString("premise_id");
                             String access_token=object.getString("access_token");
                             preferences.setIsLoggedin(true);
                             preferences.setPremise(premiseZoneId);

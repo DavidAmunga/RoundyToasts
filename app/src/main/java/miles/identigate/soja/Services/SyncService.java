@@ -53,8 +53,7 @@ public class SyncService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         handler=new DatabaseHandler(this);
         preferences=new Preferences(this);
-        manager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(this);
         builder.setContentTitle("Soja")
                 .setContentText("Sync in progress")
@@ -109,7 +108,6 @@ public class SyncService extends IntentService {
         }else if(type==1){
             recordDriveIn(walkIns.get(currentIndex),"walk-in");
             showProgressNotification(walkIns.size(),currentIndex);
-
         }
     }
     public void recordDriveIn(DriveIn in,String visitType) {

@@ -1,7 +1,5 @@
 package miles.identigate.soja.Fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,14 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.regula.sdk.CaptureActivity;
-import com.regula.sdk.DocumentReader;
-
-import java.io.IOException;
-import java.io.InputStream;
-
 import miles.identigate.soja.Adapters.Option;
-import miles.identigate.soja.EntryTypeActivity;
 import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
@@ -37,14 +28,12 @@ public class CheckIn extends Fragment {
     private String[] titles={
             "Drive In",
             "Walk In",
-            "Service Provider",
             "Residents",
             "Incident"
     };
     private String[] descriptions={
             "Record driving visitor",
             "Record walking visitor",
-            "Record a service provider",
             "Check in a resident",
             "Report an incident"
 
@@ -52,7 +41,6 @@ public class CheckIn extends Fragment {
     private int[] drawables={
             R.drawable.ic_action_car,
             R.drawable.ic_action_walk,
-            R.drawable.ic_action_many,
             R.drawable.ic_action_walk,
             R.drawable.ic_incident
 
@@ -105,19 +93,18 @@ public class CheckIn extends Fragment {
                          break;
                     case 2:
 
-                        extras.putInt("TargetActivity", Common.SERVICE_PROVIDER);
+                       /* extras.putInt("TargetActivity", Common.SERVICE_PROVIDER);
+                        intent.putExtras(extras);
+                        startActivity(intent);*/
+                        extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);
                         startActivity(intent);
                         break;
                     case 3:
 
-                        extras.putInt("TargetActivity", Common.RESIDENTS);
+                       /* extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);
-                        startActivity(intent);
-                        break;
-                    case 4:
-                        /*extras.putInt("TargetActivity", Common.INCIDENT);
-                        intent.putExtras(extras);*/
+                        startActivity(intent);*/
                         startActivity(new Intent(getActivity(), Incident.class));
                         break;
                 }

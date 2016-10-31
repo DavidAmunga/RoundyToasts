@@ -36,15 +36,22 @@
             android:layout_marginRight="20dp"
             android:background="@color/colorPrimary"/>
     </LinearLayout>
-<ListView
-    android:layout_width="match_parent"
-    android:id="@+id/visitors"
-    android:dividerHeight="0.5dp"
-    android:divider="@color/divider"
-    android:layout_below="@+id/brand"
-    android:layout_height="wrap_content">
-
-</ListView>
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/visitors"
+        android:dividerHeight="0.5dp"
+        android:divider="@color/divider"
+        android:visibility="gone"
+        android:layout_below="@+id/brand"
+        android:layout_height="wrap_content">
+    </ListView>
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"

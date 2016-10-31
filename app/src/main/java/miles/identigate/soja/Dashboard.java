@@ -88,6 +88,7 @@ public class Dashboard extends SojaActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         preferences=new Preferences(this);
+        //Log.e("PREMISE",preferences.getPremise());
        // new FetchDetails().execute();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.

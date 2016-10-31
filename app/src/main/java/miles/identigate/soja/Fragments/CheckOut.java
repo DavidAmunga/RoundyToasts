@@ -22,15 +22,15 @@ public class CheckOut extends ListFragment {
     private String mParam1;
     private String mParam2;
     private String[] titles={
-            "Drive out",
-            "Pedestrian",
+            "Drive Out",
+            "Walk Out",
             "Service Provider",
             "Residents",
     };
     private String[] descriptions={
             "Check out a driving visitor ",
             "Check out a visitor on foot",
-            "Exit a service provider",
+            "Check out a service provider",
             "Check out a resident"
 
     };
