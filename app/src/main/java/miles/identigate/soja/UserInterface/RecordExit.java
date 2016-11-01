@@ -91,7 +91,7 @@ public class RecordExit extends SojaActivity {
                     String idN=getIntent().getStringExtra("ID");
                     String urlParameters =null;
                     try {
-                        urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
+                        urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                 "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
                         new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
@@ -143,7 +143,6 @@ public class RecordExit extends SojaActivity {
         protected void onPostExecute(String result) {
             builder.dismiss();
             if(result !=null){
-                exitLocal();
                 try {
                     if(result.contains("result_code")) {
                         JSONObject obj = new JSONObject(result);
@@ -151,6 +150,7 @@ public class RecordExit extends SojaActivity {
                         String resultText = obj.getString("result_text");
                         String resultContent = obj.getString("result_content");
                         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
+                            exitLocal();
                             new MaterialDialog.Builder(RecordExit.this)
                                     .title("SUCCESS")
                                     .content(name.getText().toString() + " removed successfully.")

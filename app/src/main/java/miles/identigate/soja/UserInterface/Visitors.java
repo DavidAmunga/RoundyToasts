@@ -182,7 +182,6 @@ public class Visitors extends AppCompatActivity {
             residents.clear();
             //adapter.notifyDataSetChanged();
             if (s != null){
-                Log.e("Result",s);
                 Object json=null;
                 try {
                     json=new JSONTokener(s).nextValue();
