@@ -58,6 +58,14 @@ public class Preferences {
         editor.putString("premise", premise);
         editor.commit();
     }
+    public String getPremiseZoneId() {
+        return settings.getString("premiseZoneId", "");
+    }
+    public void setPremiseZoneId(String premiseId) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("premiseZoneId", premiseId);
+        editor.commit();
+    }
     public String getDeviceId() {
         return settings.getString("device", "");
     }

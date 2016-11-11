@@ -8,9 +8,12 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,6 +111,7 @@ public class Login extends AppCompatActivity {
         protected void onPostExecute(String result) {
             builder.dismiss();
             if(result !=null){
+                //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
                 if(result.contains("access_token")) {
                     try {
                             JSONObject object = new JSONObject(result);
@@ -115,14 +119,16 @@ public class Login extends AppCompatActivity {
                             String firstname=object.getString("firstname");
                             String lastname=object.getString("lastname");
                             String deviceId=object.getString("device_id");
-                            String premiseZoneId=object.getString("premise_id");
+                            String premiseZoneId=object.getString("premise_zone_id");
                             String access_token=object.getString("access_token");
+                            String premiseId=object.getString("premise_id");
                             preferences.setIsLoggedin(true);
-                            preferences.setPremise(premiseZoneId);
+                            preferences.setPremise(premiseId);
                             preferences.setName(firstname + " " + lastname);
                             preferences.setId(id);
                             preferences.setDeviceId(deviceId);
                             preferences.setToken(access_token);
+                            preferences.setPremiseZoneId(premiseZoneId);
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
                     } catch (JSONException e) {

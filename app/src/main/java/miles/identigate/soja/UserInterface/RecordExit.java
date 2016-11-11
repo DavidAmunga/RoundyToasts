@@ -91,9 +91,10 @@ public class RecordExit extends SojaActivity {
                     String idN=getIntent().getStringExtra("ID");
                     String urlParameters =null;
                     try {
-                        urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
+                        urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                 "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
+                        Log.e("REQUEST",urlParameters);
                         new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();

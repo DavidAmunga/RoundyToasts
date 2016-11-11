@@ -123,7 +123,7 @@ public class RecordWalkIn extends SojaActivity {
             String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
             urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremise(), "UTF-8")+
+                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType, "UTF-8")+
                     "&houseID=" + URLEncoder.encode(selectedHouse, "UTF-8")+
                     "&entryTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8")+
@@ -133,11 +133,10 @@ public class RecordWalkIn extends SojaActivity {
                     "&lastName=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"), "UTF-8")+
                     "&idType=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n"), "UTF-8")+
                     "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8");
+            //Log.e("REQUEST",urlParameters);
             new DriveinAsync().execute(Constants.BASE_URL + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace(
-
-            );
+            e.printStackTrace();
         }
     }
     public void recordOffline(){
@@ -203,7 +202,7 @@ public class RecordWalkIn extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            Log.e("WALKIN",params[1]);
+            //Log.e("WALKIN",params[1]);
             return new NetworkHandler().excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {

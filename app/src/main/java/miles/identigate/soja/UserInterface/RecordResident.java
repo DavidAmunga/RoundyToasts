@@ -88,7 +88,7 @@ public class RecordResident extends SojaActivity {
         try {
             urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremise(), "UTF-8")+
+                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType, "UTF-8")+
                     "&houseID=" + URLEncoder.encode(selectedType, "UTF-8")+
                     "&entryTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8")+

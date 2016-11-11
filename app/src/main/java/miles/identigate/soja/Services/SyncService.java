@@ -118,7 +118,7 @@ public class SyncService extends IntentService {
             urlParameters =
                             "visitType=" + URLEncoder.encode(visitType, "UTF-8") +
                                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremise(), "UTF-8")+
+                                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                                     "&visitorTypeID=" + URLEncoder.encode(in.getVisitorType(), "UTF-8")+
                                     "&houseID=" + URLEncoder.encode(in.getHouseID(), "UTF-8")+
                                     "&entryTime=" + URLEncoder.encode(in.getEntryTime(), "UTF-8")+

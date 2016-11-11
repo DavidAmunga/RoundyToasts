@@ -264,14 +264,14 @@ public class Dashboard extends SojaActivity {
             visitorResult=new NetworkHandler().GET(Constants.BASE_URL+"visitor-types");
             providerResult=new NetworkHandler().GET(Constants.BASE_URL+"service-providers");
             incidentsResult=new NetworkHandler().GET(Constants.BASE_URL+"incident-types");
-            houseResult=new NetworkHandler().GET(Constants.BASE_URL+"houses-blocks/zone/"+preferences.getPremise());
+            houseResult=new NetworkHandler().GET(Constants.BASE_URL+"houses-blocks/zone/"+preferences.getPremiseZoneId());
             return "success";
         }
 
         protected void onPostExecute(String result) {
             builder.dismiss();
             getAllData();
-            //Log.v("DASH",houseResult);
+            //Log.v("DASHBOARD",houseResult);
 
         }
     }
