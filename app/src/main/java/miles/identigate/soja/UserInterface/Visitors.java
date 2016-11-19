@@ -182,7 +182,7 @@ public class Visitors extends AppCompatActivity {
             residents.clear();
             //adapter.notifyDataSetChanged();
             if (s != null){
-                //Log.e("Result",s);
+                Log.e("Result",s);
                 Object json=null;
                 try {
                     json=new JSONTokener(s).nextValue();
@@ -201,7 +201,7 @@ public class Visitors extends AppCompatActivity {
                                     driveIn.setName(name);
                                     driveIn.setNationalId(id);
                                     driveIn.setEntryTime(entry);
-                                    driveIn.setCarNumber("N/A");
+                                    driveIn.setCarNumber(item.getString("registration"));
                                     driveIns.add(driveIn);
                                 }else if(str.equals("WALK")){
                                     DriveIn driveIn=new DriveIn();

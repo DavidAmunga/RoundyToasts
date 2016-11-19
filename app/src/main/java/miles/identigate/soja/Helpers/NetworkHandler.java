@@ -24,8 +24,7 @@ import java.net.URL;
  * Created by myles on 9/26/15.
  */
 public class NetworkHandler {
-    public static String  excutePost(String targetURL, String urlParameters)
-    {
+    public static String  excutePost(String targetURL, String urlParameters) {
         //Log.v("DATA",urlParameters);
         String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),

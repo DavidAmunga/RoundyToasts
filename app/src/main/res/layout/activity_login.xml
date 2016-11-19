@@ -52,7 +52,6 @@
                android:textCursorDrawable="@null"
                 android:background="@drawable/border"
                 android:ems="10"
-                android:text="909090"
                 android:padding="10dp"
                 android:singleLine="true"
                 android:inputType="number" />
@@ -72,7 +71,6 @@
                 android:layout_marginRight="30.0dip"
                 android:layout_marginTop="10.0dip"
                 android:hint="PIN"
-                android:text="soja@2016"
                 android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:background="@drawable/border"

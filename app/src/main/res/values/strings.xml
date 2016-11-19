@@ -44,4 +44,6 @@
     <string name="title_activity_scan">Soja</string>
     <string name="title_activity_results">ResultsActivity</string>
     <string name="title_activity_entry_type">EntryTypeActivity</string>
+    <string name="turn_on_flashlight">Turn On Flashlight</string>
+    <string name="turn_off_flashlight">Turn Off Flashlight</string>
 </resources>

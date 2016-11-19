@@ -13,6 +13,7 @@ import miles.identigate.soja.Adapters.Option;
 import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
+import miles.identigate.soja.ScanQRActivity;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.app.Common;
 
@@ -96,9 +97,7 @@ public class CheckIn extends Fragment {
                        /* extras.putInt("TargetActivity", Common.SERVICE_PROVIDER);
                         intent.putExtras(extras);
                         startActivity(intent);*/
-                        extras.putInt("TargetActivity", Common.RESIDENTS);
-                        intent.putExtras(extras);
-                        startActivity(intent);
+                        startActivity(new Intent(getActivity(), ScanQRActivity.class));
                         break;
                     case 3:
 

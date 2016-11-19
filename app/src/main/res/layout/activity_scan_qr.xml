@@ -11,10 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:textStyle="bold"
-        android:text="RECORD WALK IN"
+        android:text="RECORD RESIDENT"
         android:id="@+id/record_type"
         android:gravity="center_horizontal"
         android:textSize="18dp"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_marginTop="30dp"
@@ -32,11 +33,12 @@
             android:layout_width="wrap_content"
             android:layout_below="@+id/scan_icon"
             android:layout_marginTop="15dp"
-            android:text="@string/scan_id"
+            android:text="Tap here to scan sticker."
             android:layout_centerHorizontal="true"
             android:textStyle="bold"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_marginTop="20dp"

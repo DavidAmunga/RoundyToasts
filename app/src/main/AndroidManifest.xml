@@ -174,9 +174,7 @@
         <service
             android:name=".Services.SyncService"
             android:enabled="true"
-            android:exported="false">
-
-        </service>
+            android:exported="false" />
 
         <receiver
             android:name=".Receivers.ConnectivityChangeReceiver"
@@ -187,6 +185,25 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:parentActivityName=".Dashboard"
+            android:name=".ScanQRActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="miles.identigate.soja.Dashboard" />
+        </activity>
+        <activity
+            android:name=".Helpers.ZxingHelperActivity"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+        <activity
+            android:parentActivityName=".ScanQRActivity"
+            android:name=".RecordResidentVehicleActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="miles.identigate.soja.ScanQRActivity" />
+        </activity>
     </application>
 
 </manifest>
