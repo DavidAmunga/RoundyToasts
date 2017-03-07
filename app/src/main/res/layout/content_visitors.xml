@@ -14,27 +14,20 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/app_bar"
         android:gravity="center_horizontal"
-        android:padding="10dp"
         android:id="@+id/brand"
         android:orientation="vertical">
-        <miles.identigate.soja.Font.OpenSansBold
-            android:layout_width="fill_parent"
+        <EditText
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/searchbox"
+            android:layout_below="@+id/title"
+            android:layout_margin="10dp"
+            android:drawableLeft="@drawable/ic_search_dark"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:id="@+id/type"
-            android:gravity="center_horizontal"
-            android:layout_alignParentBottom="true"
-            android:text="VISITORS"
-            />
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:id="@+id/line"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@color/colorPrimary"/>
+            android:hint="Search Visitors"
+            android:background="@drawable/border"
+            android:padding="10dp"
+            android:singleLine="true"/>
     </LinearLayout>
     <ListView
         android:layout_width="match_parent"

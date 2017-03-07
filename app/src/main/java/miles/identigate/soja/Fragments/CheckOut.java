@@ -24,19 +24,16 @@ public class CheckOut extends ListFragment {
     private String[] titles={
             "Drive Out",
             "Walk Out",
-            "Service Provider",
             "Residents",
     };
     private String[] descriptions={
             "Check out a driving visitor ",
             "Check out a visitor on foot",
-            "Check out a service provider",
             "Check out a resident"
 
     };
     private int[] drawables={
             R.drawable.ic_action_car,
-            R.drawable.ic_action_walk,
             R.drawable.ic_action_walk,
             R.drawable.ic_action_many
 
@@ -85,11 +82,6 @@ public class CheckOut extends ListFragment {
                 startActivity(walkOut);
                 break;
             case 2:
-                Intent provider=new Intent(getActivity().getApplicationContext(), Visitors.class);
-                provider.putExtra("TYPE","PROVIDER");
-                startActivity(provider);
-                 break;
-            case 3:
                 Intent resident=new Intent(getActivity().getApplicationContext(), Visitors.class);
                 resident.putExtra("TYPE","RESIDENTS");
                 startActivity(resident);

@@ -9,11 +9,14 @@ import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,6 +26,8 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
+import java.util.Locale;
+
 import miles.identigate.soja.Adapters.DriveInAdapter;
 import miles.identigate.soja.Helpers.CheckConnection;
 import miles.identigate.soja.Helpers.Constants;
@@ -42,17 +47,20 @@ public class Visitors extends AppCompatActivity {
     ArrayList<DriveIn> walkIns;
     ArrayList<ServiceProviderModel> serviceProviderModels;
     ArrayList<Resident> residents;
-    TextView type;
     String str;
     private ContentLoadingProgressBar loading;
     private Preferences preferences;
+    private EditText searchbox;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visitors);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TextView title=(TextView)toolbar.findViewById(R.id.title);
+        title.setText("Check Out");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         preferences=new Preferences(this);
         driveIns=new ArrayList<>();
         walkIns=new ArrayList<>();
@@ -60,28 +68,28 @@ public class Visitors extends AppCompatActivity {
         residents=new ArrayList<>();
         lv=(ListView)findViewById(R.id.visitors);
         //lv.setEmptyView(findViewById(R.id.empty));
-        type=(TextView)findViewById(R.id.type);
         loading=(ContentLoadingProgressBar)findViewById(R.id.loading);
+        searchbox=(EditText)findViewById(R.id.searchbox);
         handler=new DatabaseHandler(this);
         if(getIntent()!=null){
             str=getIntent().getStringExtra("TYPE");
             if(str.equals("DRIVE")){
-                type.setText("Drive in");
+                title.setText("Drive Out");
                 //driveIns=handler.getDriveIns(0);
                 adapter=new DriveInAdapter(this,driveIns,1);
                 //adapter.notifyDataSetChanged();
             }else if(str.equals("WALK")){
-                type.setText("Walk in");
+                title.setText("Walk Out");
                 //walkIns=handler.getWalk(0);
                 adapter=new DriveInAdapter(this,walkIns,"WALK");
                 //adapter.notifyDataSetChanged();
             }else if(str.equals("PROVIDER")){
-                type.setText("Service providers");
+                title.setText("Service Providers");
                 //serviceProviderModels=handler.getProviders(0);
                 adapter=new DriveInAdapter(this,"TYPE",serviceProviderModels);
                 //adapter.notifyDataSetChanged();
             }else if(str.equals("RESIDENTS")){
-                type.setText("Residents");
+                title.setText("Residents");
                 //residents=handler.getResidents(0);
                 adapter=new DriveInAdapter(this,residents);
                 //adapter.notifyDataSetChanged();
@@ -139,28 +147,33 @@ public class Visitors extends AppCompatActivity {
 
             }
         });
-    }
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_visitors, menu);
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =(SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        return true;
+        searchbox.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
+                adapter.filter(text);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                                          int arg2, int arg3) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                      int arg3) {
+                // TODO Auto-generated method stub
+            }
+        });
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-       /* switch (item.getItemId()) {
-            case R.id.search:
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }*/
-        // }
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -172,7 +185,7 @@ public class Visitors extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            return new NetworkHandler().GET(strings[0]);
+            return NetworkHandler.GET(strings[0]);
         }
         @Override
         public void onPostExecute(String s){
@@ -201,7 +214,9 @@ public class Visitors extends AppCompatActivity {
                                     driveIn.setName(name);
                                     driveIn.setNationalId(id);
                                     driveIn.setEntryTime(entry);
-                                    driveIn.setCarNumber(item.getString("registration"));
+                                    if (!item.isNull("registration")){
+                                        driveIn.setCarNumber(item.getString("registration"));
+                                    }
                                     driveIns.add(driveIn);
                                 }else if(str.equals("WALK")){
                                     DriveIn driveIn=new DriveIn();

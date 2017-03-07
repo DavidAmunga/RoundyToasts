@@ -54,12 +54,12 @@ public class AllLogs extends SojaActivity {
         if(getIntent()!=null){
             String str=getIntent().getStringExtra("TYPE");
             if(str.equals("DRIVE")){
-                type.setText("Drive in");
+                type.setText("List Of Recent Vehicles");
                 driveIns=handler.getDriveIns(1);
                 adapter=new DriveInAdapter(this,handler.getDriveIns(1),1);
                 adapter.notifyDataSetChanged();
             }else if(str.equals("WALK")){
-                type.setText("Walk in");
+                type.setText("List Of Recent Pedestrians");
                 walkIns=handler.getWalk(1);
                 adapter=new DriveInAdapter(this,handler.getWalk(1),"WALK");
                 adapter.notifyDataSetChanged();
@@ -69,7 +69,7 @@ public class AllLogs extends SojaActivity {
                 adapter=new DriveInAdapter(this,"TYPE",handler.getProviders(1));
                 adapter.notifyDataSetChanged();
             }else if(str.equals("RESIDENTS")){
-                type.setText("Residents");
+                type.setText("List of Recent Residents");
                 residents=handler.getResidents(1);
                 adapter=new DriveInAdapter(this,handler.getResidents(1));
                 adapter.notifyDataSetChanged();
@@ -90,26 +90,10 @@ public class AllLogs extends SojaActivity {
         });
     }
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_visitors, menu);
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =(SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        return true;
-    }
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-       /* switch (item.getItemId()) {
-            case R.id.search:
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }*/
-        // }
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
         return super.onOptionsItemSelected(item);
     }
 }

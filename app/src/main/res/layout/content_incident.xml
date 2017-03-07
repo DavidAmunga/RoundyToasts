@@ -50,49 +50,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
-                    android:id="@+id/visitorTypeLabel"
-                    android:layout_marginBottom="10.0dip"
-                    android:text="Visitor Type"/>
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/visitorType"
-                    android:background="@drawable/border"
-                    android:layout_height="50dp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/brand"
-                android:paddingBottom="10dp"
-                android:id="@+id/visitorLayout"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-                <miles.identigate.soja.Font.OpenSansBold
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:id="@+id/visitorLabel"
-                    android:layout_marginBottom="10.0dip"
-                    android:text="Visitor Involved"/>
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/visitor"
-                    android:background="@drawable/border"
-                    android:layout_height="50dp"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/brand"
-                android:paddingBottom="10dp"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-                <miles.identigate.soja.Font.OpenSansBold
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:id="@+id/typeLabel"
                     android:layout_marginBottom="10.0dip"
                     android:text="Incident type"/>
@@ -132,6 +89,50 @@
                     android:singleLine="false"
                     android:inputType="text" />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/brand"
+                android:paddingBottom="10dp"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:id="@+id/visitorTypeLabel"
+                    android:layout_marginBottom="10.0dip"
+                    android:text="Visitor Involved"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/visitorInvolved"
+                    android:background="@drawable/border"
+                    android:layout_height="50dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/brand"
+                android:paddingBottom="10dp"
+                android:id="@+id/visitorLayout"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:id="@+id/visitorLabel"
+                    android:layout_marginBottom="10.0dip"
+                    android:text="Select Visitor Involved"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/visitor"
+                    android:background="@drawable/border"
+                    android:layout_height="50dp"/>
+            </LinearLayout>
+
         </LinearLayout>
         <Button
             android:layout_width="match_parent"

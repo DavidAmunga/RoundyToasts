@@ -23,16 +23,18 @@
         android:background="?android:attr/selectableItemBackground"
         android:layout_height="wrap_content">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:id="@+id/scan_icon"
+            android:layout_marginBottom="10dp"
             android:background="?android:selectableItemBackground"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_search_black_48dp"/>
+            android:src="@drawable/qr"/>
         <miles.identigate.soja.Font.OpenSansBold
             android:layout_width="wrap_content"
             android:layout_below="@+id/scan_icon"
             android:layout_marginTop="15dp"
+            android:textSize="20sp"
             android:text="Tap here to scan sticker."
             android:layout_centerHorizontal="true"
             android:textStyle="bold"

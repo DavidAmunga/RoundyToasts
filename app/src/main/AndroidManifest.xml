@@ -88,11 +88,7 @@
         <activity
             android:name=".UserInterface.Visitors"
             android:label="Soja"
-            android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="miles.identigate.soja.Dashboard" />
         </activity>
         <activity
             android:name=".Dashboard"

@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.regula.sdk.DocumentReader;
 import com.regula.sdk.enums.eVisualFieldType;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -42,7 +43,7 @@ import miles.identigate.soja.app.Common;
 
 public class Incident extends SojaActivity {;
     Spinner incident_types;
-    Spinner visitorType;
+    Spinner visitorInvolved;
     Spinner visitor;
     EditText description;
     Button record;
@@ -52,9 +53,15 @@ public class Incident extends SojaActivity {;
     Preferences preferences;
     String typeText;
     LinearLayout visitorLayout;
-    ArrayList<TypeObject> visitorTypes;
+    ArrayList<TypeObject> visitorTypes = new ArrayList<>();
     ArrayList<TypeObject> visitors=new ArrayList<>();
+    ArrayList<TypeObject> visitorFromAPI=new ArrayList<>();
+    ArrayList<TypeObject> houses=new ArrayList<>();
     private String ID;
+
+    TypeAdapter Visitoradapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,49 +71,61 @@ public class Incident extends SojaActivity {;
         handler=new DatabaseHandler(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         incident_types=(Spinner)findViewById(R.id.incident_types);
-        visitorType=(Spinner)findViewById(R.id.visitorType);
+        visitorInvolved=(Spinner)findViewById(R.id.visitorInvolved);
         visitor=(Spinner)findViewById(R.id.visitor);
         description=(EditText)findViewById(R.id.comment);
         record=(Button)findViewById(R.id.record);
         visitorLayout=(LinearLayout)findViewById(R.id.visitorLayout);
         preferences=new Preferences(this);
-        visitorTypes=handler.getTypes("visitors");
+
+        //visitorTypes=handler.getTypes("visitors");
+        visitorTypes = new ArrayList<>();
+        houses= handler.getTypes("houses");
         objects=handler.getTypes("incidents");
+        visitorTypes.add(new TypeObject("1","Visitor"));
+        visitorTypes.add(new TypeObject("2","Resident"));
+        visitorTypes.add(new TypeObject("3","None"));
 
         TypeAdapter adapter =new TypeAdapter(Incident.this,R.layout.tv,visitorTypes);
-        visitorType.setAdapter(adapter);
-        visitorType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        visitorInvolved.setAdapter(adapter);
+        visitorInvolved.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position==0){
-                    visitorLayout.setVisibility(View.VISIBLE);
-                }else{
-                    visitorLayout.setVisibility(View.VISIBLE);
-                    TypeObject object = (TypeObject) parent.getSelectedItem();
+                TypeObject typeObject = (TypeObject)parent.getItemAtPosition(position);
+                switch (Integer.valueOf(typeObject.getId())){
+                    case 1:
+                        visitors.clear();
+                        visitors.addAll(visitorFromAPI);
+                        Visitoradapter.notifyDataSetChanged();
+                        break;
+                    case 2:
+                        visitors.clear();
+                        visitors.addAll(houses);
+                        Visitoradapter.notifyDataSetChanged();
+                        break;
+                    case 3:
+                        visitors.clear();
+                        Visitoradapter.notifyDataSetChanged();
+                        break;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                visitorLayout.setVisibility(View.GONE);
+                //visitorLayout.setVisibility(View.GONE);
+                visitors.clear();
+                Visitoradapter.notifyDataSetChanged();
             }
         });
 
-        ArrayList<DriveIn> DRIVE_TEMP=handler.getDriveIns(0);
-        ArrayList<DriveIn> WALK_TEMP=handler.getWalk(0);
-        for (int i=0;i<DRIVE_TEMP.size();i++){
-            TypeObject object=new TypeObject();
-            object.setId(DRIVE_TEMP.get(i).getNationalId());
-            object.setName(DRIVE_TEMP.get(i).getName());
-            visitors.add(object);
+        if (new CheckConnection().check(this)){
+            new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
+        }else {
+            Toast.makeText(getApplicationContext(),"No internet connection",Toast.LENGTH_SHORT).show();
         }
-        for (int i=0;i<WALK_TEMP.size();i++){
-            TypeObject object=new TypeObject();
-            object.setId(WALK_TEMP.get(i).getNationalId());
-            object.setName(WALK_TEMP.get(i).getName());
-            visitors.add(object);
-        }
-        TypeAdapter Visitoradapter =new TypeAdapter(Incident.this,R.layout.tv,visitors);
+
+
+        Visitoradapter =new TypeAdapter(Incident.this,R.layout.tv,visitors);
         visitor.setAdapter(Visitoradapter);
         visitor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
              @Override
@@ -214,7 +233,8 @@ public class Incident extends SojaActivity {;
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0],params[1]);
+            Log.e("REQUEST",params[1]);
+            return NetworkHandler.excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();
@@ -289,5 +309,40 @@ public class Incident extends SojaActivity {;
                     .show();
         }
 
+    }
+    private class GetActiveVisitors extends AsyncTask<String,Void,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return NetworkHandler.GET(strings[0]);
+        }
+        @Override
+        public void onPostExecute(String s){
+            visitorFromAPI.clear();
+            if (s != null){
+                Log.e("Result",s);
+                Object json=null;
+                try {
+                    json=new JSONTokener(s).nextValue();
+                    if (json instanceof JSONObject){
+                        JSONObject object=new JSONObject(s);
+                        JSONArray array=object.getJSONArray("result_content");
+                        if (array.length() >0 ){
+                            for (int i=0;i<array.length();i++){
+                                JSONObject item=array.getJSONObject(i);
+                                visitorFromAPI.add(new TypeObject(item.getString("id_number"),item.getString("fullname")));
+                            }
+
+                        }
+                        visitors.clear();
+                        visitors.addAll(visitorFromAPI);
+                        Visitoradapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
     }
 }

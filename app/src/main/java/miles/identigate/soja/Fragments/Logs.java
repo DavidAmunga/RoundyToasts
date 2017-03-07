@@ -24,19 +24,16 @@ public class Logs extends ListFragment {
     private String[] titles={
             "Drive Logs",
             "Pedestrian Logs",
-            "Service Providers",
             "Incidents"
     };
     private String[] descriptions={
             "Summary log of Motor Vehicles ",
             "Summary log of Walking Visitors",
-            "List of recent Service Providers",
             "List of incidents"
 
     };
     private int[] drawables={
             R.drawable.ic_action_car,
-            R.drawable.ic_action_walk,
             R.drawable.ic_action_walk,
             R.drawable.ic_action_many
 
@@ -84,11 +81,6 @@ public class Logs extends ListFragment {
                 startActivity(walkOut);
                 break;
             case 2:
-                Intent provider=new Intent(getActivity().getApplicationContext(), AllLogs.class);
-                provider.putExtra("TYPE","PROVIDER");
-                startActivity(provider);
-                break;
-            case 3:
                 Intent resident=new Intent(getActivity().getApplicationContext(), Incidents.class);
                 startActivity(resident);
                 break;
