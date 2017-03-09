@@ -111,6 +111,7 @@ public class Login extends AppCompatActivity {
             builder.dismiss();
             if(result !=null){
                 //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+                Log.e("LOGIN",result);
                 if(result.contains("access_token")) {
                     try {
                             JSONObject object = new JSONObject(result);

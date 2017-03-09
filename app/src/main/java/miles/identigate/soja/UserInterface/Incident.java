@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -15,8 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.regula.sdk.DocumentReader;
-import com.regula.sdk.enums.eVisualFieldType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,11 +93,13 @@ public class Incident extends SojaActivity {;
                 TypeObject typeObject = (TypeObject)parent.getItemAtPosition(position);
                 switch (Integer.valueOf(typeObject.getId())){
                     case 1:
+                        ID = null;
                         visitors.clear();
                         visitors.addAll(visitorFromAPI);
                         Visitoradapter.notifyDataSetChanged();
                         break;
                     case 2:
+                        ID = null;
                         visitors.clear();
                         visitors.addAll(houses);
                         Visitoradapter.notifyDataSetChanged();
@@ -106,6 +107,7 @@ public class Incident extends SojaActivity {;
                     case 3:
                         visitors.clear();
                         Visitoradapter.notifyDataSetChanged();
+                        ID = preferences.getId();
                         break;
                 }
             }
@@ -150,7 +152,7 @@ public class Incident extends SojaActivity {;
                     Snackbar.make(v,"Description must be at least 5 characters long.",Snackbar.LENGTH_SHORT).show();
                 } else {
                     if(new CheckConnection().check(Incident.this)){
-                       recordInternt();
+                       recordInternet();
                     }else{
                         recordOffline();
                     }
@@ -173,7 +175,14 @@ public class Incident extends SojaActivity {;
             }
         });
     }
-    public void recordInternt(){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    public void recordInternet(){
         String urlParameters = null;
         try {
             urlParameters =
@@ -239,6 +248,7 @@ public class Incident extends SojaActivity {;
         protected void onPostExecute(String result) {
             builder.dismiss();
             if(result !=null){
+                Log.e("RESULT",result);
                 try {
                     Object json=new JSONTokener(result).nextValue();
                     if (json instanceof JSONObject){

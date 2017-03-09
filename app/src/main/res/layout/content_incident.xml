@@ -43,7 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/brand"
-                android:paddingBottom="10dp"
                 android:layout_gravity="center"
                 android:orientation="vertical">
                 <miles.identigate.soja.Font.OpenSansBold
@@ -93,7 +92,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/brand"
-                android:paddingBottom="10dp"
                 android:layout_gravity="center"
                 android:orientation="vertical">
                 <miles.identigate.soja.Font.OpenSansBold
@@ -114,7 +112,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/brand"
-                android:paddingBottom="10dp"
                 android:id="@+id/visitorLayout"
                 android:layout_gravity="center"
                 android:orientation="vertical">
