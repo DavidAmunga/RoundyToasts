@@ -59,6 +59,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
         dialog=new MaterialDialog.Builder(RecordResidentVehicleActivity.this)
                 .title("Resident")
                 .content("Checking in...")
+                .progress(true,0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
@@ -166,7 +167,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
             if (dialog != null && dialog.isShowing())
                 dialog.dismiss();
             if (result != null) {
-                Log.e("RESIDENT",result);
+                //Log.e("RESIDENT",result);
                 //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
                 Object json = null;
                 try {
@@ -191,7 +192,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                         }else{
                             new MaterialDialog.Builder(RecordResidentVehicleActivity.this)
                                     .title("Soja")
-                                    .content(object.getString("result_content"))
+                                    .content("Invalid QR code.")
                                     .positiveText("OK")
                                     .callback(new MaterialDialog.ButtonCallback() {
                                         @Override
@@ -207,7 +208,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                     e.printStackTrace();
                 }
             }else{
-                Log.e("RESIDENT","null");
+                //Log.e("RESIDENT","null");
             }
         }
     }

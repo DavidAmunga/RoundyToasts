@@ -34,11 +34,9 @@ import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.IncidentModel;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
-import miles.identigate.soja.app.Common;
 
 public class Incident extends SojaActivity {;
     Spinner incident_types;
@@ -121,7 +119,8 @@ public class Incident extends SojaActivity {;
         });
 
         if (new CheckConnection().check(this)){
-            new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
+            recordOffline();
+            //new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
         }else {
             Toast.makeText(getApplicationContext(),"No internet connection",Toast.LENGTH_SHORT).show();
         }
@@ -214,7 +213,7 @@ public class Incident extends SojaActivity {;
         }else {
             new MaterialDialog.Builder(Incident.this)
                     .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
+                    .content("Incident recorded successfully.")
                     .positiveText("OK")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -242,13 +241,13 @@ public class Incident extends SojaActivity {;
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            Log.e("REQUEST",params[1]);
+            //Log.e("REQUEST",params[1]);
             return NetworkHandler.excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();
             if(result !=null){
-                Log.e("RESULT",result);
+                //Log.e("RESULT",result);
                 try {
                     Object json=new JSONTokener(result).nextValue();
                     if (json instanceof JSONObject){

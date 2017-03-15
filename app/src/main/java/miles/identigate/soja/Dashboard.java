@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -194,6 +195,10 @@ public class Dashboard extends SojaActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    public void forceCrash() {
+        throw new RuntimeException("This is a crash");
+    }
+
 
 
     /**

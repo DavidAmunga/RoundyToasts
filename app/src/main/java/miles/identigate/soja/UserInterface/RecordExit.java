@@ -42,7 +42,7 @@ public class RecordExit extends SojaActivity {
     TextView idNumber;
     TextView car;
     TextView entry;
-    EditText comment;
+    //EditText comment;
     DatabaseHandler handler;
     String type;
     static String ID;
@@ -61,7 +61,7 @@ public class RecordExit extends SojaActivity {
         idNumber=(TextView)findViewById(R.id.idNumber);
         car=(TextView)findViewById(R.id.car);
         entry=(TextView)findViewById(R.id.entry);
-        comment=(EditText)findViewById(R.id.comment);
+        //comment=(EditText)findViewById(R.id.comment);
         preferences=new Preferences(this);
         if(getIntent() !=null){
            type=getIntent().getStringExtra("TYPE");

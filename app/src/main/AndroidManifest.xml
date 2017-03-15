@@ -197,6 +197,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="miles.identigate.soja.ScanQRActivity" />
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="6f92896eb86607007f04cba0a38fc5fc2004837e" />
     </application>
 
 </manifest>

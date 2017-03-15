@@ -36,6 +36,7 @@ public class ScanQRActivity extends AppCompatActivity {
         dialog=new MaterialDialog.Builder(ScanQRActivity.this)
                 .title("QR")
                 .content("Checking QR...")
+                .progress(true,0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
@@ -75,7 +76,8 @@ public class ScanQRActivity extends AppCompatActivity {
             if (dialog!= null && dialog.isShowing())
                 dialog.dismiss();
             if (result != null){
-                Log.e("SCAN",result);
+                //Log.e("QR",result);
+                //Log.e("SCAN",result);
                 Object json=null;
                 try{
                     json=new JSONTokener(result).nextValue();

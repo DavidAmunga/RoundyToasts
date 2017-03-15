@@ -31,7 +31,7 @@ public class DriveInAdapter extends BaseAdapter {
     ArrayList<DriveIn> driveInsSearch;
     ArrayList<ServiceProviderModel> serviceProviderModelsSearch;
     ArrayList<Resident> residentsSearch;
-    private boolean firstTime = true;
+    //private boolean firstTime = true;
 
 
     public DriveInAdapter(){
@@ -69,16 +69,14 @@ public class DriveInAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged()
     {
-        if (firstTime){
-            reloadData();
-        }
+        //reloadData();
         super.notifyDataSetChanged();
     }
-    private void reloadData(){
+    public void reloadData(){
         if(type.equals("DRIVE")){
             driveInsSearch=new ArrayList<>();
             driveInsSearch.addAll(this.driveIns);
-            driveIns.addAll(driveInsSearch);
+            //driveIns.addAll(driveInsSearch);
         }else if(type.equals("WALK")){
             driveInsSearch=new ArrayList<>();
             driveInsSearch.addAll(this.walkIns);
@@ -89,7 +87,7 @@ public class DriveInAdapter extends BaseAdapter {
             residentsSearch=new ArrayList<>();
             residentsSearch.addAll(this.residents);
         }
-        firstTime=false;
+        //firstTime=false;
     }
     @Override
     public int getCount() {
@@ -160,7 +158,7 @@ public class DriveInAdapter extends BaseAdapter {
     }
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-       clear();
+        clear();
         if (charText.length() == 0) {
             addAll();
         }
@@ -213,6 +211,7 @@ public class DriveInAdapter extends BaseAdapter {
         }else if(type.equals("RESIDENT")){
             residents.addAll(residentsSearch);
         }
+        notifyDataSetChanged();
     }
     private void clear(){
         if(type.equals("DRIVE")){

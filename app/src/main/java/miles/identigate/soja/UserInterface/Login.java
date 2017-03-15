@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
@@ -111,7 +113,7 @@ public class Login extends AppCompatActivity {
             builder.dismiss();
             if(result !=null){
                 //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
-                Log.e("LOGIN",result);
+                //Log.e("LOGIN",result);
                 if(result.contains("access_token")) {
                     try {
                             JSONObject object = new JSONObject(result);
@@ -129,6 +131,7 @@ public class Login extends AppCompatActivity {
                             preferences.setDeviceId(deviceId);
                             preferences.setToken(access_token);
                             preferences.setPremiseZoneId(premiseZoneId);
+                            logUser();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
                     } catch (JSONException e) {
@@ -169,4 +172,11 @@ public class Login extends AppCompatActivity {
 
         }
     }
+    private void logUser() {
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier(preferences.getId());
+        Crashlytics.setUserEmail(preferences.getDeviceId());
+        Crashlytics.setUserName(preferences.getName());
+    }
+
 }

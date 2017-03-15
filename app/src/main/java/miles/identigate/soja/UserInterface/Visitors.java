@@ -1,18 +1,14 @@
 package miles.identigate.soja.UserInterface;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -195,7 +191,7 @@ public class Visitors extends AppCompatActivity {
             residents.clear();
             //adapter.notifyDataSetChanged();
             if (s != null){
-                Log.e("Result",s);
+                //Log.e("Result",s);
                 Object json=null;
                 try {
                     json=new JSONTokener(s).nextValue();
@@ -216,14 +212,16 @@ public class Visitors extends AppCompatActivity {
                                     driveIn.setEntryTime(entry);
                                     if (!item.isNull("registration")){
                                         driveIn.setCarNumber(item.getString("registration"));
+                                        driveIns.add(driveIn);
                                     }
-                                    driveIns.add(driveIn);
                                 }else if(str.equals("WALK")){
                                     DriveIn driveIn=new DriveIn();
                                     driveIn.setName(name);
                                     driveIn.setNationalId(id);
                                     driveIn.setEntryTime(entry);
-                                    walkIns.add(driveIn);
+                                    if (item.isNull("registration")){
+                                        walkIns.add(driveIn);
+                                    }
                                 }else if(str.equals("PROVIDER")){
                                     ServiceProviderModel model=new ServiceProviderModel();
                                     model.setCompanyName(name);
@@ -236,12 +234,15 @@ public class Visitors extends AppCompatActivity {
                                     resident.setEntryTime(entry);
                                     resident.setNationalId(id);
                                     resident.setHouse(house);
-                                    residents.add(resident);
+                                    if (!item.isNull("registration")){
+                                        residents.add(resident);
+                                    }
                                 }
                             }
                             loading.setVisibility(View.GONE);
                             lv.setVisibility(View.VISIBLE);
                             adapter.notifyDataSetChanged();
+                            adapter.reloadData();
                         }else{
                             loading.setVisibility(View.GONE);
                             findViewById(R.id.empty).setVisibility(View.VISIBLE);
