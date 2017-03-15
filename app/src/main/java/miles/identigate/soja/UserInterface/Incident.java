@@ -119,8 +119,8 @@ public class Incident extends SojaActivity {;
         });
 
         if (new CheckConnection().check(this)){
-            recordOffline();
-            //new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
+            //recordOffline();
+            new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
         }else {
             Toast.makeText(getApplicationContext(),"No internet connection",Toast.LENGTH_SHORT).show();
         }
@@ -150,11 +150,7 @@ public class Incident extends SojaActivity {;
                 } else if (description.getText().toString().length() <= 5) {
                     Snackbar.make(v,"Description must be at least 5 characters long.",Snackbar.LENGTH_SHORT).show();
                 } else {
-                    if(new CheckConnection().check(Incident.this)){
-                       recordInternet();
-                    }else{
-                        recordOffline();
-                    }
+                    recordOffline();
                 }
             }
         });
@@ -209,7 +205,19 @@ public class Incident extends SojaActivity {;
 
         handler.insertIncident(model);
         if(new CheckConnection().check(this)){
-            return;
+            new MaterialDialog.Builder(Incident.this)
+                    .title("SUCCESS")
+                    .content("Incident recorded successfully.")
+                    .positiveText("OK")
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            dialog.dismiss();
+                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                            finish();
+                        }
+                    })
+                    .show();
         }else {
             new MaterialDialog.Builder(Incident.this)
                     .title("SUCCESS")

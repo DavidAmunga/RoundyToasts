@@ -247,6 +247,8 @@ public class Visitors extends AppCompatActivity {
                             loading.setVisibility(View.GONE);
                             findViewById(R.id.empty).setVisibility(View.VISIBLE);
                         }
+                    }else {
+                        loading.setVisibility(View.GONE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
