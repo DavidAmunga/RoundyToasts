@@ -97,6 +97,7 @@ public class Login extends AppCompatActivity {
         MaterialDialog builder=new MaterialDialog.Builder(Login.this)
                 .title("Login")
                 .content("Signing in...")
+                .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();

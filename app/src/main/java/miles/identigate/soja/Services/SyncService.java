@@ -102,10 +102,10 @@ public class SyncService extends IntentService {
     * 1=walk in
     * */
     public void syncDriveIns(int type){
-        if (type == 0) {
+        if (type == 0  && (driveIns.size() > 0)) {
             recordDriveIn(driveIns.get(currentIndex),"drive-in");
             showProgressNotification(driveIns.size(),currentIndex);
-        }else if(type==1){
+        }else if(type==1 && (walkIns.size() > 0)){
             recordDriveIn(walkIns.get(currentIndex),"walk-in");
             showProgressNotification(walkIns.size(),currentIndex);
         }

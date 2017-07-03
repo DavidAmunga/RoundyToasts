@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -289,17 +290,16 @@ public class Dashboard extends SojaActivity {
         }
         @Override
         protected String doInBackground(Void... params) {
-            visitorResult=new NetworkHandler().GET(Constants.BASE_URL+"visitor-types");
-            providerResult=new NetworkHandler().GET(Constants.BASE_URL+"service-providers");
-            incidentsResult=new NetworkHandler().GET(Constants.BASE_URL+"incident-types");
-            houseResult=new NetworkHandler().GET(Constants.BASE_URL+"houses-blocks/zone/"+preferences.getPremiseZoneId());
+            visitorResult=NetworkHandler.GET(Constants.BASE_URL+"visitor-types");
+            providerResult=NetworkHandler.GET(Constants.BASE_URL+"service-providers");
+            incidentsResult=NetworkHandler.GET(Constants.BASE_URL+"incident-types");
+            houseResult=NetworkHandler.GET(Constants.BASE_URL+"houses-blocks/zone/"+preferences.getPremiseZoneId());
             return "success";
         }
 
         protected void onPostExecute(String result) {
             builder.dismiss();
             getAllData();
-            //Log.v("DASHBOARD",houseResult);
 
         }
     }
