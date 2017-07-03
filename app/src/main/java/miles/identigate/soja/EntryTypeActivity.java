@@ -28,6 +28,7 @@ import miles.identigate.soja.app.Common;
 public class EntryTypeActivity extends SojaActivity implements EntryTypeFragment.OnEntrySelectedListener {
 
     private static boolean sIsLicenseOk;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,4 +77,6 @@ public class EntryTypeActivity extends SojaActivity implements EntryTypeFragment
 
 
     }
+
+
 }

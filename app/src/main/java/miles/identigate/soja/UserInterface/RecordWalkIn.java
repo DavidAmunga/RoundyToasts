@@ -202,13 +202,12 @@ public class RecordWalkIn extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            //Log.e("WALKIN",params[1]);
             return new NetworkHandler().excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
-            //Log.v("WALKIN",result);
             builder.dismiss();
             if(result !=null){
+                Log.e("WALK",result);
                 if(result.contains("result_code")) {
                     try {
                         Object json=new JSONTokener(result).nextValue();

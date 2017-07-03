@@ -1,15 +1,20 @@
 package miles.identigate.soja;
 
+import android.Manifest.permission;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -44,6 +49,7 @@ import miles.identigate.soja.Services.SyncService;
 import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
+    private  static final int CAMERA_REQUEST=200;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -139,10 +145,27 @@ public class Dashboard extends SojaActivity {
         }else if(isFirstStart&& !preferences.isLoggedin()){
            startActivity(new Intent(getApplicationContext(), Login.class));
         }else {
-
+            camera();
         }
     }
+    private void camera(){
+        if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.CAMERA },
+                    CAMERA_REQUEST);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                }
+
+                break;
+        }
+    }
     @Override
     protected void onPause() {
         super.onPause();
