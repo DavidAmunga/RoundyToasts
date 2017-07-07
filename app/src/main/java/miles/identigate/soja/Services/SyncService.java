@@ -32,7 +32,7 @@ public class SyncService extends IntentService {
     NotificationManager manager;
     NotificationCompat.Builder builder;
     int NOTIFICATION_ID = 5050;
-    public static int currentIndex=0;
+    public static int currentIndex = 0;
     private Preferences preferences;
     ArrayList<DriveIn> driveIns;
     ArrayList<DriveIn> walkIns;

@@ -2,17 +2,17 @@ package miles.identigate.soja.UserInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.regula.sdk.DocumentReader;
 import com.regula.sdk.enums.eVisualFieldType;
@@ -24,8 +24,6 @@ import org.json.JSONTokener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
 
 import miles.identigate.soja.Adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
@@ -38,7 +36,6 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
-import miles.identigate.soja.app.Common;
 
 public class RecordDriveIn extends SojaActivity {
     Spinner visitor_type;
@@ -53,6 +50,8 @@ public class RecordDriveIn extends SojaActivity {
     ArrayList<TypeObject>houses;
     Preferences preferences;
     String selectedHouse;
+    MaterialDialog progressDialog;
+    MaterialDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,12 +115,6 @@ public class RecordDriveIn extends SojaActivity {
                 selectedHouse = "1";
             }
         });
-        /*Set<String> keys=new Constants().fieldItems.keySet();
-        for (String i:keys
-             ) {
-            Log.v(i,new Constants().fieldItems.get(i));
-
-        }*/
 
     }
     public void recordInternt() {
@@ -191,42 +184,31 @@ public class RecordDriveIn extends SojaActivity {
         }else {
             driveIn.setSynced(false);
             handler.insertDriveIn(driveIn);
-            new MaterialDialog.Builder(RecordDriveIn.this)
-                    .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
-                    .positiveText("OK")
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            dialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                            finish();
-                        }
-                    })
-                    .show();
+            MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    dialog.dismiss();
+                    startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                    finish();
+                }
+            };
+            dialog = Constants.showDialog(this, "SUCCESS","Visitor recorded successfully.","OK" ,singleButtonCallback);
+            dialog.show();
         }
     }
     private class DriveinAsync extends AsyncTask<String, Void, String> {
-        MaterialDialog builder=new MaterialDialog.Builder(RecordDriveIn.this)
-                .title("Drive in")
-                .content("Recording...")
-                .progress(true, 0)
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            builder.show();
+            progressDialog = Constants.showProgressDialog(RecordDriveIn.this,"Drive in", "Recording...");
+            progressDialog.show();
         }
         protected String  doInBackground(String... params) {
             return new NetworkHandler().excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
-            builder.dismiss();
-            //Log.v("DRIVE IN",result);
-            //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
+            progressDialog.dismiss();
             if(result !=null){
                 try {
                     Object json=new JSONTokener(result).nextValue();
@@ -234,30 +216,33 @@ public class RecordDriveIn extends SojaActivity {
                         resultHandler(result);
                     }else {
                         recordOffline();
-                        new MaterialDialog.Builder(RecordDriveIn.this)
-                                .title("SUCCESS")
-                                .content("Visitor recorded successfully.")
-                                .positiveText("OK")
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onPositive(MaterialDialog dialog) {
-                                        dialog.dismiss();
-                                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                                        finish();
-                                    }
-                                })
-                                .show();
+                        MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                                startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                                finish();
+                            }
+                        };
+                        dialog = Constants.showDialog(RecordDriveIn.this, "SUCCESS", "Visitor recorded successfully.","OK", singleButtonCallback);
+                        dialog.show();
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }else{
-                new MaterialDialog.Builder(RecordDriveIn.this)
-                        .title("Result")
-                        .content("An error occurred.")
-                        .positiveText("Ok")
-                        .show();
+                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                        finish();
+                    }
+                };
+                dialog = Constants.showDialog(RecordDriveIn.this, "Error", "Please check your internet connection and try again.","OK", singleButtonCallback);
+                dialog.show();
             }
 
         }
@@ -269,88 +254,67 @@ public class RecordDriveIn extends SojaActivity {
         String resultContent=obj.getString("result_content");
         if(resultText.equals("OK")&&resultContent.equals("success")){
             recordOffline();
-            new MaterialDialog.Builder(RecordDriveIn.this)
-                    .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
-                    .positiveText("OK")
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            dialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                            finish();
-                        }
-                    })
-                    .show();
+            MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    dialog.dismiss();
+                    startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                    finish();
+                }
+            };
+            dialog = Constants.showDialog(this, "SUCCESS", "Visitor recorded successfully.","OK", singleButtonCallback);
+            dialog.show();
         }else {
             if(resultText.contains("still in")){
-                new MaterialDialog.Builder(RecordDriveIn.this)
-                        .title("Soja")
-                        .content(resultText)
-                        .positiveText("OK")
-                        .negativeText("Check out")
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                dialog.dismiss();
-                            }
-
-                            @Override
-                            public void onNegative(MaterialDialog dialog){
-                                String urlParameters =null;
-                                String idN="000000000";
-                                String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
-                                if(classCode.equals("ID")){
-                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
-                                }else if (classCode.equals("P")){
-                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
-                                }
-                                try {
-                                    urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                                            "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
-                                            "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
-                                    new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
-                                } catch (UnsupportedEncodingException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        })
-                        .show();
+                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                        String urlParameters =null;
+                        String idN="000000000";
+                        String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+                        if(classCode.equals("ID")){
+                            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                        }else if (classCode.equals("P")){
+                            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+                        }
+                        try {
+                            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
+                                    "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
+                                    "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
+                            new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                dialog = Constants.showDialog(this, "Soja", resultText,"Check out", singleButtonCallback);
+                dialog.show();
             }else {
-                new MaterialDialog.Builder(RecordDriveIn.this)
-                        .title("Soja")
-                        .content(resultText)
-                        .positiveText("OK")
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                dialog.dismiss();
-                                //finish();
-                            }
-                        })
-                        .show();
+                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                };
+                dialog = Constants.showDialog(this, "Soja", resultText,"OK", singleButtonCallback);
+                dialog.show();
             }
         }
     }
     private class ExitAsync extends AsyncTask<String, Void, String> {
-        MaterialDialog builder=new MaterialDialog.Builder(RecordDriveIn.this)
-                .title("Exit")
-                .content("Removing visitor...")
-                .progress(true, 0)
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            builder.show();
+            progressDialog = Constants.showProgressDialog(RecordDriveIn.this,"Exit", "Removing visitor...");
+            progressDialog.show();
         }
         protected String  doInBackground(String... params) {
             return new NetworkHandler().excutePost(params[0], params[1]);
         }
         protected void onPostExecute(String result) {
-            builder.dismiss();
+            progressDialog.dismiss();
             if(result !=null){
                 try {
                     if(result.contains("result_code")) {
@@ -361,36 +325,38 @@ public class RecordDriveIn extends SojaActivity {
                         if (resultText.equals("OK") && resultContent.equals("success")) {
                             recordInternt();
                         } else {
-                            new MaterialDialog.Builder(RecordDriveIn.this)
-                                    .title("ERROR")
-                                    .content(resultText)
-                                    .positiveText("OK")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
-                                            //finish();
-                                        }
-                                    })
-                                    .show();
+                            MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.dismiss();
+                                }
+                            };
+                            dialog = Constants.showDialog(RecordDriveIn.this, "ERROR", resultText,"OK", singleButtonCallback);
+                            dialog.show();
                         }
                     }else {
-                        new MaterialDialog.Builder(RecordDriveIn.this)
-                                .title("Result")
-                                .content("Poor internet connection.")
-                                .positiveText("Ok")
-                                .show();
+                        MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                            }
+                        };
+                        dialog = Constants.showDialog(RecordDriveIn.this, "Result", "Poor internet connection","OK", singleButtonCallback);
+                        dialog.show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }else{
-                new MaterialDialog.Builder(RecordDriveIn.this)
-                        .title("Result")
-                        .content("Poor internet connection.")
-                        .positiveText("Ok")
-                        .show();
+                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                };
+                dialog = Constants.showDialog(RecordDriveIn.this, "Result", "Poor internet connection","OK", singleButtonCallback);
+                dialog.show();
             }
         }
     }

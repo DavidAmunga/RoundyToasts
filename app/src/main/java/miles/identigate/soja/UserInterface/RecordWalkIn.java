@@ -108,7 +108,7 @@ public class RecordWalkIn extends SojaActivity {
             }else if (classCode.equals("P")){
                 idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
             }
-          /*  if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number) != null){
+          /* if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number) != null){
                 idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
             }else {
                 if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Passport_Number) != null){

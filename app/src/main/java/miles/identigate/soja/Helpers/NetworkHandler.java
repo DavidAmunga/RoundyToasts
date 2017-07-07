@@ -53,6 +53,7 @@ public class NetworkHandler {
             connection.setUseCaches (false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
+            connection.setConnectTimeout(5000);
 
             //Send request
             DataOutputStream wr = new DataOutputStream(
@@ -110,6 +111,7 @@ public class NetworkHandler {
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setRequestProperty("Authorization",authorizationString);
             httpURLConnection.setUseCaches (false);
+            httpURLConnection.setConnectTimeout(5000);
 
             //Get Response
             InputStream is ;

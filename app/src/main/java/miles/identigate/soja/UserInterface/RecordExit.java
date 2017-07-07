@@ -139,7 +139,7 @@ public class RecordExit extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0],params[1]);
+            return NetworkHandler.excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();

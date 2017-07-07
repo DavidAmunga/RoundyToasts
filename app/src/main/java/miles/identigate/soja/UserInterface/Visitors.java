@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -63,7 +62,6 @@ public class Visitors extends AppCompatActivity {
         serviceProviderModels=new ArrayList<>();
         residents=new ArrayList<>();
         lv=(ListView)findViewById(R.id.visitors);
-        //lv.setEmptyView(findViewById(R.id.empty));
         loading=(ContentLoadingProgressBar)findViewById(R.id.loading);
         searchbox=(EditText)findViewById(R.id.searchbox);
         handler=new DatabaseHandler(this);

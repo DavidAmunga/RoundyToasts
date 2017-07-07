@@ -8,29 +8,23 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +39,6 @@ import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Receivers.ConnectivityChangeReceiver;
 import miles.identigate.soja.Services.SyncService;
 import miles.identigate.soja.UserInterface.Login;
 
@@ -219,9 +212,6 @@ public class Dashboard extends SojaActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void forceCrash() {
-        throw new RuntimeException("This is a crash");
-    }
 
 
 
@@ -244,7 +234,6 @@ public class Dashboard extends SojaActivity {
                 case 1:
                     CheckOut checkOut=new CheckOut();
                     return checkOut;
-
                 case 2:
                     Logs logs=new Logs();
                     return logs;

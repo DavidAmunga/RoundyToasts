@@ -29,7 +29,6 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.Resident;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
-import miles.identigate.soja.app.Common;
 
 public class RecordResident extends SojaActivity {
     Spinner host;
