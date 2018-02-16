@@ -223,11 +223,7 @@ public class ServiceProvider extends SojaActivity {
                 }
 
             }else{
-                new MaterialDialog.Builder(ServiceProvider.this)
-                        .title("Result")
-                        .content("An error occurred.")
-                        .positiveText("Ok")
-                        .show();
+                recordOffline();
             }
 
         }

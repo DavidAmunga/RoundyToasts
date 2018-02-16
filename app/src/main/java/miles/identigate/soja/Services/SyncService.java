@@ -41,10 +41,7 @@ public class SyncService extends IntentService {
     * 1=walk in
     * */
     private static int currentType=0;
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     */
+
     public SyncService() {
         super("SyncService");
     }
@@ -59,7 +56,9 @@ public class SyncService extends IntentService {
                 .setContentText("Sync in progress")
                 .setSmallIcon(R.mipmap.ic_launcher);
         Bundle extras = intent.getExtras();
+
         boolean isNetworkConnected = extras.getBoolean("isNetworkConnected");
+
         if(isNetworkConnected){
             //TODO send offline data to server
             driveIns=handler.getUnSyncedDriveIns(0);
@@ -78,7 +77,6 @@ public class SyncService extends IntentService {
         }else{
             publishResults("offline",result);
         }
-
     }
     private void publishResults(String message,int result){
         Intent intent=new Intent(NOTIFICATION);
@@ -129,6 +127,7 @@ public class SyncService extends IntentService {
                                     "&lastName=" + URLEncoder.encode(in.getOtherNames(), "UTF-8")+
                                     "&idType=" + URLEncoder.encode(in.getIdType(), "UTF-8")+
                                     "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8");
+
             new DriveinAsync().execute(Constants.BASE_URL + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace(

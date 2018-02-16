@@ -75,4 +75,12 @@ public class Preferences {
         editor.putString("device", device);
         editor.commit();
     }
+    public boolean canPrint(){
+        return settings.getBoolean("canPrint", false);
+    }
+    public void setCanPrint(boolean status){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("canPrint", status);
+        editor.commit();
+    }
 }

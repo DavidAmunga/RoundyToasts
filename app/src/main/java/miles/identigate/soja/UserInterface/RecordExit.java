@@ -93,8 +93,7 @@ public class RecordExit extends SojaActivity {
                     try {
                         urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                                "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
-                        Log.e("REQUEST",urlParameters);
+                                "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                         new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -106,7 +105,7 @@ public class RecordExit extends SojaActivity {
         });
     }
     public void exitLocal(){
-        handler.updateExitTime(type,new Constants().getCurrentTimeStamp(), ID);
+        handler.updateExitTime(type,Constants.getCurrentTimeStamp(), ID);
         if(new CheckConnection().check(this)){
             return;
         }else {

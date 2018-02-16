@@ -3,7 +3,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -31,17 +30,24 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
+import miles.identigate.soja.SlipActivity;
 
 public class RecordWalkIn extends SojaActivity {
+
     Spinner visitor_type;
     DatabaseHandler handler;
     Button record;
     Spinner host;
-    String selectedType;
-    String selectedHouse;
+    TypeObject selectedType;
+    TypeObject selectedHouse;
     ArrayList<TypeObject> houses;
     ArrayList<TypeObject> visitorTypes;
     Preferences preferences;
+
+    String firstName;
+    String lastName;
+    String idNumber;
+    String result_slip = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,12 +79,11 @@ public class RecordWalkIn extends SojaActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TypeObject object = (TypeObject) parent.getSelectedItem();
-                selectedType = object.getId();
+                selectedType = object;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                selectedType = "1";
             }
         });
         TypeAdapter housesAdapter =new TypeAdapter(RecordWalkIn.this,R.layout.tv,houses);
@@ -87,12 +92,12 @@ public class RecordWalkIn extends SojaActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TypeObject object=(TypeObject)parent.getSelectedItem();
-                selectedHouse=object.getId();
+                selectedHouse=object;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                selectedHouse="1";
+
             }
         });
     }
@@ -117,21 +122,23 @@ public class RecordWalkIn extends SojaActivity {
                     }
                 }
             }*/
-
+            firstName = DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n");
+            lastName = DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n");
+            idNumber = idN.substring(2, idN.length()-1);
             String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
             urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
-                    "&visitorTypeID=" + URLEncoder.encode(selectedType, "UTF-8")+
-                    "&houseID=" + URLEncoder.encode(selectedHouse, "UTF-8")+
-                    "&entryTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8")+
+                    "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
+                    "&houseID=" + URLEncoder.encode(selectedHouse.getId(), "UTF-8")+
+                    "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8")+
                     "&birthDate=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"), "UTF-8")+
                     "&genderID=" + URLEncoder.encode(gender, "UTF-8")+
-                    "&firstName=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"), "UTF-8")+
-                    "&lastName=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"), "UTF-8")+
+                    "&firstName=" + URLEncoder.encode(firstName, "UTF-8")+
+                    "&lastName=" + URLEncoder.encode(lastName, "UTF-8")+
                     "&idType=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n"), "UTF-8")+
-                    "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8");
-            //Log.e("REQUEST",urlParameters);
+                    "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8");
+
             new DriveinAsync().execute(Constants.BASE_URL + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -147,14 +154,14 @@ public class RecordWalkIn extends SojaActivity {
             idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
         }
         DriveIn driveIn=new DriveIn();
-        driveIn.setVisitorType(selectedType);
+        driveIn.setVisitorType(selectedType.getId());
         driveIn.setCarNumber("NULL");
         driveIn.setImage("NULL");
         driveIn.setRecordType("WALK");
         driveIn.setEntryTime(new Constants().getCurrentTimeStamp());
         driveIn.setStatus("IN");
         driveIn.setExitTime("NULL");
-        driveIn.setHouseID(selectedHouse);
+        driveIn.setHouseID(selectedHouse.getId());
         driveIn.setNationalId(idN);
         driveIn.setDob(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"));
         driveIn.setSex(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n"));
@@ -205,7 +212,7 @@ public class RecordWalkIn extends SojaActivity {
         protected void onPostExecute(String result) {
             builder.dismiss();
             if(result !=null){
-                Log.e("WALK",result);
+                //Log.e("WALK",result);
                 if(result.contains("result_code")) {
                     try {
                         Object json=new JSONTokener(result).nextValue();
@@ -214,41 +221,47 @@ public class RecordWalkIn extends SojaActivity {
                         }else {
                             //TODO remove this.Temporary workaround
                             recordOffline();
-                            new MaterialDialog.Builder(RecordWalkIn.this)
-                                    .title("SUCCESS")
-                                    .content("Visitor recorded successfully.")
-                                    .positiveText("OK")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
-                                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                                            finish();
-                                        }
-                                    })
-                                    .show();
+                            parseResult();
 
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }else{
-                    new MaterialDialog.Builder(RecordWalkIn.this)
-                            .title("Error")
-                            .content(result)
-                            .positiveText("Ok")
-                            .show();
+                   recordOffline();
                 }
 
             }else{
-                new MaterialDialog.Builder(RecordWalkIn.this)
-                        .title("Poor connection")
-                        .content("Check your internet connection and try again.")
-                        .positiveText("Ok")
-                        .show();
+                recordOffline();
             }
 
         }
+    }
+    private void parseResult(){
+       if (preferences.canPrint()){
+           Intent intent = new Intent(getApplicationContext(), SlipActivity.class);
+           intent.putExtra("title", "RECORD WALK IN");
+           intent.putExtra("house", selectedHouse.getName());
+           intent.putExtra("firstName", firstName);
+           intent.putExtra("lastName", lastName);
+           intent.putExtra("idNumber", idNumber);
+           intent.putExtra("result_slip", result_slip);
+           startActivity(intent);
+       }else{
+           new MaterialDialog.Builder(RecordWalkIn.this)
+                   .title("SUCCESS")
+                   .content("Visitor recorded successfully.")
+                   .positiveText("OK")
+                   .callback(new MaterialDialog.ButtonCallback() {
+                       @Override
+                       public void onPositive(MaterialDialog dialog) {
+                           dialog.dismiss();
+                           startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                           finish();
+                       }
+                   })
+                   .show();
+       }
     }
     private void resultHandler(String result) throws JSONException {
         JSONObject obj = new JSONObject(result);
@@ -256,20 +269,9 @@ public class RecordWalkIn extends SojaActivity {
         String resultText = obj.getString("result_text");
         String resultContent = obj.getString("result_content");
         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
+            result_slip = obj.getString("result_slip");
             recordOffline();
-            new MaterialDialog.Builder(RecordWalkIn.this)
-                    .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
-                    .positiveText("OK")
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            dialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                            finish();
-                        }
-                    })
-                    .show();
+            parseResult();
         } else {
             if (resultText.contains("still in")) {
                 new MaterialDialog.Builder(RecordWalkIn.this)
@@ -336,7 +338,7 @@ public class RecordWalkIn extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0], params[1]);
+            return NetworkHandler.excutePost(params[0], params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();

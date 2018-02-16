@@ -55,14 +55,7 @@ public class Constants {
         String string=simpleDateFormat.format(now);
         return string;
     }
-    public static String formatDate(String date){
-        Date temp = null;
-        try {
-            //TODO change to timestamp
-            temp = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return temp.toString();
+    public static String timeStamp(){
+       return new Date().toString();
     }
 }

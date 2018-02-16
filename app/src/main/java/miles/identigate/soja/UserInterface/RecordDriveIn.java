@@ -233,16 +233,7 @@ public class RecordDriveIn extends SojaActivity {
                 }
 
             }else{
-                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                        finish();
-                    }
-                };
-                dialog = Constants.showDialog(RecordDriveIn.this, "Error", "Please check your internet connection and try again.","OK", singleButtonCallback);
-                dialog.show();
+                recordOffline();
             }
 
         }

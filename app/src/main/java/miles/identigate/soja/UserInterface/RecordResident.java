@@ -187,11 +187,7 @@ public class RecordResident extends SojaActivity {
                 }
 
             }else{
-                new MaterialDialog.Builder(RecordResident.this)
-                        .title("Result")
-                        .content("An error occurred.")
-                        .positiveText("Ok")
-                        .show();
+               recordOffline();
             }
 
         }

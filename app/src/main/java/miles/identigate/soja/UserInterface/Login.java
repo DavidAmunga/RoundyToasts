@@ -133,6 +133,7 @@ public class Login extends AppCompatActivity {
                             preferences.setDeviceId(deviceId);
                             preferences.setToken(access_token);
                             preferences.setPremiseZoneId(premiseZoneId);
+                            preferences.setCanPrint(true);
                             logUser();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
