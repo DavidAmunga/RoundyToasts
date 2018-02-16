@@ -29,6 +29,7 @@ import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 
+// 909090, soja2016
 public class Login extends AppCompatActivity {
     Toolbar toolbar;
     Button login;

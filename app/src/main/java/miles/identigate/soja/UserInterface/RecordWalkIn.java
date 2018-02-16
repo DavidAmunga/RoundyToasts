@@ -19,7 +19,6 @@ import org.json.JSONTokener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 
 import miles.identigate.soja.Adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
@@ -32,7 +31,6 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
-import miles.identigate.soja.app.Common;
 
 public class RecordWalkIn extends SojaActivity {
     Spinner visitor_type;
@@ -63,7 +61,7 @@ public class RecordWalkIn extends SojaActivity {
            @Override
            public void onClick(View v) {
                if(new CheckConnection().check(RecordWalkIn.this)){
-                   recordInternt();
+                   recordInternet();
                }else{
                  recordOffline();
                }
@@ -98,7 +96,7 @@ public class RecordWalkIn extends SojaActivity {
             }
         });
     }
-    public void recordInternt(){
+    public void recordInternet(){
         String urlParameters = null;
         try {
             String idN="000000000";
@@ -119,7 +117,7 @@ public class RecordWalkIn extends SojaActivity {
                     }
                 }
             }*/
-            //Log.e("CLASS CODE",idN);
+
             String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
             urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
@@ -350,7 +348,7 @@ public class RecordWalkIn extends SojaActivity {
                         String resultText = obj.getString("result_text");
                         String resultContent = obj.getString("result_content");
                         if (resultText.equals("OK") && resultContent.equals("success")) {
-                            recordInternt();
+                            recordInternet();
                         } else {
                             new MaterialDialog.Builder(RecordWalkIn.this)
                                     .title("ERROR")

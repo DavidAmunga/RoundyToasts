@@ -44,20 +44,10 @@ import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
     private  static final int CAMERA_REQUEST=200;
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+    private  static  final int STORAGE_REQUEST = 300;
+    private static final  int PHONE_STATE_REQUEST  = 400;
+    private  MaterialDialog dialog;
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     DatabaseHandler handler;
     String visitorResult;
@@ -85,17 +75,12 @@ public class Dashboard extends SojaActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         handler=new DatabaseHandler(this);
-        //handler.DeleteData();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         preferences=new Preferences(this);
-        //Log.e("PREMISE",preferences.getPremise());
-       // new FetchDetails().execute();
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -111,7 +96,7 @@ public class Dashboard extends SojaActivity {
                 e.putBoolean("firstStart", false);
                 e.apply();
             }else {
-                new MaterialDialog.Builder(Dashboard.this)
+                 dialog = new MaterialDialog.Builder(Dashboard.this)
                         .title("Soja")
                         .titleGravity(GravityEnum.CENTER)
                         .titleColor(getResources().getColor(R.color.ColorPrimary))
@@ -133,20 +118,23 @@ public class Dashboard extends SojaActivity {
                             }
                         })
                         .widgetColorRes(R.color.colorPrimary)
-                        .build()
-                        .show();
+                        .build();
+                 dialog.show();
             }
         }else if(isFirstStart&& !preferences.isLoggedin()){
            startActivity(new Intent(getApplicationContext(), Login.class));
-        }else {
-            camera();
         }
+        askPermissions();
     }
-    private void camera(){
-        if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.CAMERA },
-                    CAMERA_REQUEST);
+    private void askPermissions(){
+        if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.CAMERA }, CAMERA_REQUEST);
+        }
+        if (ContextCompat.checkSelfPermission(Dashboard.this, permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.WRITE_EXTERNAL_STORAGE }, STORAGE_REQUEST);
+        }
+        if (ContextCompat.checkSelfPermission(Dashboard.this, permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.READ_PHONE_STATE }, PHONE_STATE_REQUEST);
         }
     }
     @Override
@@ -156,6 +144,11 @@ public class Dashboard extends SojaActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 }
+                break;
+            case STORAGE_REQUEST:
+
+                break;
+            case PHONE_STATE_REQUEST:
 
                 break;
         }
@@ -183,7 +176,7 @@ public class Dashboard extends SojaActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
-            new MaterialDialog.Builder(Dashboard.this)
+            dialog = new MaterialDialog.Builder(Dashboard.this)
                     .title("Logout")
                     .content("You are about to logout of Soja.\nYou will need to login next time you use the app.Are you sure?")
                     .positiveText("Ok")
@@ -205,20 +198,14 @@ public class Dashboard extends SojaActivity {
                         public void onNegative(MaterialDialog dialog) {
                             dialog.dismiss();
                         }
-                    })
-                    .show();
+                    }).build();
+                    dialog.show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
