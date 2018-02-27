@@ -35,6 +35,15 @@
         <item>SID</item>
         <item>OTHER</item>
     </string-array>
+    <string-array name="feeds_list">
+        <item>"0mm"</item>
+        <item>"5mm"</item>
+        <item>"10mm"</item>
+        <item>"15mm"</item>
+        <item>"20mm"</item>
+        <item>"25mm"</item>
+        <item>"30mm"</item>
+    </string-array>
     <string name="title_activity_pedestrian">Pedestrian</string>
     <string name="title_activity_provider">Provider</string>
     <string name="title_activity_incidents">Incidents</string>
@@ -46,4 +55,13 @@
     <string name="title_activity_entry_type">EntryTypeActivity</string>
     <string name="turn_on_flashlight">Turn On Flashlight</string>
     <string name="turn_off_flashlight">Turn Off Flashlight</string>
+    <string name="activity_devicelist_title_paired_devices">Paired devices</string>
+    <string name="activity_devicelist_title_other_devices">Other devices</string>
+    <string name="activity_devicelist_button_scan">Scan bluetooth</string>
+    <string name="activity_devicelist_none_paired">None paired Devices</string>
+    <string name="activity_devicelist_scanning">Scanning......</string>
+    <string name="activity_devicelist_select_device"> Devices list</string>
+    <string name="activity_devicelist_connect">connect</string>
+    <string name="activity_devicelist_get_device_err">Get Device Error:</string>
+    <string name="activity_devicelist_bond_error">"Bond error!Please bond bluetooth printer in settings panel first."</string>
 </resources>

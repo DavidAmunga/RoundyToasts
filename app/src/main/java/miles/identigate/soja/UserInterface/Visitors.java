@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -189,7 +190,7 @@ public class Visitors extends AppCompatActivity {
             residents.clear();
             //adapter.notifyDataSetChanged();
             if (s != null){
-                //Log.e("Result",s);
+                Log.e("Result",s);
                 Object json=null;
                 try {
                     json=new JSONTokener(s).nextValue();
