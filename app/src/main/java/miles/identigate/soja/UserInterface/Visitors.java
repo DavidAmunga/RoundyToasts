@@ -188,6 +188,7 @@ public class Visitors extends AppCompatActivity {
             walkIns.clear();
             serviceProviderModels.clear();
             residents.clear();
+            loading.setVisibility(View.GONE);
             //adapter.notifyDataSetChanged();
             if (s != null){
                 Log.e("Result",s);

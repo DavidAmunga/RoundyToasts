@@ -197,9 +197,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="miles.identigate.soja.ScanQRActivity" />
         </activity>
-        <activity android:name=".Printer.DeviceListActivity"
-            android:theme="@android:style/Theme.Dialog">
-        </activity>
+        <activity
+            android:name=".Printer.DeviceListActivity"
+            android:theme="@android:style/Theme.Dialog"></activity>
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -208,12 +208,12 @@
         <service
             android:name=".Services.VisitorsService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name=".SlipActivity"
-            ></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ExpressCheckoutActivity"></activity>
     </application>
 
 </manifest>

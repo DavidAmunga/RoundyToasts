@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import miles.identigate.soja.Adapters.Option;
+import miles.identigate.soja.ExpressCheckoutActivity;
 import miles.identigate.soja.R;
 import miles.identigate.soja.UserInterface.Visitors;
 
@@ -22,17 +23,20 @@ public class CheckOut extends ListFragment {
     private String mParam1;
     private String mParam2;
     private String[] titles={
+            "Express Checkout",
             "Drive Out",
             "Walk Out",
             "Residents",
     };
     private String[] descriptions={
+            "Scan QR to check out visitor",
             "Check out a driving visitor ",
             "Check out a visitor on foot",
             "Check out a resident"
 
     };
     private int[] drawables={
+            R.drawable.ic_action_out,
             R.drawable.ic_action_car,
             R.drawable.ic_action_walk,
             R.drawable.ic_action_many
@@ -72,16 +76,19 @@ public class CheckOut extends ListFragment {
     public void onListItemClick (ListView l, View v, int position, long id){
         switch (position){
             case 0:
+                startActivity(new Intent(getActivity().getApplicationContext(), ExpressCheckoutActivity.class));
+                break;
+            case 1:
                 Intent driveOut=new Intent(getActivity().getApplicationContext(), Visitors.class);
                 driveOut.putExtra("TYPE", "DRIVE");
                 startActivity(driveOut);
                 break;
-            case 1:
+            case 2:
                 Intent walkOut=new Intent(getActivity().getApplicationContext(), Visitors.class);
                 walkOut.putExtra("TYPE","WALK");
                 startActivity(walkOut);
                 break;
-            case 2:
+            case 3:
                 Intent resident=new Intent(getActivity().getApplicationContext(), Visitors.class);
                 resident.putExtra("TYPE","RESIDENTS");
                 startActivity(resident);

@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -48,6 +49,7 @@ public class RecordWalkIn extends SojaActivity {
     String lastName;
     String idNumber;
     String result_slip = "";
+    int visit_id = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,7 +160,7 @@ public class RecordWalkIn extends SojaActivity {
         driveIn.setCarNumber("NULL");
         driveIn.setImage("NULL");
         driveIn.setRecordType("WALK");
-        driveIn.setEntryTime(new Constants().getCurrentTimeStamp());
+        driveIn.setEntryTime(Constants.getCurrentTimeStamp());
         driveIn.setStatus("IN");
         driveIn.setExitTime("NULL");
         driveIn.setHouseID(selectedHouse.getId());
@@ -246,6 +248,7 @@ public class RecordWalkIn extends SojaActivity {
            intent.putExtra("lastName", lastName);
            intent.putExtra("idNumber", idNumber);
            intent.putExtra("result_slip", result_slip);
+           intent.putExtra("visit_id", visit_id);
            startActivity(intent);
        }else{
            new MaterialDialog.Builder(RecordWalkIn.this)
@@ -264,12 +267,14 @@ public class RecordWalkIn extends SojaActivity {
        }
     }
     private void resultHandler(String result) throws JSONException {
+        Log.d("WALKIN", result);
         JSONObject obj = new JSONObject(result);
         int resultCode = obj.getInt("result_code");
         String resultText = obj.getString("result_text");
         String resultContent = obj.getString("result_content");
         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
             result_slip = obj.getString("result_slip");
+            visit_id = obj.getInt("visit_id");
             recordOffline();
             parseResult();
         } else {

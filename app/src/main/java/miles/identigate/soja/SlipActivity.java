@@ -44,6 +44,7 @@ public class SlipActivity extends SojaActivity {
     String idNumber;
     String house;
     String result_slip;
+    int visit_id = 0;
     private String ConnectType="Bluetooth";
 
     @Override
@@ -66,6 +67,7 @@ public class SlipActivity extends SojaActivity {
             idNumber = extras.getString("idNumber");
             house = extras.getString("house");
             result_slip = extras.getString("result_slip");
+            visit_id = extras.getInt("visit_id");
             if (!title.isEmpty()){
                slip.setText(title);
             }
@@ -177,24 +179,16 @@ public class SlipActivity extends SojaActivity {
             msg += "\n\n";
             msg += "HOST SIGN: " + "------------------";
             msg += "\n\n";
-           /* if ((!result_slip.isEmpty()) && (result_slip != "")){
+           if (visit_id != 0){
                 msg += "SCAN QR TO CHECKOUT VISITOR";
                 msg += "\n\n";
-            }*/
+            }
             msg += "POWERED BY WWW.SOJA.CO.KE";
             msg += "\n\n";
-            String strPrintText="HPRT SDK Sample!";
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_originalsize) + strPrintText+"\n",0,0,0);
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_heightsize) + strPrintText+"\n",0,16,0);
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_widthsize) + strPrintText+"\n",0,32,0);
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_heightwidthsize) + strPrintText+"\n",0,48,0);
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_bold) + strPrintText+"\n",0,2,0);
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_underline) + strPrintText+"\n",0,4,0);
-            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_minifront) + strPrintText+"\n",0,1,0);
-            //HPRTPrinterHelper.PrintText(msg);
-            HPRTPrinterHelper.PrintQRCode("7",16,(3+0x30),1);
-//			byte[] data1=new byte[]{0x1D,0x0C};
-//			HPRTPrinterHelper.WriteData(data1);
+
+            HPRTPrinterHelper.PrintText(msg);
+            HPRTPrinterHelper.PrintQRCode(idNumber,16,(3+0x30),1);
+			HPRTPrinterHelper.PrintText("\n\n\n",0,1,0);
             PAct.AfterPrintAction();
             if (dialog.isShowing())
                 dialog.dismiss();

@@ -22,8 +22,8 @@ android {
         applicationId "miles.identigate.soja"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 7
-        versionName "7.0"
+        versionCode 8
+        versionName "8.0-Printer"
         vectorDrawables.useSupportLibrary = true
 
     }
@@ -32,7 +32,7 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-        packagingOptions {
+    packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
