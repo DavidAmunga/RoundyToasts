@@ -26,6 +26,7 @@ import miles.identigate.soja.Printer.PublicAction;
 
 public class SlipActivity extends SojaActivity {
     private static final int REQUEST_ENABLE_BT = 200;
+    private static final int REQUEST_ENABLE_LOCATION = 300;
     private static final String TAG = SlipActivity.class.getName();
     ImageView ok;
     ImageView cancel;
@@ -81,12 +82,7 @@ public class SlipActivity extends SojaActivity {
             public void onClick(View view) {
                 dialog.show();
                 //TODO: Print
-                setupBT();
-                String PrinterName="MPT-II";
-                HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
-                CapturePrinterFunction();
-                GetPrinterProperty();
-                PrintSlip();
+                doPrint();
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -99,23 +95,49 @@ public class SlipActivity extends SojaActivity {
 
     }
 
+    private void doPrint(){
+        setupBT();
+        if (!dialog.isShowing())
+            dialog.show();
+        String PrinterName="MPT-II";
+        HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
+        CapturePrinterFunction();
+        GetPrinterProperty();
+        PrintSlip();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String strIsConnected;
-        switch (resultCode){
-            case HPRTPrinterHelper.ACTIVITY_CONNECT_BT:
-                strIsConnected=data.getExtras().getString("is_connected");
-                if (strIsConnected.equals("NO")) {
-                    new MaterialDialog.Builder(SlipActivity.this)
-                            .title("Bluetooth Disabled")
-                            .content("Bluetooth must be enabled to print the slip.")
-                            .positiveText("OK")
-                            .show();
-                }
-                else {
-                    return;
-                }
-        }
+        if (data == null || data.getExtras() == null)
+            return;
+            switch (requestCode){
+                case HPRTPrinterHelper.ACTIVITY_CONNECT_BT:
+
+                    strIsConnected=data.getExtras().getString("is_connected");
+                    if (strIsConnected.equals("NO")) {
+                        if (dialog.isShowing())
+                            dialog.dismiss();
+                        new MaterialDialog.Builder(SlipActivity.this)
+                                .title("Bluetooth Disabled")
+                                .content("Bluetooth must be enabled to print the slip.")
+                                .positiveText("OK")
+                                .show();
+                    } else {
+                        if (!dialog.isShowing())
+                            dialog.show();
+                        String PrinterName="MPT-II";
+                        HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
+                        CapturePrinterFunction();
+                        GetPrinterProperty();
+                        PrintSlip();
+                    }
+                    break;
+                case REQUEST_ENABLE_LOCATION:
+                    doPrint();
+                    break;
+            }
+
         super.onActivityResult(requestCode, resultCode, data);
 
     }
@@ -123,9 +145,10 @@ public class SlipActivity extends SojaActivity {
         if (ContextCompat.checkSelfPermission(SlipActivity.this,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
+            dialog.dismiss();
             ActivityCompat.requestPermissions(SlipActivity.this,
                     new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    100);
+                    REQUEST_ENABLE_LOCATION);
         } else {
             Intent serverIntent = new Intent(SlipActivity.this,DeviceListActivity.class);
             startActivityForResult(serverIntent, HPRTPrinterHelper.ACTIVITY_CONNECT_BT);
@@ -160,11 +183,22 @@ public class SlipActivity extends SojaActivity {
             }*/
             msg += "POWERED BY WWW.SOJA.CO.KE";
             msg += "\n\n";
-            HPRTPrinterHelper.PrintText(msg);
-            HPRTPrinterHelper.PrintQRCode("1",16,(3+0x30),1);
+            String strPrintText="HPRT SDK Sample!";
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_originalsize) + strPrintText+"\n",0,0,0);
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_heightsize) + strPrintText+"\n",0,16,0);
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_widthsize) + strPrintText+"\n",0,32,0);
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_heightwidthsize) + strPrintText+"\n",0,48,0);
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_bold) + strPrintText+"\n",0,2,0);
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_underline) + strPrintText+"\n",0,4,0);
+            HPRTPrinterHelper.PrintText(getString(R.string.activity_main_minifront) + strPrintText+"\n",0,1,0);
+            //HPRTPrinterHelper.PrintText(msg);
+            HPRTPrinterHelper.PrintQRCode("7",16,(3+0x30),1);
 //			byte[] data1=new byte[]{0x1D,0x0C};
 //			HPRTPrinterHelper.WriteData(data1);
             PAct.AfterPrintAction();
+            if (dialog.isShowing())
+                dialog.dismiss();
+            showSuccess();
         }
         catch(Exception e)
         {

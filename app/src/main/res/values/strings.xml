@@ -64,4 +64,14 @@
     <string name="activity_devicelist_connect">connect</string>
     <string name="activity_devicelist_get_device_err">Get Device Error:</string>
     <string name="activity_devicelist_bond_error">"Bond error!Please bond bluetooth printer in settings panel first."</string>
+
+
+    <string name="activity_main_originalsize">OriginalSize:</string>
+    <string name="activity_main_minifront">MiniFront:</string>
+    <string name="activity_main_heightsize">HeightSize:</string>
+    <string name="activity_main_widthsize">WidthSize:</string>
+    <string name="activity_main_heightwidthsize">HeightWidthSize:</string>
+    <string name="activity_main_bold">Blod:</string>
+    <string name="activity_main_underline">Underline:</string>
+
 </resources>
