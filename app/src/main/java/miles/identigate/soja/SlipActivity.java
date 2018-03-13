@@ -101,16 +101,23 @@ public class SlipActivity extends SojaActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_ENABLE_BT) {
-            //setupConnection();
-        }else{
-            new MaterialDialog.Builder(SlipActivity.this)
-                    .title("Bluetooth Disabled")
-                    .content("Bluetooth must be enabled to print the slip.")
-                    .positiveText("OK")
-                    .show();
+        String strIsConnected;
+        switch (resultCode){
+            case HPRTPrinterHelper.ACTIVITY_CONNECT_BT:
+                strIsConnected=data.getExtras().getString("is_connected");
+                if (strIsConnected.equals("NO")) {
+                    new MaterialDialog.Builder(SlipActivity.this)
+                            .title("Bluetooth Disabled")
+                            .content("Bluetooth must be enabled to print the slip.")
+                            .positiveText("OK")
+                            .show();
+                }
+                else {
+                    return;
+                }
         }
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
     private void setupBT(){
         if (ContextCompat.checkSelfPermission(SlipActivity.this,

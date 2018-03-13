@@ -25,11 +25,14 @@ android {
         versionCode 7
         versionName "7.0"
         vectorDrawables.useSupportLibrary = true
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
     }
-    packagingOptions {
+        packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'

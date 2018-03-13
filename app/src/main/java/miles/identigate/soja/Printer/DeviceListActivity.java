@@ -301,6 +301,7 @@ public class DeviceListActivity extends Activity {
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
+        unregisterReceiver(mReceiver);
         if (thread!=null) {
             Thread dummy = thread;
             thread = null;
