@@ -2,6 +2,7 @@ package miles.identigate.soja.UserInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
@@ -135,6 +136,7 @@ public class RecordResident extends SojaActivity {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             dialog.dismiss();
+                            LocalBroadcastManager.getInstance(RecordResident.this).sendBroadcast(new Intent(Constants.RECORDED_VISITOR));
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
                         }
@@ -207,6 +209,7 @@ public class RecordResident extends SojaActivity {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
                             dialog.dismiss();
+                            LocalBroadcastManager.getInstance(RecordResident.this).sendBroadcast(new Intent(Constants.RECORDED_VISITOR));
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
                         }

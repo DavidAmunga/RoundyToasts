@@ -58,7 +58,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String synced="synced";
     private static final String houseID="houseId";
 
-    public static final int DB_VERSION=10;
+    public static final int DB_VERSION=12;
     public final String CREATE_TABLE_DRIVE_IN = "CREATE TABLE "
             + TABLE_DRIVE_IN + "(" + name + " TEXT, "+ national_id + " TEXT, " + visitorType + " TEXT, " + carNumber + " TEXT, " + image + " TEXT, " + entryTime + " TEXT, "
             +status + " TEXT, " +exitTime + " TEXT, "+recordType +" TEXT, "+otherNames+" TEXT, "+dob+" TEXT, "+sex+" TEXT, "+idType+" TEXT, "+synced+" INTEGER, "+houseID+" TEXT "
@@ -416,14 +416,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         return items;
     }
-   /* public void DeleteData(){
-        String selectQuery1 = "DELETE FROM "+VEHICLE_COLORS;
-        String selectQuery2= "DELETE FROM "+VEHICLE_TYPES;
-        String selectQuery3 = "DELETE FROM "+VEHICLE_MODELS;
-        String selectQuery4 = "DELETE FROM "+TABLE_SERVICE_PROVIDERS;
-        String selectQuery5 = "DELETE FROM "+VISITOR_TYPE;
-        String selectQuery6 = "DELETE FROM "+ID_TYPES;
-        String selectQuery7 = "DELETE FROM "+INCIDENT_TYPES;
+   public void DeleteData(){
+        String selectQuery1 = "DELETE FROM "+TABLE_HOUSES;
+        String selectQuery2= "DELETE FROM "+TABLE_DRIVE_IN;
+        String selectQuery3 = "DELETE FROM "+TABLE_RESIDENTS;
+        String selectQuery4 = "DELETE FROM "+TABLE_VISITOR_TYPES;
+        String selectQuery5 = "DELETE FROM "+TABLE_INCIDENT_TYPES;
+        String selectQuery6 = "DELETE FROM "+TABLE_SERVICE_PROVIDERS;
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(selectQuery1);
         db.execSQL(selectQuery2);
@@ -431,8 +430,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(selectQuery4);
         db.execSQL(selectQuery5);
         db.execSQL(selectQuery6);
-        db.execSQL(selectQuery7);
-    }*/
+
+    }
     public ArrayList<DriveIn> search(String search,String column) {
 
         ArrayList<DriveIn> alTasklist = new ArrayList<DriveIn>();

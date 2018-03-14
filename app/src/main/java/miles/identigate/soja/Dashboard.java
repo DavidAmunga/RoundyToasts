@@ -40,7 +40,7 @@ import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Services.SyncService;
-import miles.identigate.soja.UserInterface.Login;
+//import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
     private  static final int CAMERA_REQUEST=200;
@@ -122,7 +122,8 @@ public class Dashboard extends SojaActivity {
                  dialog.show();
             }
         }else if(isFirstStart&& !preferences.isLoggedin()){
-           startActivity(new Intent(getApplicationContext(), Login.class));
+           //startActivity(new Intent(getApplicationContext(), Login.class));
+            finish();
         }
         askPermissions();
     }
@@ -186,6 +187,15 @@ public class Dashboard extends SojaActivity {
                         public void onPositive(MaterialDialog dialog) {
                             preferences.setIsLoggedin(false);
                             preferences.setDeviceId(null);
+                            preferences.setPremiseName("");
+                            preferences.setName("");
+                            preferences.setId("");
+                            SQLiteDatabase db = handler.getWritableDatabase();
+                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
+                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
+                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
+                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
+
                             SharedPreferences getPrefs = PreferenceManager
                                     .getDefaultSharedPreferences(getBaseContext());
                             SharedPreferences.Editor e = getPrefs.edit();

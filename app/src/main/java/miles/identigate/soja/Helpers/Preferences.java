@@ -83,4 +83,13 @@ public class Preferences {
         editor.putBoolean("canPrint", status);
         editor.commit();
     }
+    public String getPremiseName(){
+
+        return settings.getString("premise_name", "SOJA");
+    }
+    public void setPremiseName(String premise_name){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("premise_name", premise_name);
+        editor.commit();
+    }
 }

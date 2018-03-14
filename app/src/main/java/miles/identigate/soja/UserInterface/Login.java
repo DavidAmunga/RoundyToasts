@@ -24,6 +24,7 @@ import java.net.URLEncoder;
 
 import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.Helpers.CheckConnection;
+import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
@@ -39,7 +40,7 @@ public class Login extends AppCompatActivity {
     Preferences preferences;
     //My device id: 9105772e98eb39b2
     //Martin: c9d31fb651cd2601
-    public static final String loginURL="https://soja.co.ke/soja-rest/api/auth/get-access-token";
+    public static final String loginURL= Constants.URL + "api/auth/get-access-token";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +127,7 @@ public class Login extends AppCompatActivity {
                             String premiseZoneId=object.getString("premise_zone_id");
                             String access_token=object.getString("access_token");
                             String premiseId=object.getString("premise_id");
+                            preferences.setPremiseName(object.getString("premise_name"));
                             preferences.setIsLoggedin(true);
                             preferences.setPremise(premiseId);
                             preferences.setName(firstname + " " + lastname);

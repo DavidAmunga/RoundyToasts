@@ -23,7 +23,6 @@ public class SojaActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), Login.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
-            finish();
         }
     }
     @TargetApi(11)

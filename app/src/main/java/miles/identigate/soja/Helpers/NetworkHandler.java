@@ -2,46 +2,30 @@ package miles.identigate.soja.Helpers;
 
 import android.util.Base64;
 
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
+
 
 /**
  * Created by myles on 9/26/15.
  */
 public class NetworkHandler {
     public static String  excutePost(String targetURL, String urlParameters) {
-        try {
-            HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
-            SSLContext context = SSLContext.getInstance("TLSv1.2");
-            context.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
         String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),
                 Base64.NO_WRAP); //Base64.NO_WRAP flag
         URL url;
-        HttpsURLConnection connection = null;
+        HttpURLConnection connection = null;
         //System.setProperty("http.keepAlive", "false");
         try {
             //Create connection
             url = new URL(targetURL);
-            connection = (HttpsURLConnection)url.openConnection();
+            connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
            /* connection.setRequestProperty("Content-Type",
                     "application/x-www-form-urlencoded");
@@ -91,23 +75,14 @@ public class NetworkHandler {
         }
     }
     public static String GET(String path){
-        try {
-            HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
-            SSLContext context = SSLContext.getInstance("TLSv1.2");
-            context.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        HttpsURLConnection httpURLConnection=null;
+
+        HttpURLConnection httpURLConnection=null;
         String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),
                 Base64.NO_WRAP); //Base64.NO_WRAP flag
         try {
             URL url=new URL(path);
-            httpURLConnection=(HttpsURLConnection)url.openConnection();
+            httpURLConnection=(HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setRequestProperty("Authorization",authorizationString);
             httpURLConnection.setUseCaches (false);

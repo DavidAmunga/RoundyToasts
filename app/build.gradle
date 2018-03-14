@@ -23,7 +23,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 8
-        versionName "8.0-Printer"
+        versionName "8.1"
         vectorDrawables.useSupportLibrary = true
 
     }

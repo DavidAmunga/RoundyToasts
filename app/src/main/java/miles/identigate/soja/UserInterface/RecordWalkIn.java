@@ -1,7 +1,11 @@
 package miles.identigate.soja.UserInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +54,18 @@ public class RecordWalkIn extends SojaActivity {
     String idNumber;
     String result_slip = "";
     int visit_id = 0;
-
+    private IntentFilter receiveFilter;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Constants.RECORDED_VISITOR)){
+                finish();
+            }else if(action.equals(Constants.LOGOUT_BROADCAST)){
+                finish();
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +73,11 @@ public class RecordWalkIn extends SojaActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        receiveFilter = new IntentFilter();
+        receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
+        receiveFilter.addAction(Constants.RECORDED_VISITOR);
+
         handler=new DatabaseHandler(this);
         visitor_type = (Spinner) findViewById(R.id.visitor_type);
         record=(Button)findViewById(R.id.record);
@@ -102,6 +122,16 @@ public class RecordWalkIn extends SojaActivity {
 
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
+        super.onResume();
+    }
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+        super.onPause();
     }
     public void recordInternet(){
         String urlParameters = null;
@@ -209,7 +239,7 @@ public class RecordWalkIn extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0],params[1]);
+            return NetworkHandler.excutePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();

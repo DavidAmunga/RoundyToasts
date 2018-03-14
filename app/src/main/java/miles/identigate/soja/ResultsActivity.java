@@ -1,6 +1,10 @@
 package miles.identigate.soja;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +19,7 @@ import com.regula.sdk.results.TextField;
 import java.util.ArrayList;
 import java.util.List;
 
+import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.UserInterface.RecordDriveIn;
 import miles.identigate.soja.UserInterface.RecordResident;
@@ -31,12 +36,30 @@ public class ResultsActivity extends AppCompatActivity {
     private Button cancel;
     private Button next;
 
+    private IntentFilter receiveFilter;
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Constants.RECORDED_VISITOR)){
+                finish();
+            }else if(action.equals(Constants.LOGOUT_BROADCAST)){
+                finish();
+            }
+        }
+    };
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_results);
-		mrzImgView = (ImageView) findViewById(R.id.mrzImgView);
+
+        receiveFilter = new IntentFilter();
+        receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
+        receiveFilter.addAction(Constants.RECORDED_VISITOR);
+
+
+        mrzImgView = (ImageView) findViewById(R.id.mrzImgView);
 		mrzItemsList = (ListView) findViewById(R.id.mrzItemsList);
         cancel=(Button)findViewById(R.id.cancel);
         next=(Button)findViewById(R.id.next);
@@ -89,10 +112,14 @@ public class ResultsActivity extends AppCompatActivity {
             }
         });
 	}
-
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+        super.onPause();
+    }
 	@Override
 	protected void onResume() {
-		super.onResume();
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
 
         mResultItems.addAll(DocumentReader.getAllTextFields());
         mAdapter.notifyDataSetChanged();
@@ -103,5 +130,6 @@ public class ResultsActivity extends AppCompatActivity {
         } else {
             mrzImgView.setVisibility(View.GONE);
         }
+        super.onResume();
 	}
 }

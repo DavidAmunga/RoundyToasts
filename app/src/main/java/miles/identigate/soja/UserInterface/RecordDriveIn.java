@@ -1,9 +1,13 @@
 package miles.identigate.soja.UserInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.view.View;
@@ -60,6 +64,19 @@ public class RecordDriveIn extends SojaActivity {
     String result_slip = "";
     int visit_id = 0;
 
+    private IntentFilter receiveFilter;
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Constants.RECORDED_VISITOR)){
+                finish();
+            }else if(action.equals(Constants.LOGOUT_BROADCAST)){
+                finish();
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +84,11 @@ public class RecordDriveIn extends SojaActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        receiveFilter = new IntentFilter();
+        receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
+        receiveFilter.addAction(Constants.RECORDED_VISITOR);
+
         handler=new DatabaseHandler(this);
         preferences=new Preferences(this);
         vehicleRegNo=(EditText)findViewById(R.id.car_number);
@@ -123,6 +145,16 @@ public class RecordDriveIn extends SojaActivity {
             }
         });
 
+    }
+    @Override
+    protected void onResume() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
+        super.onResume();
+    }
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+        super.onPause();
     }
     public void recordInternt() {
         //Insert to local and online database.

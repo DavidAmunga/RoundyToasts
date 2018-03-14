@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import HPRTAndroidSDK.HPRTPrinterHelper;
 import HPRTAndroidSDK.PublicFunction;
 import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Printer.DeviceListActivity;
 import miles.identigate.soja.Printer.PrinterProperty;
@@ -47,9 +49,12 @@ public class SlipActivity extends SojaActivity {
     int visit_id = 0;
     private String ConnectType="Bluetooth";
 
+    Preferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences = new Preferences(this);
         setContentView(R.layout.activity_slip);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,6 +95,7 @@ public class SlipActivity extends SojaActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                LocalBroadcastManager.getInstance(SlipActivity.this).sendBroadcast(new Intent(Constants.RECORDED_VISITOR));
                 startActivity(new Intent(getApplicationContext(), Dashboard.class));
                 finish();
             }
@@ -165,8 +171,9 @@ public class SlipActivity extends SojaActivity {
             HPRTPrinterHelper.WriteData(data);
             PAct.LanguageEncode();
             PAct.BeforePrintAction();
-            String msg = "\t VISITOR SLIP";
-            msg += "\n\n";
+            String msg = "\t VISITOR SLIP\n";
+            msg += "\t " + preferences.getPremiseName() + "\n";
+            msg += "\n";
             msg += "------------------------------";
             msg += "\n\n";
             msg += "VISITOR NAME: " + firstName;
@@ -187,7 +194,7 @@ public class SlipActivity extends SojaActivity {
             msg += "\n\n";
 
             HPRTPrinterHelper.PrintText(msg);
-            HPRTPrinterHelper.PrintQRCode(idNumber,16,(3+0x30),1);
+            HPRTPrinterHelper.PrintQRCode(idNumber,7,(3+0x30),1);
 			HPRTPrinterHelper.PrintText("\n\n\n",0,1,0);
             PAct.AfterPrintAction();
             if (dialog.isShowing())
@@ -201,6 +208,7 @@ public class SlipActivity extends SojaActivity {
     }
     void showSuccess(){
         dialog.dismiss();
+        LocalBroadcastManager.getInstance(SlipActivity.this).sendBroadcast(new Intent(Constants.RECORDED_VISITOR));
         dialog = new MaterialDialog.Builder(this)
                 .title("PRINTED")
                 .titleGravity(GravityEnum.CENTER)

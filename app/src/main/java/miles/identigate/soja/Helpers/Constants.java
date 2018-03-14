@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,8 +16,15 @@ import miles.identigate.soja.R;
  * Created by myles on 10/30/15.
  */
 public class Constants {
-    public static String BASE_URL="http://41.204.190.77/soja-rest/api/visits/";
-    public static String GET_VISITORS_URL="http://41.204.190.77/soja-rest/api/visitors/visitors_in/";
+    public static String URL = "http://41.204.190.77/soja-rest/";
+    //public static String URL = "https://soja.co.ke/soja-rest/";
+    public static String BASE_URL= URL + "api/visits/";
+    public static String GET_VISITORS_URL= URL + "api/visitors/visitors_in/";
+
+    public static final String LOGOUT_BROADCAST = "miles.identigate.soja.ACTION_LOGOUT";
+    public static final String RECORDED_VISITOR = "miles.identigate.soja.RECORDED_VISITOR";
+    public static final String EXITED_VISITOR = "miles.identigate.soja.EXITED_VISITOR";
+
     public static final String WALK="WALKING";
     public static final String DRIVE="DRIVING";
     public static HashMap<String,String> fieldItems=new HashMap<>();
