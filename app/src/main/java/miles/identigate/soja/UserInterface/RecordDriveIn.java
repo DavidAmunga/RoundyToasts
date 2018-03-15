@@ -281,6 +281,7 @@ public class RecordDriveIn extends SojaActivity {
             intent.putExtra("idNumber", idNumber);
             intent.putExtra("result_slip", result_slip);
             intent.putExtra("visit_id", visit_id);
+            intent.putExtra("vehicleNo", vehicleNo);
             startActivity(intent);
         }else{
             new MaterialDialog.Builder(RecordDriveIn.this)

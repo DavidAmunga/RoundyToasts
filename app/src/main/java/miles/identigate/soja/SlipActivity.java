@@ -46,6 +46,7 @@ public class SlipActivity extends SojaActivity {
     String idNumber;
     String house;
     String result_slip;
+    String vehicleNo = null;
     int visit_id = 0;
     private String ConnectType="Bluetooth";
 
@@ -75,6 +76,9 @@ public class SlipActivity extends SojaActivity {
             visit_id = extras.getInt("visit_id");
             if (!title.isEmpty()){
                slip.setText(title);
+            }
+            if (extras.containsKey("vehicleNo")){
+                vehicleNo = extras.getString("vehicleNo");
             }
         }
 
@@ -171,7 +175,7 @@ public class SlipActivity extends SojaActivity {
             HPRTPrinterHelper.WriteData(data);
             PAct.LanguageEncode();
             PAct.BeforePrintAction();
-            String msg = "\t VISITOR SLIP\n";
+            String msg = "\n \t VISITOR SLIP\n";
             msg += "\t " + preferences.getPremiseName() + "\n";
             msg += "\n";
             msg += "------------------------------";
@@ -180,6 +184,10 @@ public class SlipActivity extends SojaActivity {
             msg += "\n";
             msg += "OFFICE VISITED: " + house;
             msg += "\n";
+            if (vehicleNo != null){
+                msg += "VEHICLE NO.: " + vehicleNo;
+                msg += "\n";
+            }
             msg += "ENTRY TIME: " + Constants.timeStamp();
             msg += "\n\n\n";
             msg += "HOST NAME: " + "------------------";
