@@ -15,7 +15,7 @@ public class Preferences {
         settings = context.getSharedPreferences(PREFS_NAME, 0);
     }
     public String getBaseURL(){
-        String baseUrl = settings.getString("base_url", "https://soja.co.ke/soja-rest/api/visits/");
+        String baseUrl = settings.getString("base_url", "https://soja.co.ke/soja-rest/index.php/api/visits/");
         Constants.URL = baseUrl;
         return baseUrl;
     }

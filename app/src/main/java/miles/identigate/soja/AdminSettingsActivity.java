@@ -65,7 +65,7 @@ public class AdminSettingsActivity extends AppCompatActivity {
             customServer = true;
             custom.setChecked(true);
             String s = preferences.getBaseURL();
-            custom_ip.setText(s.substring(0, s.length() - 21));
+            custom_ip.setText(s.substring(0, s.length() - 31));
         }
 
         set.setOnClickListener(new View.OnClickListener() {
@@ -85,11 +85,11 @@ public class AdminSettingsActivity extends AppCompatActivity {
                     if (!ip.endsWith("/")){
                         ip += "/";
                     }
-                    ip += "soja-rest/api/visits/";
+                    ip += "soja-rest/index.php/api/visits/";
                     Log.d("IP", ip);
                     preferences.setBaseURL(ip);
                 }else {
-                    preferences.setBaseURL("https://soja.co.ke/soja-rest/api/visits/");
+                    preferences.setBaseURL("https://soja.co.ke/soja-rest/index.php/api/visits/");
                 }
                 preferences.setIsLoggedin(false);
                 preferences.setDeviceId(null);

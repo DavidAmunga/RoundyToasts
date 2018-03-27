@@ -17,7 +17,7 @@ import miles.identigate.soja.R;
  */
 public class Constants {
     //public static String URL = "http://41.204.190.77/soja-rest/";
-    public static String URL = "https://soja.co.ke/soja-rest/";
+    public static String URL = "https://soja.co.ke/soja-rest/index.php/";
     public static String BASE_URL= URL + "api/visits/";
     public static String GET_VISITORS_URL= URL + "api/visitors/visitors_in/";
 

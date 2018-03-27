@@ -94,7 +94,9 @@ public class Visitors extends AppCompatActivity {
         }
         lv.setAdapter(adapter);
         if (new CheckConnection().check(this)){
-            new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
+            String s = preferences.getBaseURL();
+            String url = s.substring(0,s.length()-11);
+            new GetActiveVisitors().execute(url+"api/visitors/visitors_in/"+preferences.getPremise());
         }else {
             loading.setVisibility(View.GONE);
             findViewById(R.id.empty).setVisibility(View.VISIBLE);

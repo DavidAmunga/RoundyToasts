@@ -120,7 +120,9 @@ public class Incident extends SojaActivity {;
 
         if (new CheckConnection().check(this)){
             //recordOffline();
-            new GetActiveVisitors().execute(Constants.GET_VISITORS_URL+preferences.getPremise());
+            String s = preferences.getBaseURL();
+            String url = s.substring(0,s.length()-11);
+            new GetActiveVisitors().execute(url+"api/visitors/visitors_in/"+preferences.getPremise());
         }else {
             Toast.makeText(getApplicationContext(),"No internet connection",Toast.LENGTH_SHORT).show();
         }
