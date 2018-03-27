@@ -8,11 +8,9 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
@@ -40,7 +38,6 @@ public class Login extends AppCompatActivity {
     Preferences preferences;
     //My device id: 9105772e98eb39b2
     //Martin: c9d31fb651cd2601
-    public static final String loginURL= Constants.URL + "api/auth/get-access-token";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,12 +76,14 @@ public class Login extends AppCompatActivity {
                         Utils.getMACAddress("eth0");
                         Utils.getIPAddress(true); // IPv4
                         Utils.getIPAddress(false); // IPv6 */
+                        String s = preferences.getBaseURL();
+                        String url = s.substring(0,s.length()-11) + "api/auth/get-access-token";
                             String urlParameters =null;
                             try {
                                 urlParameters = "username=" + URLEncoder.encode(emailValue, "UTF-8") +
                                         "&password=" + URLEncoder.encode(passwordValue, "UTF-8") +
                                         "&deviceCode=" + URLEncoder.encode("9105772e98eb39b2", "UTF-8");
-                                new Validate().execute(loginURL, urlParameters);
+                                new Validate().execute(url, urlParameters);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -110,7 +109,7 @@ public class Login extends AppCompatActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-           return new NetworkHandler().excutePost(params[0],params[1]);
+           return NetworkHandler.executePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();
@@ -135,7 +134,7 @@ public class Login extends AppCompatActivity {
                             preferences.setDeviceId(deviceId);
                             preferences.setToken(access_token);
                             preferences.setPremiseZoneId(premiseZoneId);
-                            preferences.setCanPrint(true);
+                            //preferences.setCanPrint(false);
                             logUser();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();

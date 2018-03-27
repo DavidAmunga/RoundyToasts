@@ -4,18 +4,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.regula.sdk.DocumentReader;
-import com.regula.sdk.enums.eVisualFieldType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,7 +89,7 @@ public class RecordExit extends SojaActivity {
                         urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                 "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
-                        new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
+                        new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -138,7 +133,7 @@ public class RecordExit extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return NetworkHandler.excutePost(params[0],params[1]);
+            return NetworkHandler.executePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();

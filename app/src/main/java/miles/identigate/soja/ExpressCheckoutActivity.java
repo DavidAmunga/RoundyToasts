@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,7 +67,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                             "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
 
-                    new CheckoutService().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
+                    new CheckoutService().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -85,7 +84,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                 dialog.show();
         }
         protected String  doInBackground(String... params) {
-            return NetworkHandler.excutePost(params[0], params[1]);
+            return NetworkHandler.executePost(params[0], params[1]);
         }
         protected void onPostExecute(String result) {
             if (dialog!= null && dialog.isShowing())
@@ -116,6 +115,8 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                 }catch (JSONException e){
                     e.printStackTrace();
                 }
+            }else{
+                Toast.makeText(getApplicationContext(), "No network connection", Toast.LENGTH_LONG).show();
             }
 
         }

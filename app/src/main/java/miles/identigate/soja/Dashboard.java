@@ -211,6 +211,9 @@ public class Dashboard extends SojaActivity {
                     }).build();
                     dialog.show();
             return true;
+        }else if(id == R.id.settings){
+            startActivity(new Intent(getApplicationContext(), AdminSettingsActivity.class));
+            return  true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -276,10 +279,10 @@ public class Dashboard extends SojaActivity {
         }
         @Override
         protected String doInBackground(Void... params) {
-            visitorResult=NetworkHandler.GET(Constants.BASE_URL+"visitor-types");
-            providerResult=NetworkHandler.GET(Constants.BASE_URL+"service-providers");
-            incidentsResult=NetworkHandler.GET(Constants.BASE_URL+"incident-types");
-            houseResult=NetworkHandler.GET(Constants.BASE_URL+"houses-blocks/zone/"+preferences.getPremiseZoneId());
+            visitorResult=NetworkHandler.GET(preferences.getBaseURL()+"visitor-types");
+            providerResult=NetworkHandler.GET(preferences.getBaseURL()+"service-providers");
+            incidentsResult=NetworkHandler.GET(preferences.getBaseURL()+"incident-types");
+            houseResult=NetworkHandler.GET(preferences.getBaseURL()+"houses-blocks/zone/"+preferences.getPremiseZoneId());
             return "success";
         }
 

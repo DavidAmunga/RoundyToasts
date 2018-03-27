@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -12,7 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -31,7 +29,6 @@ import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.TypeObject;
-import miles.identigate.soja.UserInterface.RecordWalkIn;
 
 public class RecordResidentVehicleActivity extends SojaActivity {
     TextView title;
@@ -116,7 +113,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                     "&premiseZoneId=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                                     "&entry_time=" + URLEncoder.encode(selectedHouse, "UTF-8");
-                            new RecordTask().execute(Constants.BASE_URL+"qr_checkin", urlParameters);
+                            new RecordTask().execute(preferences.getBaseURL()+"qr_checkin", urlParameters);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -128,7 +125,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                                     "&premiseID=" + URLEncoder.encode(preferences.getPremise(), "UTF-8")+
                                     "&regNo=" + URLEncoder.encode(car_number.getText().toString(), "UTF-8")+
                                     "&houseID=" + URLEncoder.encode(selectedHouse, "UTF-8");
-                            new RecordTask().execute(Constants.BASE_URL+"qr_register", urlParameters);
+                            new RecordTask().execute(preferences.getBaseURL()+"qr_register", urlParameters);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -160,7 +157,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
         }
 
         protected String doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0],params[1]);
+            return new NetworkHandler().executePost(params[0],params[1]);
         }
 
         protected void onPostExecute(String result) {

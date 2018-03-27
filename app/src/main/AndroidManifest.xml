@@ -199,7 +199,7 @@
         </activity>
         <activity
             android:name=".Printer.DeviceListActivity"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
@@ -213,7 +213,9 @@
         <activity
             android:name=".SlipActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ExpressCheckoutActivity"></activity>
+        <activity android:name=".ExpressCheckoutActivity" />
+        <activity android:name=".AdminSettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -185,7 +185,7 @@ public class Incident extends SojaActivity {;
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&idNumber=" + URLEncoder.encode(ID, "UTF-8")+
                     "&incidentTypeID=" + URLEncoder.encode(type, "UTF-8");
-            new IncidentAsync().execute(Constants.BASE_URL + "record-incident", urlParameters);
+            new IncidentAsync().execute(preferences.getBaseURL() + "record-incident", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -250,7 +250,7 @@ public class Incident extends SojaActivity {;
         }
         protected String  doInBackground(String... params) {
             //Log.e("REQUEST",params[1]);
-            return NetworkHandler.excutePost(params[0],params[1]);
+            return NetworkHandler.executePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();

@@ -15,16 +15,16 @@ import java.net.URL;
  * Created by myles on 9/26/15.
  */
 public class NetworkHandler {
-    public static String  excutePost(String targetURL, String urlParameters) {
-        String authorizationString = "Basic " + Base64.encodeToString(
+    public static String executePost(String targetURL, String urlParameters) {
+       /* String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),
-                Base64.NO_WRAP); //Base64.NO_WRAP flag
+                Base64.NO_WRAP); //Base64.NO_WRAP flag*/
         URL url;
         HttpURLConnection connection = null;
         //System.setProperty("http.keepAlive", "false");
         try {
             //Create connection
-            url = new URL(targetURL);
+            url = new URL(targetURL.trim());
             connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
            /* connection.setRequestProperty("Content-Type",
@@ -33,7 +33,7 @@ public class NetworkHandler {
             connection.setRequestProperty("Content-Length", "" +
                     Integer.toString(urlParameters.getBytes().length));
             connection.setRequestProperty("Content-Language", "en-US");*/
-            connection.setRequestProperty("Authorization",authorizationString);
+            //connection.setRequestProperty("Authorization",authorizationString);
             connection.setUseCaches (false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -77,14 +77,14 @@ public class NetworkHandler {
     public static String GET(String path){
 
         HttpURLConnection httpURLConnection=null;
-        String authorizationString = "Basic " + Base64.encodeToString(
+       /* String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),
-                Base64.NO_WRAP); //Base64.NO_WRAP flag
+                Base64.NO_WRAP); //Base64.NO_WRAP flag*/
         try {
             URL url=new URL(path);
             httpURLConnection=(HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setRequestProperty("Authorization",authorizationString);
+            //httpURLConnection.setRequestProperty("Authorization",authorizationString);
             httpURLConnection.setUseCaches (false);
             httpURLConnection.setConnectTimeout(5000);
 

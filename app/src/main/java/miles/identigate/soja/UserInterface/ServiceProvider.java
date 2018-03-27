@@ -1,10 +1,8 @@
 package miles.identigate.soja.UserInterface;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +33,6 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.ServiceProviderModel;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
-import miles.identigate.soja.app.Common;
 
 public class ServiceProvider extends SojaActivity {
     Spinner company;
@@ -131,7 +128,7 @@ public class ServiceProvider extends SojaActivity {
                     "&idType=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n"), "UTF-8")+
                     "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8");
 
-            new DriveinAsync().execute(Constants.BASE_URL + "record-visit", urlParameters);
+            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -191,7 +188,7 @@ public class ServiceProvider extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0],params[1]);
+            return new NetworkHandler().executePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();
@@ -275,7 +272,7 @@ public class ServiceProvider extends SojaActivity {
                                     urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                             "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
-                                    new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
+                                    new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
@@ -313,7 +310,7 @@ public class ServiceProvider extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0], params[1]);
+            return new NetworkHandler().executePost(params[0], params[1]);
         }
         protected void onPostExecute(String result) {
             builder.dismiss();

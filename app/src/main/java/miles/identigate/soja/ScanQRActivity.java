@@ -21,6 +21,7 @@ import org.json.JSONTokener;
 
 import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.NetworkHandler;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.ZxingHelperActivity;
 
 
@@ -28,9 +29,11 @@ public class ScanQRActivity extends AppCompatActivity {
     ImageView scan_icon;
     MaterialDialog dialog;
     private static String token;
+    Preferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences = new Preferences(this);
         setContentView(R.layout.activity_scan_qr);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dialog=new MaterialDialog.Builder(ScanQRActivity.this)
@@ -56,7 +59,7 @@ public class ScanQRActivity extends AppCompatActivity {
             } else {
                 Log.v("QR",result.getContents());
                 token=result.getContents();
-                new Validate().execute(Constants.BASE_URL+"qr_data/"+result.getContents());
+                new Validate().execute(preferences.getBaseURL()+"qr_data/"+result.getContents());
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment

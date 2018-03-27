@@ -14,6 +14,16 @@ public class Preferences {
         _context = context;
         settings = context.getSharedPreferences(PREFS_NAME, 0);
     }
+    public String getBaseURL(){
+        String baseUrl = settings.getString("base_url", "https://soja.co.ke/soja-rest/api/visits/");
+        Constants.URL = baseUrl;
+        return baseUrl;
+    }
+    public void setBaseURL(String url){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("base_url", url);
+        editor.commit();
+    }
     public String getToken() {
         return settings.getString("token", "");
     }

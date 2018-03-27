@@ -98,7 +98,7 @@ public class RecordResident extends SojaActivity {
                     "&lastName=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"), "UTF-8")+
                     "&idType=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n"), "UTF-8")+
                     "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8");
-            new DriveinAsync().execute(Constants.BASE_URL + "record-visit", urlParameters);
+            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -159,7 +159,7 @@ public class RecordResident extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0],params[1]);
+            return new NetworkHandler().executePost(params[0],params[1]);
         }
         protected void onPostExecute(String result) {
             builder.hide();
@@ -242,7 +242,7 @@ public class RecordResident extends SojaActivity {
                                     urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                             "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
-                                    new ExitAsync().execute(Constants.BASE_URL+"record-visitor-exit", urlParameters);
+                                    new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
@@ -280,7 +280,7 @@ public class RecordResident extends SojaActivity {
             builder.show();
         }
         protected String  doInBackground(String... params) {
-            return new NetworkHandler().excutePost(params[0], params[1]);
+            return new NetworkHandler().executePost(params[0], params[1]);
         }
         protected void onPostExecute(String result) {
             builder.hide();

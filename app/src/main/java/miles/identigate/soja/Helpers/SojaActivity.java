@@ -11,14 +11,16 @@ import miles.identigate.soja.UserInterface.Login;
  * Created by myles on 2/2/16.
  */
 public class SojaActivity extends AppCompatActivity {
+    Preferences settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = new Preferences(getApplicationContext());
         isLoggedin();
     }
 
     public void isLoggedin() {
-        Preferences settings = new Preferences(getApplicationContext());
+
         if (!settings.isLoggedin()) {
             Intent i = new Intent(getApplicationContext(), Login.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
