@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +44,9 @@ import miles.identigate.soja.Services.SyncService;
 //import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     private  static final int CAMERA_REQUEST=200;
     private  static  final int STORAGE_REQUEST = 300;
     private static final  int PHONE_STATE_REQUEST  = 400;

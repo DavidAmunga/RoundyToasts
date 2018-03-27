@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.view.View;
@@ -43,6 +44,9 @@ import miles.identigate.soja.R;
 import miles.identigate.soja.SlipActivity;
 
 public class RecordDriveIn extends SojaActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     Spinner visitor_type;
     DatabaseHandler handler;
     Button record;

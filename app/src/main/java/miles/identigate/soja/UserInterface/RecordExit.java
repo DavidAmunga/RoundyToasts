@@ -3,6 +3,7 @@ package miles.identigate.soja.UserInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -28,6 +29,9 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.R;
 
 public class RecordExit extends SojaActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     Button record;
     Spinner mode;
     String[] Mode={

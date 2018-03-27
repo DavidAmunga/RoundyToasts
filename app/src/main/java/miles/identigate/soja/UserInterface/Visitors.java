@@ -3,8 +3,10 @@ package miles.identigate.soja.UserInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,6 +49,10 @@ public class Visitors extends AppCompatActivity {
     private ContentLoadingProgressBar loading;
     private Preferences preferences;
     private EditText searchbox;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +72,10 @@ public class Visitors extends AppCompatActivity {
         loading=(ContentLoadingProgressBar)findViewById(R.id.loading);
         searchbox=(EditText)findViewById(R.id.searchbox);
         handler=new DatabaseHandler(this);
+        VectorDrawableCompat someVectorDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_search_dark, null);
+        VectorDrawableCompat background = VectorDrawableCompat.create(getResources(), R.drawable.border, null);
+        searchbox.setCompoundDrawablesWithIntrinsicBounds(someVectorDrawable, null, null,null);
+        searchbox.setBackgroundDrawable(background);
         if(getIntent()!=null){
             str=getIntent().getStringExtra("TYPE");
             if(str.equals("DRIVE")){

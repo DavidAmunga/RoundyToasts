@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +33,9 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
     String visit_id;
     MaterialDialog dialog;
     Preferences preferences;
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

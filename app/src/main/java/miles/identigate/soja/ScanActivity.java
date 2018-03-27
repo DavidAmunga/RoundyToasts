@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.widget.Toast;
 
 import com.regula.sdk.CaptureActivity;
@@ -26,7 +27,9 @@ import miles.identigate.soja.app.Common;
 
 public class ScanActivity extends Activity implements EntryTypeFragment.OnEntrySelectedListener{
     private static boolean sIsLicenseOk;
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

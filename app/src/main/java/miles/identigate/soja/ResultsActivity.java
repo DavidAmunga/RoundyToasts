@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,7 +29,9 @@ import miles.identigate.soja.UserInterface.ServiceProvider;
 import miles.identigate.soja.app.Common;
 
 public class ResultsActivity extends AppCompatActivity {
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 	private ImageView mrzImgView;
 	private ListView mrzItemsList;
 	private SimpleMrzDataAdapter mAdapter;

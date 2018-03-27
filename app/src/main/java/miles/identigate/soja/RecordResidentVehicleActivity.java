@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -31,6 +32,9 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.TypeObject;
 
 public class RecordResidentVehicleActivity extends SojaActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     TextView title;
     EditText car_number;
 

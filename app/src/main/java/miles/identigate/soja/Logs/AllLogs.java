@@ -2,6 +2,7 @@ package miles.identigate.soja.Logs;
 
 import android.os.Bundle;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,6 +34,9 @@ public class AllLogs extends SojaActivity {
     //TextView type;
     ContentLoadingProgressBar progressBar;
     private EditText searchbox;
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

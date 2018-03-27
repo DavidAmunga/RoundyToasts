@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +28,9 @@ import miles.identigate.soja.Printer.PrinterProperty;
 import miles.identigate.soja.Printer.PublicAction;
 
 public class SlipActivity extends SojaActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     private static final int REQUEST_ENABLE_BT = 200;
     private static final int REQUEST_ENABLE_LOCATION = 300;
     private static final String TAG = SlipActivity.class.getName();

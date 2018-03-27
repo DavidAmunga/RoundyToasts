@@ -2,6 +2,7 @@ package miles.identigate.soja.Logs;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
 import miles.identigate.soja.Adapters.IncidentsAdapter;
@@ -12,6 +13,10 @@ public class Incidents extends SojaActivity {
     DatabaseHandler handler;
     ListView listView;
     IncidentsAdapter adapter;
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

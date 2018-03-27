@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,9 +19,14 @@ import android.widget.Toast;
 import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.UserInterface.Login;
 
-public class AdminSettingsActivity extends AppCompatActivity {
+public class AdminSettingsActivity extends SojaActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     EditText custom_ip;
     Button set;
     Preferences preferences;
@@ -58,7 +64,7 @@ public class AdminSettingsActivity extends AppCompatActivity {
             no_printer.setChecked(true);
         }
 
-        if (preferences.getBaseURL().equals("https://soja.co.ke/soja-rest/api/visits/")){
+        if (preferences.getBaseURL().equals("https://soja.co.ke/soja-rest/index.php/api/visits/")){
             main.setChecked(true);
             customServer = false;
         }else {
