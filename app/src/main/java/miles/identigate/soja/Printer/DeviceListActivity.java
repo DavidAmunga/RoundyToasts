@@ -69,7 +69,7 @@ public class DeviceListActivity extends Activity {
         };
     };
     private Message message;
-
+    IntentFilter intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -98,14 +98,14 @@ public class DeviceListActivity extends Activity {
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
-        IntentFilter intent = new IntentFilter();
+        intent = new IntentFilter();
         intent.addAction(BluetoothDevice.ACTION_FOUND);// 用BroadcastReceiver来取得搜索结果 
         intent.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         intent.addAction(ACTION_PAIRING_REQUEST);
         intent.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
         intent.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         intent.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(mReceiver, intent);
+
         try
         {
             pairedListView.setOnItemClickListener(mDeviceClickListener);
@@ -296,12 +296,20 @@ public class DeviceListActivity extends Activity {
         }
     };
     private ProgressBar progress;
-
     @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(mReceiver, intent);
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(mReceiver);
+    }
+        @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        unregisterReceiver(mReceiver);
         if (thread!=null) {
             Thread dummy = thread;
             thread = null;
