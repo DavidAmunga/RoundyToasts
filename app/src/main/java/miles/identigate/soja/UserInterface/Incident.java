@@ -200,7 +200,7 @@ public class Incident extends SojaActivity {;
         IncidentModel model=new IncidentModel();
         model.setCategory(typeText);
         model.setDescription(description.getText().toString());
-        model.setDate(new Constants().getCurrentTimeStamp());
+        model.setDate(Constants.getCurrentTimeStamp());
         model.setNationalId(ID);
         model.setDob("NULL");
         model.setSex("NULL");

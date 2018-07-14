@@ -24,6 +24,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
@@ -33,6 +36,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import HPRTAndroidSDK.HPRTPrinterHelper;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 
 public class DeviceListActivity extends Activity {
@@ -70,6 +74,7 @@ public class DeviceListActivity extends Activity {
     };
     private Message message;
     IntentFilter intent;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -77,6 +82,7 @@ public class DeviceListActivity extends Activity {
         super.onCreate(savedInstanceState);
         //启用窗口拓展功能，方便调用
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        preferences = new Preferences(this);
         setContentView(R.layout.activity_devicelist);
         setResult(Activity.RESULT_CANCELED);
         progress = (ProgressBar) findViewById(R.id.progress);
@@ -304,16 +310,12 @@ public class DeviceListActivity extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-        unregisterReceiver(mReceiver);
-    }
-        @Override
-    protected void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
-        if (thread!=null) {
-            Thread dummy = thread;
-            thread = null;
-            dummy.interrupt();
+        try {
+            unregisterReceiver(mReceiver);
+        }catch (IllegalArgumentException e){
+            //Fail silently
+            Answers.getInstance().logCustom(new CustomEvent("Printer Error")
+                    .putCustomAttribute("Sentry", preferences.getId()));
         }
     }
 }

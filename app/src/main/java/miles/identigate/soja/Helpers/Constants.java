@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +29,7 @@ public class Constants {
     public static final String WALK="WALKING";
     public static final String DRIVE="DRIVING";
     public static HashMap<String,String> fieldItems=new HashMap<>();
+    public static DocumentReaderResults documentReaderResults = null;
     public static MaterialDialog showProgressDialog(Context context, String title, String content){
         return   new MaterialDialog.Builder(context)
                 .title(title)

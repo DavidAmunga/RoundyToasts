@@ -115,7 +115,7 @@ public class CheckIn extends Fragment {
     }
     public Bundle dummyData(){
         Bundle data =new Bundle();
-        data.putString(Common.DOB,new Constants().getCurrentTimeStamp());
+        data.putString(Common.DOB,Constants.getCurrentTimeStamp());
         data.putString(Common.SEX,"M");
         data.putString(Common.FIRST_NAME,"Miles");
         data.putString(Common.OTHER_NAMES,"Obare");

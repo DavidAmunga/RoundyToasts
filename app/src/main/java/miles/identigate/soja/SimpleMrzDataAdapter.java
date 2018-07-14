@@ -10,17 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.regula.sdk.results.TextField;
-import com.regula.sdk.translation.TranslationUtil;
+import com.regula.documentreader.api.results.DocumentReaderTextField;
 
-import java.util.HashMap;
 import java.util.List;
 
 import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.app.Common;
 
-public class SimpleMrzDataAdapter extends ArrayAdapter<TextField> {
-	public SimpleMrzDataAdapter(Context context, int resource, List<TextField> objects) {
+public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> {
+	public SimpleMrzDataAdapter(Context context, int resource, List<DocumentReaderTextField> objects) {
 		super(context, resource, objects);
 	}
 
@@ -35,7 +32,7 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<TextField> {
 			v = vi.inflate(R.layout.simple_data_layout, null);
 		}
 
-        TextField p = getItem(position);
+		DocumentReaderTextField p = getItem(position);
 
 		if (p != null) {
 			TextView name = (TextView) v.findViewById(R.id.nameTv);
@@ -44,23 +41,12 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<TextField> {
 
 			textValue.setTypeface(Typeface.MONOSPACE);
 
-			name.setText(TranslationUtil.getTextFieldTranslation(getContext(),p.fieldType));
+			/*if (p.values.size() > 0)
+			    name.setText(p.values.get(0).value);*/
+            String value = Constants.documentReaderResults.getTextFieldValueByType(p.fieldType, p.lcid);
+			textValue.setText(value);
 
-			if (p.bufText != null) {
-				String textValueText = p.bufText.replace("^", "\n");
-                new Constants().fieldItems.put(TranslationUtil.getTextFieldTranslation(getContext(),p.fieldType),textValueText);
-				textValue.setText(textValueText);
-			}
-
-			if (p.validity == 1)
-				textValue.setTextColor(Color.rgb(3, 140, 7));
-			else if (p.validity == 0)
-				textValue.setTextColor(Color.BLACK);
-			else {
-				if (p.reserved2 != -1)
-					textValue.setText(textValue.getText() + " (" + p.reserved2 + ")");
-				textValue.setTextColor(Color.RED);
-			}
+            textValue.setTextColor(Color.rgb(3, 140, 7));
 
 			layout.setBackgroundColor(position % 2 > 0 ? Color.rgb(228, 228, 237) : Color.rgb(237, 237, 228));
 		}

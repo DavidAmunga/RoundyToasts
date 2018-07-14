@@ -14,8 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.regula.sdk.DocumentReader;
-import com.regula.sdk.enums.eVisualFieldType;
+import com.regula.documentreader.api.enums.eVisualFieldType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +72,8 @@ public class RecordWalkIn extends SojaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_walk_in);
+        if (Constants.documentReaderResults == null)
+            finish();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -140,43 +141,33 @@ public class RecordWalkIn extends SojaActivity {
         String urlParameters = null;
         try {
             String idN="000000000";
-            String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+            String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
             if(classCode.equals("ID")){
-                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
             }else if (classCode.equals("P")){
-                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+                idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
             }
-          /* if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number) != null){
-                idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
-            }else {
-                if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Passport_Number) != null){
-                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Passport_Number).bufText.replace("^", "\n");
-                }else {
-                    if (DocumentReader.getTextFieldByType(eVisualFieldType.ft_Visa_Number) != null){
-                        idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Visa_Number).bufText.replace("^", "\n");
-                    }
-                }
-            }*/
-            firstName = DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n");
-            lastName = DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n");
+            firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
+            lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             idNumber = idN.substring(2, idN.length()-1);
-            String gender=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n").contains("M")?"0":"1";
+            String gender=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M")?"0":"1";
+
             urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
                     "&houseID=" + URLEncoder.encode(selectedHouse.getId(), "UTF-8")+
                     "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8")+
-                    "&birthDate=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"), "UTF-8")+
+                    "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8")+
                     "&genderID=" + URLEncoder.encode(gender, "UTF-8")+
                     "&firstName=" + URLEncoder.encode(firstName, "UTF-8")+
                     "&lastName=" + URLEncoder.encode(lastName, "UTF-8")+
-                    "&idType=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n"), "UTF-8")+
+                    "&idType=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"), "UTF-8")+
                     "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8")+
-                    "&nationality=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Issuing_State_Name).bufText.replace("^", "\n"), "UTF-8")+
-                    "&nationCode=" + URLEncoder.encode(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Issuing_State_Code).bufText.replace("^", "\n"), "UTF-8");
+                    "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8")+
+                    "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
 
-                    new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
+            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -184,11 +175,11 @@ public class RecordWalkIn extends SojaActivity {
     public void recordOffline(){
         //Insert to local database
         String idN="000000000";
-        String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+        String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
         if(classCode.equals("ID")){
-            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+            idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
         }else if (classCode.equals("P")){
-            idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+            idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
         }
         DriveIn driveIn=new DriveIn();
         driveIn.setVisitorType(selectedType.getId());
@@ -200,11 +191,11 @@ public class RecordWalkIn extends SojaActivity {
         driveIn.setExitTime("NULL");
         driveIn.setHouseID(selectedHouse.getId());
         driveIn.setNationalId(idN);
-        driveIn.setDob(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Date_of_Birth).bufText.replace("^", "\n"));
-        driveIn.setSex(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Sex).bufText.replace("^", "\n"));
-        driveIn.setName(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"));
-        driveIn.setOtherNames(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Surname_And_Given_Names).bufText.replace("^", "\n"));
-        driveIn.setIdType(DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n"));
+        driveIn.setDob(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"));
+        driveIn.setSex(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n"));
+        driveIn.setName(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
+        driveIn.setOtherNames(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
+        driveIn.setIdType(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
 
 
         if(new CheckConnection().check(this)){
@@ -329,17 +320,17 @@ public class RecordWalkIn extends SojaActivity {
                             public void onNegative(MaterialDialog dialog) {
                                 dialog.dismiss();
                                 String idN="000000000";
-                                String classCode=DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Class_Code).bufText.replace("^", "\n");
+                                String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
                                 if(classCode.equals("ID")){
-                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Identity_Card_Number).bufText.replace("^", "\n");
+                                    idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
                                 }else if (classCode.equals("P")){
-                                    idN= DocumentReader.getTextFieldByType(eVisualFieldType.ft_Document_Number).bufText.replace("^", "\n");
+                                    idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                                 }
                                 String urlParameters = null;
                                 try {
                                     urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length() - 1), "UTF-8") +
                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                                            "&exitTime=" + URLEncoder.encode(new Constants().getCurrentTimeStamp(), "UTF-8");
+                                            "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                                     new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();

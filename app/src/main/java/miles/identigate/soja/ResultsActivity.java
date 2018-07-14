@@ -3,6 +3,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +13,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import com.regula.sdk.DocumentReader;
-import com.regula.sdk.enums.eGraphicFieldType;
-import com.regula.sdk.results.GraphicField;
-import com.regula.sdk.results.TextField;
+import com.regula.documentreader.api.enums.eGraphicFieldType;
+import com.regula.documentreader.api.results.DocumentReaderTextField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class ResultsActivity extends AppCompatActivity {
 	private ImageView mrzImgView;
 	private ListView mrzItemsList;
 	private SimpleMrzDataAdapter mAdapter;
-    private List<TextField> mResultItems;
+    private List<DocumentReaderTextField> mResultItems;
     private Button cancel;
     private Button next;
 
@@ -56,6 +55,8 @@ public class ResultsActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_results);
+		if (Constants.documentReaderResults == null)
+		    finish();
 
         receiveFilter = new IntentFilter();
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
@@ -124,15 +125,18 @@ public class ResultsActivity extends AppCompatActivity {
 	protected void onResume() {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
 
-        mResultItems.addAll(DocumentReader.getAllTextFields());
+        mResultItems.addAll(Constants.documentReaderResults.textResult.fields);
         mAdapter.notifyDataSetChanged();
 
-        GraphicField graphicField = DocumentReader.getGraphicFieldByType(eGraphicFieldType.gt_Other);
-        if(graphicField!=null && graphicField.fileImage!=null) {
-            mrzImgView.setImageBitmap(graphicField.fileImage);
-        } else {
+        Bitmap documentImage = Constants.documentReaderResults.getGraphicFieldImageByType(eGraphicFieldType.GT_DOCUMENT_FRONT);
+
+        if (documentImage != null){
+            mrzImgView.setImageBitmap(documentImage);
+        }else {
             mrzImgView.setVisibility(View.GONE);
         }
+
+
         super.onResume();
 	}
 }
