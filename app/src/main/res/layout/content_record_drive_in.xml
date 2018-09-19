@@ -141,6 +141,60 @@
 
             </Spinner>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/phoneNumberLayout"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="5.0dip"
+                android:text="Enter the Phone Number"/>
+            <EditText
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/phoneNumberEdittext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter phone number"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:inputType="phone" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/companyNameLayout"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="5.0dip"
+                android:text="Enter Company Name"/>
+            <EditText
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/companyNameEdittext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter company name"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:inputType="text" />
+        </LinearLayout>
         <Button
             android:layout_width="match_parent"
             android:layout_height="50dp"

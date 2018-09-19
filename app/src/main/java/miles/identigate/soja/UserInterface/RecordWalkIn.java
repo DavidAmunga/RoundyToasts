@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.regula.documentreader.api.enums.eVisualFieldType;
@@ -51,6 +53,11 @@ public class RecordWalkIn extends SojaActivity {
     ArrayList<TypeObject> visitorTypes;
     Preferences preferences;
 
+    LinearLayout phoneNumberLayout;
+    EditText phoneNumberEdittext;
+    LinearLayout companyNameLayout;
+    EditText companyNameEdittext;
+
     String firstName;
     String lastName;
     String idNumber;
@@ -74,6 +81,7 @@ public class RecordWalkIn extends SojaActivity {
         setContentView(R.layout.activity_record_walk_in);
         if (Constants.documentReaderResults == null)
             finish();
+        preferences=new Preferences(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -83,16 +91,35 @@ public class RecordWalkIn extends SojaActivity {
         receiveFilter.addAction(Constants.RECORDED_VISITOR);
 
         handler=new DatabaseHandler(this);
+
         visitor_type = (Spinner) findViewById(R.id.visitor_type);
         record=(Button)findViewById(R.id.record);
         host=(Spinner)findViewById(R.id.host);
-        preferences=new Preferences(this);
+
+        phoneNumberLayout = (LinearLayout)findViewById(R.id.phoneNumberLayout);
+        phoneNumberEdittext = (EditText)findViewById(R.id.phoneNumberEdittext);
+        companyNameLayout = (LinearLayout)findViewById(R.id.companyNameLayout);
+        companyNameEdittext = (EditText)findViewById(R.id.companyNameEdittext);
+
+        phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
+        companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);
+
         houses=handler.getTypes("houses");
         visitorTypes=handler.getTypes("visitors");
-       record.setOnClickListener(new View.OnClickListener() {
+        record.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               if(new CheckConnection().check(RecordWalkIn.this)){
+               //Validate input
+               if (preferences.isPhoneNumberEnabled() && (phoneNumberEdittext.getText() == null || phoneNumberEdittext.getText().toString().isEmpty())){
+                   phoneNumberEdittext.setError("Phone Number Required");
+                   return;
+               }
+               if (preferences.isCompanyNameEnabled() && (companyNameEdittext.getText() == null || companyNameEdittext.getText().toString().isEmpty())){
+                   companyNameEdittext.setError("Company Name is required");
+                   return;
+               }
+
+               if(CheckConnection.check(RecordWalkIn.this)){
                    recordInternet();
                }else{
                  recordOffline();
@@ -141,18 +168,26 @@ public class RecordWalkIn extends SojaActivity {
         String urlParameters = null;
         try {
             String idN="000000000";
+            String scan_id_type = "ID";
             String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
             if(classCode.equals("ID")){
+                scan_id_type = "ID";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                idNumber = idN.substring(2, idN.length()-1);
             }else if (classCode.equals("P")){
+                scan_id_type = "P";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
             }
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
-            idNumber = idN.substring(2, idN.length()-1);
             String gender=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M")?"0":"1";
+            String mrzLines =  Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
 
-            urlParameters = "visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
+            urlParameters =
+                    "phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
+                    "&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8") +
+                    "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
+                    "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+

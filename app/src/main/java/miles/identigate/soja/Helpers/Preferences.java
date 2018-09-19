@@ -102,4 +102,21 @@ public class Preferences {
         editor.putString("premise_name", premise_name);
         editor.commit();
     }
+    public boolean isPhoneNumberEnabled(){
+        return settings.getBoolean("record_phone_number", true);
+    }
+    public void setPhoneNumberEnabled(boolean isEnabled){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("record_phone_number", isEnabled);
+        editor.commit();
+    }
+    public boolean isCompanyNameEnabled(){
+        return settings.getBoolean("record_company_name", false);
+    }
+    public void setCompanyNameEnabled(boolean isEnabled){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("record_company_name", isEnabled);
+        editor.commit();
+    }
+
 }

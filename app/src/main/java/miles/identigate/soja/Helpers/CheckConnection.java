@@ -15,7 +15,7 @@ import miles.identigate.soja.R;
  * Created by myles on 9/26/15.
  */
 public class CheckConnection {
-     public boolean check(Activity activity){
+     public static  boolean check(Activity activity){
         ConnectivityManager connectivityManager=(ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info=connectivityManager.getActiveNetworkInfo();
         if(info != null && info.isConnectedOrConnecting()){

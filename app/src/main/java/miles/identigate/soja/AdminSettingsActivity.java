@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import miles.identigate.soja.Helpers.Constants;
@@ -31,13 +32,14 @@ public class AdminSettingsActivity extends SojaActivity {
     Button set;
     Preferences preferences;
 
-    RadioButton no_printer;
-    RadioButton yes_printer;
     RadioButton custom;
     RadioButton main;
     DatabaseHandler handler;
 
-    boolean canPrint = false;
+    Switch  printerSwitch;
+    Switch  phoneSwitch;
+    Switch  companySwitch;
+
     boolean customServer  = false;
 
     @Override
@@ -53,16 +55,18 @@ public class AdminSettingsActivity extends SojaActivity {
 
         custom_ip = (EditText)findViewById(R.id.custom_ip);
         set = (Button)findViewById(R.id.set);
-        no_printer = (RadioButton)findViewById(R.id.no_printer);
-        yes_printer = (RadioButton)findViewById(R.id.yes_printer);
         custom = (RadioButton)findViewById(R.id.custom);
         main = (RadioButton)findViewById(R.id.main);
 
-        if (preferences.canPrint()){
-            yes_printer.setChecked(true);
-        }else {
-            no_printer.setChecked(true);
-        }
+        printerSwitch = (Switch)findViewById(R.id.printer);
+        phoneSwitch = (Switch)findViewById(R.id.phone);
+        companySwitch = (Switch)findViewById(R.id.company);
+
+        printerSwitch.setChecked(preferences.canPrint());
+        phoneSwitch.setChecked(preferences.isPhoneNumberEnabled());
+        companySwitch.setChecked(preferences.isCompanyNameEnabled());
+
+
 
         if (preferences.getBaseURL().equals("https://soja.co.ke/soja-rest/index.php/api/visits/")){
             main.setChecked(true);
@@ -77,7 +81,9 @@ public class AdminSettingsActivity extends SojaActivity {
         set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                preferences.setCanPrint(canPrint);
+                preferences.setCanPrint(printerSwitch.isChecked());
+                preferences.setPhoneNumberEnabled(phoneSwitch.isChecked());
+                preferences.setCompanyNameEnabled(companySwitch.isChecked());
                 if (customServer){
                     String ip = custom_ip.getText().toString().trim();
                     if (ip.isEmpty()){
@@ -133,15 +139,6 @@ public class AdminSettingsActivity extends SojaActivity {
                     if (custom_ip.getVisibility() != View.VISIBLE)
                         custom_ip.setVisibility(View.VISIBLE);
                 }
-
-                break;
-            case R.id.no_printer:
-                if (checked)
-                    canPrint = false;
-                break;
-            case R.id.yes_printer:
-                if (checked)
-                    canPrint = true;
 
                 break;
         }
