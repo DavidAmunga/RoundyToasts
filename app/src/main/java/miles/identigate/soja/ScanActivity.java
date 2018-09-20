@@ -96,8 +96,6 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
             DocumentReader.Instance().initializeReader(ScanActivity.this, license, new DocumentReader.DocumentReaderInitCompletion() {
                 @Override
                 public void onInitCompleted(boolean success, String error) {
-                    DocumentReader.Instance().showHintMessages = true;
-                    DocumentReader.Instance().videoCaptureMotionControl = true;
 
                     //initialization successful
                     if (success) {

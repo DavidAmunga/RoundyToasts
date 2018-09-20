@@ -1,10 +1,6 @@
 package miles.identigate.soja;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -17,11 +13,9 @@ import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.UserInterface.Login;
 
 public class AdminSettingsActivity extends SojaActivity {
     static {
@@ -103,24 +97,7 @@ public class AdminSettingsActivity extends SojaActivity {
                 }else {
                     preferences.setBaseURL("https://soja.co.ke/soja-rest/index.php/api/visits/");
                 }
-                preferences.setIsLoggedin(false);
-                preferences.setDeviceId(null);
-                preferences.setPremiseName("");
-                preferences.setName("");
-                preferences.setId("");
-                SQLiteDatabase db = handler.getWritableDatabase();
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
-
-                SharedPreferences getPrefs = PreferenceManager
-                        .getDefaultSharedPreferences(getBaseContext());
-                SharedPreferences.Editor e = getPrefs.edit();
-                e.putBoolean("firstStart", true);
-                e.apply();
-                Toast.makeText(getApplicationContext(), "Settings updated successfully.Please login again.", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), Login.class));
+                Toast.makeText(getApplicationContext(), "Settings updated successfully.", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -60,6 +61,11 @@ public class RecordDriveIn extends SojaActivity {
     MaterialDialog progressDialog;
     MaterialDialog dialog;
 
+    LinearLayout phoneNumberLayout;
+    EditText phoneNumberEdittext;
+    LinearLayout companyNameLayout;
+    EditText companyNameEdittext;
+
     String firstName;
     String lastName;
     String idNumber;
@@ -101,12 +107,31 @@ public class RecordDriveIn extends SojaActivity {
         record=(Button)findViewById(R.id.record);
         host=(Spinner)findViewById(R.id.host);
         numberOfPeople=(EditText)findViewById(R.id.numberOfPeople);
+        phoneNumberLayout = (LinearLayout)findViewById(R.id.phoneNumberLayout);
+        phoneNumberEdittext = (EditText)findViewById(R.id.phoneNumberEdittext);
+        companyNameLayout = (LinearLayout)findViewById(R.id.companyNameLayout);
+        companyNameEdittext = (EditText)findViewById(R.id.companyNameEdittext);
+
+        phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
+        companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);
+
+
+
         visitorTypes=handler.getTypes("visitors");
         houses=handler.getTypes("houses");
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(new CheckConnection().check(RecordDriveIn.this)){
+                //Validate input
+                if (preferences.isPhoneNumberEnabled() && (phoneNumberEdittext.getText() == null || phoneNumberEdittext.getText().toString().isEmpty())){
+                    phoneNumberEdittext.setError("Phone Number Required");
+                    return;
+                }
+                if (preferences.isCompanyNameEnabled() && (companyNameEdittext.getText() == null || companyNameEdittext.getText().toString().isEmpty())){
+                    companyNameEdittext.setError("Company Name is required");
+                    return;
+                }
+                if(CheckConnection.check(RecordDriveIn.this)){
                     if(vehicleRegNo.getText().toString().equals(null)||vehicleRegNo.getText().toString().equals("")||numberOfPeople.getText().toString().equals(null)|| numberOfPeople.getText().toString().equals("")) {
                         Snackbar.make(v,"All fields are required.",Snackbar.LENGTH_SHORT).show();
                     }else {
@@ -166,18 +191,28 @@ public class RecordDriveIn extends SojaActivity {
         String urlParameters = null;
         try {
             String idN="000000000";
+            String scan_id_type = "ID";
             String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
             if(classCode.equals("ID")){
+                scan_id_type = "ID";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                idNumber = idN.substring(2, idN.length()-1);
             }else if (classCode.equals("P")){
+                scan_id_type = "P";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                idNumber = idN;
             }
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
-            idNumber = idN.substring(2, idN.length()-1);
+
             String gender=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M")?"0":"1";
+            String mrzLines =  Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
             urlParameters =
-                    "visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
+                    "mrz=" + URLEncoder.encode(mrzLines, "UTF-8")+
+                    "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
+                    "&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8") +
+                    "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
+                    "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
@@ -226,7 +261,7 @@ public class RecordDriveIn extends SojaActivity {
         driveIn.setName(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
         driveIn.setOtherNames(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
         driveIn.setIdType(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
-        if(new CheckConnection().check(this)){
+        if(CheckConnection.check(this)){
             driveIn.setSynced(true);
             handler.insertDriveIn(driveIn);
             return;

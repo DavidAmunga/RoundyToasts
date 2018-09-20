@@ -103,7 +103,7 @@ public class Preferences {
         editor.commit();
     }
     public boolean isPhoneNumberEnabled(){
-        return settings.getBoolean("record_phone_number", true);
+        return settings.getBoolean("record_phone_number", false);
     }
     public void setPhoneNumberEnabled(boolean isEnabled){
         SharedPreferences.Editor editor = settings.edit();

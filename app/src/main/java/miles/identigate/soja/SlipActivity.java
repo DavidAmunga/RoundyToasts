@@ -39,9 +39,9 @@ public class SlipActivity extends SojaActivity {
     Toolbar toolbar;
     TextView slip;
 
-    private static HPRTPrinterHelper HPRTPrinter=new HPRTPrinterHelper();
-    private BluetoothAdapter mBluetoothAdapter;
-    private PublicFunction PFun=null;
+    //private static HPRTPrinterHelper HPRTPrinter;
+    //private BluetoothAdapter mBluetoothAdapter;
+    //private PublicFunction PFun=null;
     private PublicAction PAct=null;
     MaterialDialog dialog;
 
@@ -64,6 +64,7 @@ public class SlipActivity extends SojaActivity {
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         ok = (ImageView)findViewById(R.id.ok);
         cancel = (ImageView)findViewById(R.id.cancel);
@@ -89,8 +90,6 @@ public class SlipActivity extends SojaActivity {
 
         dialog = Constants.showProgressDialog(SlipActivity.this, "Printing", "Printing slip...");
         dialog.setCancelable(true);
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        PFun=new PublicFunction(SlipActivity.this);
         PAct=new PublicAction(SlipActivity.this);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +115,6 @@ public class SlipActivity extends SojaActivity {
         if (!dialog.isShowing())
             dialog.show();
         String PrinterName="MPT-II";
-        HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
         CapturePrinterFunction();
         GetPrinterProperty();
         PrintSlip();
@@ -143,7 +141,7 @@ public class SlipActivity extends SojaActivity {
                         if (!dialog.isShowing())
                             dialog.show();
                         String PrinterName="MPT-II";
-                        HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
+                        //HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
                         CapturePrinterFunction();
                         GetPrinterProperty();
                         PrintSlip();
@@ -262,6 +260,7 @@ public class SlipActivity extends SojaActivity {
             boolean isCheck=false;
 
             int iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value,DataLen);
+            int x = 0;
             if(iRtn!=0)
                 return;
             PrinterProperty.Buzzer=(Value[0]==0?false:true);

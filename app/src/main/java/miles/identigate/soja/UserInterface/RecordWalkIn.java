@@ -177,6 +177,7 @@ public class RecordWalkIn extends SojaActivity {
             }else if (classCode.equals("P")){
                 scan_id_type = "P";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                idNumber = idN;
             }
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
@@ -184,7 +185,8 @@ public class RecordWalkIn extends SojaActivity {
             String mrzLines =  Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
 
             urlParameters =
-                    "phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
+                    "mrz=" + URLEncoder.encode(mrzLines, "UTF-8")+
+                    "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
                     "&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8") +
                     "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
                     "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
@@ -233,7 +235,7 @@ public class RecordWalkIn extends SojaActivity {
         driveIn.setIdType(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
 
 
-        if(new CheckConnection().check(this)){
+        if(CheckConnection.check(this)){
             driveIn.setSynced(true);
             handler.insertDriveIn(driveIn);
             return;
