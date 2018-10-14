@@ -41,13 +41,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    /*sourceSets.main {
+        jniLibs.srcDir 'src/main/libs'
+        jni.srcDirs = []
+    }*/
 
 }
 
 dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation files('libs/Android_SDK_ESC_V1.01.14PRO.jar')
+    implementation files('libs/Android_SDK_E300_V1.01.02PRO.jar')
     implementation 'com.android.support:appcompat-v7:27.0.2'
     //compile project(':DocumentReader')
     implementation 'com.regula.documentreader.mrz:core:+@aar'

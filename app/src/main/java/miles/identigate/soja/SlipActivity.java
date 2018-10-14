@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -28,9 +27,6 @@ import miles.identigate.soja.Printer.PrinterProperty;
 import miles.identigate.soja.Printer.PublicAction;
 
 public class SlipActivity extends SojaActivity {
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
     private static final int REQUEST_ENABLE_BT = 200;
     private static final int REQUEST_ENABLE_LOCATION = 300;
     private static final String TAG = SlipActivity.class.getName();
@@ -39,9 +35,9 @@ public class SlipActivity extends SojaActivity {
     Toolbar toolbar;
     TextView slip;
 
-    //private static HPRTPrinterHelper HPRTPrinter;
-    //private BluetoothAdapter mBluetoothAdapter;
-    //private PublicFunction PFun=null;
+    private static HPRTPrinterHelper HPRTPrinter=new HPRTPrinterHelper();
+    private BluetoothAdapter mBluetoothAdapter;
+    private PublicFunction PFun=null;
     private PublicAction PAct=null;
     MaterialDialog dialog;
 
@@ -50,7 +46,6 @@ public class SlipActivity extends SojaActivity {
     String idNumber;
     String house;
     String result_slip;
-    String vehicleNo = null;
     int visit_id = 0;
     private String ConnectType="Bluetooth";
 
@@ -64,7 +59,6 @@ public class SlipActivity extends SojaActivity {
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         ok = (ImageView)findViewById(R.id.ok);
         cancel = (ImageView)findViewById(R.id.cancel);
@@ -80,16 +74,15 @@ public class SlipActivity extends SojaActivity {
             result_slip = extras.getString("result_slip");
             visit_id = extras.getInt("visit_id");
             if (!title.isEmpty()){
-               slip.setText(title);
-            }
-            if (extras.containsKey("vehicleNo")){
-                vehicleNo = extras.getString("vehicleNo");
+                slip.setText(title);
             }
         }
 
 
         dialog = Constants.showProgressDialog(SlipActivity.this, "Printing", "Printing slip...");
         dialog.setCancelable(true);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        PFun=new PublicFunction(SlipActivity.this);
         PAct=new PublicAction(SlipActivity.this);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +108,7 @@ public class SlipActivity extends SojaActivity {
         if (!dialog.isShowing())
             dialog.show();
         String PrinterName="MPT-II";
+        HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
         CapturePrinterFunction();
         GetPrinterProperty();
         PrintSlip();
@@ -125,32 +119,32 @@ public class SlipActivity extends SojaActivity {
         String strIsConnected;
         if (data == null || data.getExtras() == null)
             return;
-            switch (requestCode){
-                case HPRTPrinterHelper.ACTIVITY_CONNECT_BT:
+        switch (requestCode){
+            case HPRTPrinterHelper.ACTIVITY_CONNECT_BT:
 
-                    strIsConnected=data.getExtras().getString("is_connected");
-                    if (strIsConnected.equals("NO")) {
-                        if (dialog.isShowing())
-                            dialog.dismiss();
-                        new MaterialDialog.Builder(SlipActivity.this)
-                                .title("Bluetooth Disabled")
-                                .content("Bluetooth must be enabled to print the slip.")
-                                .positiveText("OK")
-                                .show();
-                    } else {
-                        if (!dialog.isShowing())
-                            dialog.show();
-                        String PrinterName="MPT-II";
-                        //HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
-                        CapturePrinterFunction();
-                        GetPrinterProperty();
-                        PrintSlip();
-                    }
-                    break;
-                case REQUEST_ENABLE_LOCATION:
-                    doPrint();
-                    break;
-            }
+                strIsConnected=data.getExtras().getString("is_connected");
+                if (strIsConnected.equals("NO")) {
+                    if (dialog.isShowing())
+                        dialog.dismiss();
+                    new MaterialDialog.Builder(SlipActivity.this)
+                            .title("Bluetooth Disabled")
+                            .content("Bluetooth must be enabled to print the slip.")
+                            .positiveText("OK")
+                            .show();
+                } else {
+                    if (!dialog.isShowing())
+                        dialog.show();
+                    String PrinterName="MPT-II";
+                    HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
+                    CapturePrinterFunction();
+                    GetPrinterProperty();
+                    PrintSlip();
+                }
+                break;
+            case REQUEST_ENABLE_LOCATION:
+                doPrint();
+                break;
+        }
 
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -177,7 +171,7 @@ public class SlipActivity extends SojaActivity {
             HPRTPrinterHelper.WriteData(data);
             PAct.LanguageEncode();
             PAct.BeforePrintAction();
-            String msg = "\n \t VISITOR SLIP\n";
+            String msg = "\t VISITOR SLIP\n";
             msg += "\t " + preferences.getPremiseName() + "\n";
             msg += "\n";
             msg += "------------------------------";
@@ -186,17 +180,13 @@ public class SlipActivity extends SojaActivity {
             msg += "\n";
             msg += "OFFICE VISITED: " + house;
             msg += "\n";
-            if (vehicleNo != null){
-                msg += "VEHICLE NO.: " + vehicleNo;
-                msg += "\n";
-            }
             msg += "ENTRY TIME: " + Constants.timeStamp();
             msg += "\n\n\n";
             msg += "HOST NAME: " + "------------------";
             msg += "\n\n";
             msg += "HOST SIGN: " + "------------------";
             msg += "\n\n";
-           if (visit_id != 0){
+            if (visit_id != 0){
                 msg += "SCAN QR TO CHECKOUT VISITOR";
                 msg += "\n\n";
             }
@@ -205,7 +195,7 @@ public class SlipActivity extends SojaActivity {
 
             HPRTPrinterHelper.PrintText(msg);
             HPRTPrinterHelper.PrintQRCode(idNumber,7,(3+0x30),1);
-			HPRTPrinterHelper.PrintText("\n\n\n",0,1,0);
+            HPRTPrinterHelper.PrintText("\n\n\n",0,1,0);
             PAct.AfterPrintAction();
             if (dialog.isShowing())
                 dialog.dismiss();
@@ -260,7 +250,6 @@ public class SlipActivity extends SojaActivity {
             boolean isCheck=false;
 
             int iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value,DataLen);
-            int x = 0;
             if(iRtn!=0)
                 return;
             PrinterProperty.Buzzer=(Value[0]==0?false:true);
@@ -364,4 +353,3 @@ public class SlipActivity extends SojaActivity {
     }
 
 }
-
