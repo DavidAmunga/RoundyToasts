@@ -109,15 +109,6 @@ public class RecordWalkIn extends SojaActivity {
         record.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               //Validate input
-               if (preferences.isPhoneNumberEnabled() && (phoneNumberEdittext.getText() == null || phoneNumberEdittext.getText().toString().isEmpty())){
-                   phoneNumberEdittext.setError("Phone Number Required");
-                   return;
-               }
-               if (preferences.isCompanyNameEnabled() && (companyNameEdittext.getText() == null || companyNameEdittext.getText().toString().isEmpty())){
-                   companyNameEdittext.setError("Company Name is required");
-                   return;
-               }
 
                if(CheckConnection.check(RecordWalkIn.this)){
                    recordInternet();

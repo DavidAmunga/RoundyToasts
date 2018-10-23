@@ -122,15 +122,6 @@ public class RecordDriveIn extends SojaActivity {
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Validate input
-                if (preferences.isPhoneNumberEnabled() && (phoneNumberEdittext.getText() == null || phoneNumberEdittext.getText().toString().isEmpty())){
-                    phoneNumberEdittext.setError("Phone Number Required");
-                    return;
-                }
-                if (preferences.isCompanyNameEnabled() && (companyNameEdittext.getText() == null || companyNameEdittext.getText().toString().isEmpty())){
-                    companyNameEdittext.setError("Company Name is required");
-                    return;
-                }
                 if(CheckConnection.check(RecordDriveIn.this)){
                     if(vehicleRegNo.getText().toString().equals(null)||vehicleRegNo.getText().toString().equals("")||numberOfPeople.getText().toString().equals(null)|| numberOfPeople.getText().toString().equals("")) {
                         Snackbar.make(v,"All fields are required.",Snackbar.LENGTH_SHORT).show();
