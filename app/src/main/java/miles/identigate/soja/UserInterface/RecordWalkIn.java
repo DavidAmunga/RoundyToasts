@@ -47,6 +47,7 @@ public class RecordWalkIn extends SojaActivity {
     DatabaseHandler handler;
     Button record;
     Spinner host;
+    Spinner host_1;
     TypeObject selectedType;
     TypeObject selectedHouse;
     ArrayList<TypeObject> houses;
@@ -57,6 +58,7 @@ public class RecordWalkIn extends SojaActivity {
     EditText phoneNumberEdittext;
     LinearLayout companyNameLayout;
     EditText companyNameEdittext;
+    LinearLayout hostLayout;
 
     String firstName;
     String lastName;
@@ -100,9 +102,12 @@ public class RecordWalkIn extends SojaActivity {
         phoneNumberEdittext = (EditText)findViewById(R.id.phoneNumberEdittext);
         companyNameLayout = (LinearLayout)findViewById(R.id.companyNameLayout);
         companyNameEdittext = (EditText)findViewById(R.id.companyNameEdittext);
+        hostLayout = (LinearLayout)findViewById(R.id.hostLayout);
+        host_1 = (Spinner)findViewById(R.id.host_1);
 
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);
+        hostLayout.setVisibility(preferences.isSelectHostsEnabled()?View.VISIBLE:View.GONE);
 
         houses=handler.getTypes("houses");
         visitorTypes=handler.getTypes("visitors");
@@ -137,6 +142,7 @@ public class RecordWalkIn extends SojaActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TypeObject object=(TypeObject)parent.getSelectedItem();
                 selectedHouse=object;
+                //TODO: call    FetchHostsService
             }
 
             @Override
@@ -321,7 +327,7 @@ public class RecordWalkIn extends SojaActivity {
        }
     }
     private void resultHandler(String result) throws JSONException {
-        Log.d("WALKIN", result);
+        //Log.d("WALKIN", result);
         JSONObject obj = new JSONObject(result);
         int resultCode = obj.getInt("result_code");
         String resultText = obj.getString("result_text");
@@ -442,6 +448,17 @@ public class RecordWalkIn extends SojaActivity {
                         .positiveText("Ok")
                         .show();
             }
+        }
+    }
+    private class FetchHostsService extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return NetworkHandler.GET(strings[0]);
+        }
+        protected void onPostExecute(String result) {
+            //TODo: Parse result
+
         }
     }
 }

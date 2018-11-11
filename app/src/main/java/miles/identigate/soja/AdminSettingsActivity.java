@@ -33,6 +33,8 @@ public class AdminSettingsActivity extends SojaActivity {
     Switch  printerSwitch;
     Switch  phoneSwitch;
     Switch  companySwitch;
+    Switch host;
+    Switch fingerprints;
 
     boolean customServer  = false;
 
@@ -55,10 +57,14 @@ public class AdminSettingsActivity extends SojaActivity {
         printerSwitch = (Switch)findViewById(R.id.printer);
         phoneSwitch = (Switch)findViewById(R.id.phone);
         companySwitch = (Switch)findViewById(R.id.company);
+        host = (Switch)findViewById(R.id.host);
+        fingerprints = (Switch)findViewById(R.id.fingerprints);
 
         printerSwitch.setChecked(preferences.canPrint());
         phoneSwitch.setChecked(preferences.isPhoneNumberEnabled());
         companySwitch.setChecked(preferences.isCompanyNameEnabled());
+        host.setChecked(preferences.isSelectHostsEnabled());
+        fingerprints.setChecked(preferences.isFingerprintsEnabled());
 
 
 
@@ -78,6 +84,8 @@ public class AdminSettingsActivity extends SojaActivity {
                 preferences.setCanPrint(printerSwitch.isChecked());
                 preferences.setPhoneNumberEnabled(phoneSwitch.isChecked());
                 preferences.setCompanyNameEnabled(companySwitch.isChecked());
+                preferences.setSelectHostsEnabled(host.isChecked());
+                preferences.setFingerprintsEnabled(fingerprints.isChecked());
                 if (customServer){
                     String ip = custom_ip.getText().toString().trim();
                     if (ip.isEmpty()){

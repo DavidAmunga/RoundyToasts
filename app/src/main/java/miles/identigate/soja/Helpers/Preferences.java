@@ -118,5 +118,21 @@ public class Preferences {
         editor.putBoolean("record_company_name", isEnabled);
         editor.commit();
     }
+    public boolean isSelectHostsEnabled(){
+        return settings.getBoolean("select_hosts", false);
+    }
+    public void setSelectHostsEnabled(boolean isEnabled){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("select_hosts", isEnabled);
+        editor.commit();
+    }
+    public boolean isFingerprintsEnabled(){
+        return settings.getBoolean("fingerprints", false);
+    }
+    public void setFingerprintsEnabled(boolean isEnabled){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("fingerprints", isEnabled);
+        editor.commit();
+    }
 
 }

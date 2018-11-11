@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import miles.identigate.soja.Adapters.Option;
 import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.ScanQRActivity;
@@ -30,12 +31,14 @@ public class CheckIn extends Fragment {
             "Drive In",
             "Walk In",
             "Residents",
+            "Biometric Checkin",
             "Incident"
     };
     private String[] descriptions={
             "Record driving visitor",
             "Record walking visitor",
             "Check in a resident",
+            "Check in using biometrics",
             "Report an incident"
 
     };
@@ -43,9 +46,11 @@ public class CheckIn extends Fragment {
             R.drawable.ic_action_car,
             R.drawable.ic_action_walk,
             R.drawable.ic_action_walk,
+            R.drawable.fingerprint,
             R.drawable.ic_incident
 
     };
+    private Preferences preferences;
     public static CheckIn newInstance(String param1, String param2) {
         CheckIn fragment = new CheckIn();
         Bundle args = new Bundle();
@@ -66,6 +71,7 @@ public class CheckIn extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        preferences = new Preferences(getActivity());
     }
 
     @Override
@@ -101,6 +107,9 @@ public class CheckIn extends Fragment {
                         break;
                     case 3:
 
+                        break;
+                    case 4:
+
                        /* extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);
                         startActivity(intent);*/
@@ -112,17 +121,6 @@ public class CheckIn extends Fragment {
             }
         });
         return view;
-    }
-    public Bundle dummyData(){
-        Bundle data =new Bundle();
-        data.putString(Common.DOB,Constants.getCurrentTimeStamp());
-        data.putString(Common.SEX,"M");
-        data.putString(Common.FIRST_NAME,"Miles");
-        data.putString(Common.OTHER_NAMES,"Obare");
-        data.putString(Common.ID_TYPE,"NID");
-        data.putString(Common.ID_NUMBER,"33166582");
-        return data;
-
     }
 
 

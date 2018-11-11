@@ -13,8 +13,9 @@
     tools:showIn="@layout/activity_record_drive_in"
     tools:context="miles.identigate.soja.UserInterface.RecordDriveIn">
     >
-<RelativeLayout
+<LinearLayout
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="wrap_content"
     >
     <LinearLayout
@@ -55,6 +56,27 @@
             android:background="@drawable/border"
             android:layout_marginBottom="10dp"
             android:layout_height="wrap_content">
+
+        </Spinner>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:id="@+id/hostLabel"
+            android:layout_marginBottom="5.0dip"
+            android:text="DESTINATION"/>
+        <Spinner
+            android:layout_width="match_parent"
+            android:id="@+id/host"
+            android:background="@drawable/border"
+            android:layout_marginBottom="10dp"
+            android:layout_height="50dp">
 
         </Spinner>
     </LinearLayout>
@@ -123,18 +145,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/hostLayout"
+            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:orientation="vertical">
             <miles.identigate.soja.Font.OpenSansBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:id="@+id/hostLabel"
                 android:layout_marginBottom="5.0dip"
                 android:text="HOST"/>
             <Spinner
                 android:layout_width="match_parent"
-                android:id="@+id/host"
+                android:id="@+id/host_1"
                 android:background="@drawable/border"
                 android:layout_marginBottom="10dp"
                 android:layout_height="50dp">
@@ -205,5 +228,5 @@
             android:textColor="@android:color/white"
             android:text="RECORD"/>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
 </ScrollView>
