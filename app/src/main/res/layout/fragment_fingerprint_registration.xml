@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:paddingTop="0dp"
+    android:id="@+id/content"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditText
+        android:layout_gravity="center"
+        android:id="@+id/searchbox"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/title"
+        android:drawableLeft="@drawable/ic_search_dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search For A Name"
+        android:background="@drawable/border"
+        android:padding="10dp"
+        android:singleLine="true"/>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_content"
+        android:padding="20dp"
+        android:background="@color/white"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_gravity="center_vertical"
+                android:visibility="visible"
+                android:id="@+id/recyclerView"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="70dp"
+        android:layout_marginTop="50dp"
+        android:layout_height="70dp"
+        android:visibility="gone"
+        android:layout_gravity="center" />
+</LinearLayout>

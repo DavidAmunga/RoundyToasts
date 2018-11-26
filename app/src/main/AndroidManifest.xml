@@ -214,8 +214,10 @@
             android:name=".SlipActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ExpressCheckoutActivity" />
-        <activity android:name=".AdminSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".AdminSettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".FingerprintActivity"></activity>
     </application>
 
 </manifest>

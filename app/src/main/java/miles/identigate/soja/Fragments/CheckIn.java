@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import miles.identigate.soja.Adapters.Option;
+import miles.identigate.soja.FingerprintActivity;
 import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
@@ -106,7 +107,7 @@ public class CheckIn extends Fragment {
                         startActivity(new Intent(getActivity(), ScanQRActivity.class));
                         break;
                     case 3:
-
+                        startActivity(new Intent(getActivity(), FingerprintActivity.class));
                         break;
                     case 4:
 

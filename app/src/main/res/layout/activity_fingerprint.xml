@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".FingerprintActivity">
+    <miles.identigate.soja.Font.OpenSansBold
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:textStyle="bold"
+        android:text="BIOMETRIC REGISTRATION"
+        android:id="@+id/record_type"
+        android:gravity="center_horizontal"
+        android:textSize="18dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/fingerprint"
+            android:layout_marginBottom="10dp"
+            android:background="?android:selectableItemBackground"
+            android:layout_centerInParent="true"
+            android:src="@drawable/qr"/>
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/fingerprint"
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            android:id="@+id/place_finger"
+            android:text="Place finger on the fingerprint reader"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:id="@+id/progressLayout"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:minHeight="50dp"
+            android:minWidth="200dp"
+            android:progress="50" />
+    </RelativeLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="7dp"
+        android:id="@+id/info"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <miles.identigate.soja.Font.OpenSansRegular
+            android:layout_width="wrap_content"
+            android:id="@+id/name"
+            android:text="OBARE OBADIAH"
+            android:layout_height="wrap_content" />
+        <miles.identigate.soja.Font.OpenSansRegular
+            android:layout_width="wrap_content"
+            android:id="@+id/idNUmber"
+            android:text="33166582"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <Button
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:text="OK"
+        android:textColor="@color/primary_text"
+        android:background="@color/colorPrimary"
+        android:id="@+id/ok_button"
+        />
+
+</LinearLayout>
