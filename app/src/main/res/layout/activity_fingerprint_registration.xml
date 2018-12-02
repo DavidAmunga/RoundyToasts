@@ -5,13 +5,13 @@
     android:layout_gravity="center_horizontal"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".FingerprintActivity">
+    tools:context=".FingerprintRegistrationActivity">
     <miles.identigate.soja.Font.OpenSansBold
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:textStyle="bold"
-        android:text="BIOMETRIC CHECK-IN"
+        android:text="BIOMETRIC REGISTRATION"
         android:id="@+id/record_type"
         android:gravity="center_horizontal"
         android:textSize="18dp"/>
