@@ -74,4 +74,6 @@
     <string name="activity_main_bold">Blod:</string>
     <string name="activity_main_underline">Underline:</string>
 
+    <string name="capture_single_fail">Capture Single Fail</string>
+
 </resources>

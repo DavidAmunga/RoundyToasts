@@ -1,9 +1,21 @@
 package miles.identigate.soja.Models;
 
+import java.util.Arrays;
+
 /**
  * Created by myles on 10/28/15.
  */
 public class Visitor  {
+
+    public byte[] getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(byte[] fingerprint, int len) {
+        this.fingerprint = Arrays.copyOf(fingerprint, len);;
+    }
+
+    byte[] fingerprint;
     private String national_id;
 
     public String getId() {

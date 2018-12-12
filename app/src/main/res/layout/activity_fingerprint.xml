@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:textStyle="bold"
-        android:text="BIOMETRIC CHECK-IN"
+        android:text="BIOMETRIC CHECKIN"
         android:id="@+id/record_type"
         android:gravity="center_horizontal"
         android:textSize="18dp"/>
@@ -60,6 +60,21 @@
             android:text="33166582"
             android:layout_height="wrap_content" />
     </LinearLayout>
+
+    <Button
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        android:textSize="20sp"
+        android:text="CAPTURE"
+        android:textColor="@color/primary_text"
+        android:background="@color/colorPrimary"
+        android:id="@+id/submit_button"
+        />
     <Button
         android:layout_gravity="center"
         android:layout_width="match_parent"
@@ -69,7 +84,7 @@
         android:layout_marginTop="20dp"
         android:visibility="gone"
         android:textSize="20sp"
-        android:text="OK"
+        android:text="CHECK IN"
         android:textColor="@color/primary_text"
         android:background="@color/colorPrimary"
         android:id="@+id/ok_button"
