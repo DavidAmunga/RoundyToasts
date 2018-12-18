@@ -99,6 +99,12 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             if (capturedTemplate != null) {
                 scannedFingerprint = Arrays.copyOf(capturedTemplate.data, capturedTemplate.data.length);
                 scannedLen = capturedTemplate.data.length;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        place_finger.setText("Template captured.");
+                    }
+                });
             }
 
             return true;
@@ -153,6 +159,10 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         info = (LinearLayout)findViewById(R.id.info);
         name = (TextView)findViewById(R.id.name);
         idNUmber = (TextView)findViewById(R.id.idNUmber);
+
+        mCaptureOptionDefault.captureImage = true;
+        mCaptureOptionDefault.captureTemplate = true;
+        mCaptureOptionDefault.captureTimeout = 0;
 
         mCaptureOptionDefault.frameRate = IBioMiniDevice.FrameRate.SHIGH;
 
