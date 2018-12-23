@@ -188,7 +188,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                     }
                 }
 
-                dialog.dismiss();
+                progressDialog.dismiss();
 
                 if (isMatched && matchedVisitor != null){
                     Constants.showDialog(FingerprintActivity.this, "Match Found", "A match has been found for " + matchedVisitor.getName() + ". Tap OK to record", "OK", new MaterialDialog.SingleButtonCallback() {
@@ -197,7 +197,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                             dialog.dismiss();
                             //TODO: Check in on server
                         }
-                    });
+                    }).show();
                 }else{
                     Constants.showDialog(FingerprintActivity.this, "Match Not Found", "No user found with that fingerprint.", "REGISTER", new MaterialDialog.SingleButtonCallback() {
                         @Override
@@ -210,7 +210,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                             transaction.replace(android.R.id.content, fingerprintRegistrationFragment).addToBackStack(null).commit();
                         }
-                    });
+                    }).show();
                 }
 
             }
@@ -347,7 +347,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==android.R.id.home){
-            finish();
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -22,8 +22,8 @@ android {
         applicationId "miles.identigate.soja"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 14
-        versionName "10"
+        versionCode 15
+        versionName "11"
         vectorDrawables.useSupportLibrary = true
 
     }
