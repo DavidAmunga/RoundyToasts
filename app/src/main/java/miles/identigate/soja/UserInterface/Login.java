@@ -23,7 +23,6 @@ import java.net.URLEncoder;
 
 import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;

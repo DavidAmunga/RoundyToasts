@@ -34,11 +34,13 @@ import com.suprema.CaptureResponder;
 import com.suprema.IBioMiniDevice;
 import com.suprema.IUsbEventHandler;
 
-import org.apache.commons.codec.binary.Base64;
+import android.util.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,11 +67,14 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
     ImageView fingerprint;
     TextView place_finger;
+    TextView record_type;
     Button ok_button;
     Button submit_button;
     LinearLayout info;
     TextView name;
     TextView idNUmber;
+
+    boolean isCheckout = false;
 
     byte[] scannedFingerprint = null;
     int scannedLen = 0;
@@ -111,7 +116,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        place_finger.setText("Template captured.");
+                        place_finger.setText("Fingerprint captured.");
                     }
                 });
             }
@@ -163,6 +168,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        isCheckout = getIntent().getBooleanExtra("CHECKOUT", false);
+
         fingerprint = (ImageView)findViewById(R.id.fingerprint);
         place_finger = (TextView)findViewById(R.id.place_finger);
         ok_button = (Button)findViewById(R.id.ok_button);
@@ -170,6 +177,13 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         info = (LinearLayout)findViewById(R.id.info);
         name = (TextView)findViewById(R.id.name);
         idNUmber = (TextView)findViewById(R.id.idNUmber);
+        record_type = (TextView)findViewById(R.id.record_type);
+
+        if (isCheckout) {
+            record_type.setText("BIOMETRIC CHECKOUT");
+            ok_button.setText("CHECK OUT");
+            ok_button.setVisibility(View.VISIBLE);
+        }
 
         handler = new DatabaseHandler(FingerprintActivity.this);
 
@@ -194,7 +208,13 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
                 for (PremiseResident premiseResident :
                         handler.getPremiseResidents()) {
-                    byte[] decoded_data = org.apache.commons.codec.binary.Base64.decodeBase64(premiseResident.getFingerPrint().getBytes());
+                    if (premiseResident.getFingerPrint() == null || premiseResident.getFingerPrint().isEmpty() || premiseResident.getFingerPrint().equals("null")){
+                        continue;
+                    }
+
+                    String sample = "RRyRFJIAU0IihCGtBhkEYAMLIwThUIc2xRGlhwFkQ6MJkbBrIkjB5BTBzfH4KAHIIgwAwsHCOBvBTAJkKOEJAsQBJQdi8AXkAqMYBqFLAyAoowhTMAaGhFNQB2JMw3APoclDkAkbiXOUD3bIw5gJLIlTtA1sQ5PMCIJFUAJgkyD7E5CyyRcJMdHVGBOBAiEiFAjP////////////8G////////////////AgUHCQkK/////////////3YDBwoNDhEV/////////21ydQIGCAsNDxQZ//////9kaW9zdwUIDA0QExgb////XWBla3B1AwYLDQ8UGBwf/1dcXmJnbHMBBgsOERUaHCH/V1tdYGRpcHYECg8TFxocIP9YW11fYmZtdAIJEBUYGhsf/1lbXV9gY2lxAgoSFxgaGhz/W1xdXV5gZGx2CRIZGhsbHCBbW1tbW11fZnIJFBsdHR0fIlhYWFdWVlhdaQcXHyEhICElVlVVVFJRUlVcDB0jJCMhIv9SUlJQTUtKS0g0JScnJSMk/09QUE1JRkRCPTMrLCwoJCT//01MSURBPjo0LSsuLyoo////SkpGQT04MyojIysuLP//////RUIODMtIxgUHSkt/////////zgzLScgEQ8VH/////8=";
+
+                    byte[] decoded_data = Base64.decode(sample.replace(" ", "").trim(), Base64.DEFAULT);
                     if (mCurrentDevice.verify(scannedFingerprint, scannedLen, decoded_data, decoded_data.length)){
                         isMatched = true;
                         matchedPremiseResident = premiseResident;
@@ -204,27 +224,48 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
                 progressDialog.dismiss();
 
-                if (isMatched && matchedPremiseResident != null){
-                    Constants.showDialog(FingerprintActivity.this, "Match Found", "A match has been found for " + matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName() + ". Tap OK to record", "OK", new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            dialog.dismiss();
-                            //TODO: Check in on server
-                        }
-                    }).show();
-                }else{
-                    Constants.showDialog(FingerprintActivity.this, "Match Not Found", "No user found with that fingerprint.", "REGISTER", new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            dialog.dismiss();
-                            FragmentManager fragmentManager = getSupportFragmentManager();
-                            Bundle args = new Bundle();
-                            FingerprintRegistrationFragment fingerprintRegistrationFragment = FingerprintRegistrationFragment.newInstance();
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                            transaction.replace(android.R.id.content, fingerprintRegistrationFragment).addToBackStack(null).commit();
-                        }
-                    }).show();
+                if (isCheckout){
+                    if (isMatched && matchedPremiseResident != null) {
+                        Constants.showDialog(FingerprintActivity.this, matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName(), "A match has been found for " + matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName() + ". Tap CHECKOUT to check out", "CHECKOUT", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+
+                                recordCheckout();
+
+                            }
+                        }).show();
+                    } else {
+                        Constants.showDialog(FingerprintActivity.this, "Match Not Found", "No user found with that fingerprint. Please try again", "OK", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+                    }
+                }else {
+                    if (isMatched && matchedPremiseResident != null) {
+                        Constants.showDialog(FingerprintActivity.this, matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName(), "A match has been found for " + matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName() + ". Tap OK to record", "OK", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                                recordCheckIn();
+                            }
+                        }).show();
+                    } else {
+                        Constants.showDialog(FingerprintActivity.this, "Match Not Found", "No user found with that fingerprint.", "REGISTER", new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                dialog.dismiss();
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                Bundle args = new Bundle();
+                                FingerprintRegistrationFragment fingerprintRegistrationFragment = FingerprintRegistrationFragment.newInstance();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                                transaction.replace(android.R.id.content, fingerprintRegistrationFragment).addToBackStack(null).commit();
+                            }
+                        }).show();
+                    }
                 }
 
             }
@@ -367,24 +408,30 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     }
     @Override
     public void onFragmentInteraction(PremiseResident visitor) {
-        //Send to server
+        //Store locally and Send to server
+
+        final String fingerprintData = Base64.encodeToString(scannedFingerprint, Base64.DEFAULT);
+
         matchedPremiseResident = visitor;
+        matchedPremiseResident.setFingerPrint(fingerprintData);
+        matchedPremiseResident.setFingerPrintLen(scannedLen);
+        handler.updatePremiseResident(matchedPremiseResident);
 
         info.setVisibility(View.VISIBLE);
+        ok_button.setVisibility(View.VISIBLE);
         name.setText(visitor.getFirstName() + " " + visitor.getLastName());
         idNUmber.setText(visitor.getIdNumber());
-        ok_button.setText("SUBMIT");
+        ok_button.setText("REGISTER");
         ok_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Send registration data to server and check in automatically
                 //Toast.makeText(FingerprintActivity.this, "Registered", Toast.LENGTH_SHORT).show();
-                Base64 codec = new Base64();
-                String fingerprintData = codec.encodeBase64String(new String(scannedFingerprint).getBytes());
 
                 String urlParameters = "id=" + matchedPremiseResident.getId()+
                                         "&template=" + fingerprintData +
                                         "&length=" + scannedLen;
+
                 new RegisterFingerPrint().execute(preferences.getBaseURL() + "record_fingerprint", urlParameters);
             }
         });
@@ -411,11 +458,28 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                             int resultCode = obj.getInt("result_code");
                             String resultText = obj.getString("result_text");
                             if (resultCode == 0 && resultText.equals("OK")) {
-                                //Go to check in screen
-
-                            }
+                                recordCheckIn();
+                            }else{
+                                new MaterialDialog.Builder(FingerprintActivity.this)
+                                    .title("ERROR")
+                                    .content(resultText)
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                            //finish();
+                                        }
+                                    })
+                                    .show();
+                             }
                         } else {
                             // Failed
+                            new MaterialDialog.Builder(FingerprintActivity.this)
+                                    .title("Unable to record fingerprint")
+                                    .content("An error occurred while recording fingerprint. Please try again.")
+                                    .positiveText("Ok")
+                                    .show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -423,12 +487,179 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                     }
                 }else {
                     //Failed
+                    new MaterialDialog.Builder(FingerprintActivity.this)
+                            .title("Unable to record fingerprint")
+                            .content("An error occurred while recording fingerprint. Please try again.")
+                            .positiveText("Ok")
+                            .show();
                 }
 
             }else{
                 //Network issues
+                new MaterialDialog.Builder(FingerprintActivity.this)
+                        .title("Unable to record fingerprint")
+                        .content("An error occurred while recording fingerprint. Please try again.")
+                        .positiveText("Ok")
+                        .show();
             }
 
         }
     }
+    private void recordCheckIn(){
+        String urlParameters = "peoplerecord_id=" + matchedPremiseResident.getId()+
+                "&host_id=" + matchedPremiseResident.getHostId() +
+                "&house_id=" + matchedPremiseResident.getHouse() +
+                "&premise_zone_id=" + preferences.getPremiseZoneId() +
+                "&device_id=" + preferences.getDeviceId();
+        new ExpressCheckIn().execute(preferences.getBaseURL() + "express_checkin", urlParameters);
+    }
+    private void  recordCheckout(){
+        String urlParameters = null;
+        try {
+            urlParameters = "deviceID=" + preferences.getDeviceId()+
+                    "&peoplerecord_id=" + matchedPremiseResident.getId() +
+                    "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        new ExitAsync().execute(preferences.getBaseURL() + "express_checkout", urlParameters);
+    }
+    private class  ExpressCheckIn extends AsyncTask<String, Void, String>{
+        protected void onPreExecute(){
+            progressDialog = Constants.showProgressDialog(FingerprintActivity.this,"Check in", "Checking in resident....");
+            progressDialog.show();
+        }
+        @Override
+        protected String doInBackground(String... strings) {
+            return NetworkHandler.executePost(strings[0], strings[1]);
+        }
+        protected void onPostExecute(String result) {
+            progressDialog.dismiss();
+            try {
+                JSONObject obj = new JSONObject(result);
+                int resultCode = obj.getInt("result_code");
+                String resultText = obj.getString("result_text");
+                String resultContent = obj.getString("result_content");
+                if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
+                    //Successful check in
+                    new MaterialDialog.Builder(FingerprintActivity.this)
+                            .title("SUCCESS")
+                            .content("Visitor recorded successfully.")
+                            .positiveText("OK")
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    dialog.dismiss();
+                                    startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                                    finish();
+                                }
+                            })
+                            .show();
+                } else {
+                    if (resultText.contains("still in")) {
+                        new MaterialDialog.Builder(FingerprintActivity.this)
+                                .title("Soja")
+                                .content(resultText)
+                                .positiveText("OK")
+                                .negativeText("Check out")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        dialog.dismiss();
+
+                                    }
+
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        dialog.dismiss();
+                                        //TODO: check out
+                                        recordCheckout();
+                                    }
+                                })
+                                .show();
+                    } else {
+                        new MaterialDialog.Builder(FingerprintActivity.this)
+                                .title("Soja")
+                                .content(result)
+                                .positiveText("OK")
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        dialog.dismiss();
+                                        //finish();
+                                    }
+                                })
+                                .show();
+                    }
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+    private class ExitAsync extends AsyncTask<String, Void, String> {
+        MaterialDialog builder=new MaterialDialog.Builder(FingerprintActivity.this)
+                .title("Exit")
+                .content("Removing visitor...")
+                .progress(true, 0)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+        protected String  doInBackground(String... params) {
+            return NetworkHandler.executePost(params[0], params[1]);
+        }
+        protected void onPostExecute(String result) {
+            builder.dismiss();
+            if(result !=null){
+                try {
+                    if(result.contains("result_code")) {
+                        JSONObject obj = new JSONObject(result);
+                        int resultCode = obj.getInt("result_code");
+                        String resultText = obj.getString("result_text");
+                        String resultContent = obj.getString("result_content");
+                        if (resultText.equals("OK") && resultContent.equals("success")) {
+                            recordCheckIn();
+                        } else {
+                            new MaterialDialog.Builder(FingerprintActivity.this)
+                                    .title("ERROR")
+                                    .content(resultText)
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                            //finish();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }else {
+                        new MaterialDialog.Builder(FingerprintActivity.this)
+                                .title("Result")
+                                .content("Poor internet connection.")
+                                .positiveText("Ok")
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }else{
+                new MaterialDialog.Builder(FingerprintActivity.this)
+                        .title("Result")
+                        .content("Poor internet connection.")
+                        .positiveText("Ok")
+                        .show();
+            }
+        }
+    }
+
 }

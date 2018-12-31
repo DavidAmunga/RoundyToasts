@@ -106,7 +106,9 @@ public class CheckIn extends Fragment {
                         startActivity(new Intent(getActivity(), ScanQRActivity.class));
                         break;
                     case 3:
-                        startActivity(new Intent(getActivity(), FingerprintActivity.class));
+                        Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
+                        fingerPrint.putExtra("CHECKOUT", false);
+                        startActivity(fingerPrint);
                         break;
                     case 4:
 

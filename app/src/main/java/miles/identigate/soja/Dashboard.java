@@ -373,7 +373,11 @@ public class Dashboard extends SojaActivity {
                     JSONArray residentsArray = premiseResidentObject.getJSONArray("result_content");
                     for (int i = 0; i < residentsArray.length(); i++) {
                         JSONObject resident = residentsArray.getJSONObject(i);
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), resident.isNull("fingerprint")?null:resident.getString("fingerprint"), resident.getInt("fingerprint_length"));
+                        int length = 0;
+                        if(resident.getString("length") != "null"){
+                            length = Integer.valueOf(resident.getString("length"));
+                        }
+                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), resident.get("fingerprint")==null?null:resident.getString("fingerprint"),length, resident.getString("house_id"), resident.getString("host_id"));
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();

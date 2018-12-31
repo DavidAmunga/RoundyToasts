@@ -48,16 +48,16 @@
         android:visibility="gone"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <miles.identigate.soja.Font.OpenSansRegular
             android:layout_width="wrap_content"
             android:id="@+id/name"
-            android:text="OBARE OBADIAH"
+            android:text="Soja"
             android:layout_height="wrap_content" />
         <miles.identigate.soja.Font.OpenSansRegular
             android:layout_width="wrap_content"
             android:id="@+id/idNUmber"
-            android:text="33166582"
+            android:text="0000000"
             android:layout_height="wrap_content" />
     </LinearLayout>
 

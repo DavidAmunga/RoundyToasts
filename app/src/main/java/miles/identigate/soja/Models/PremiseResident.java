@@ -6,6 +6,26 @@ public class PremiseResident {
     String lastName;
     String fingerPrint;
 
+    String house;
+
+    public String getHouse() {
+        return house;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
+
+    public String getHostId() {
+        return hostId;
+    }
+
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
+    }
+
+    String hostId;
+
     public String getId() {
         return id;
     }

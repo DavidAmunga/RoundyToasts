@@ -8,6 +8,7 @@ import android.widget.ListView;
 
 import miles.identigate.soja.Adapters.Option;
 import miles.identigate.soja.ExpressCheckoutActivity;
+import miles.identigate.soja.FingerprintActivity;
 import miles.identigate.soja.R;
 import miles.identigate.soja.UserInterface.Visitors;
 
@@ -26,19 +27,22 @@ public class CheckOut extends ListFragment {
             "Drive Out",
             "Walk Out",
             "Residents",
+            "Biometric Checkin"
     };
     private String[] descriptions={
             "Scan QR to check out visitor",
             "Check out a driving visitor ",
             "Check out a visitor on foot",
-            "Check out a resident"
+            "Check out a resident",
+            "Check in using biometrics"
 
     };
     private int[] drawables={
             R.drawable.ic_action_out,
             R.drawable.ic_action_car,
             R.drawable.ic_action_walk,
-            R.drawable.ic_action_many
+            R.drawable.ic_action_many,
+            R.drawable.fingerprint
 
     };
     // TODO: Rename and change types of parameters
@@ -91,6 +95,11 @@ public class CheckOut extends ListFragment {
                 Intent resident=new Intent(getActivity().getApplicationContext(), Visitors.class);
                 resident.putExtra("TYPE","RESIDENTS");
                 startActivity(resident);
+                break;
+            case 4:
+                Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
+                fingerPrint.putExtra("CHECKOUT", true);
+                startActivity(fingerPrint);
                 break;
         }
     }

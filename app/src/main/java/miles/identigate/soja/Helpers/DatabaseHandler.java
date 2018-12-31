@@ -92,7 +92,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + TABLE_HOUSES + "(" + id + " TEXT, "+ description + " TEXT, " + hostId + " TEXT " +");";
 
     public final String CREATE_PREMISE_RESIDENTS_TABLE = "CREATE TABLE "
-            + TABLE_PREMISE_RESIDENTS + "(" + IDNUMBER + " TEXT, "+ FIRSTNAME + " TEXT, " + LASTNAME + " TEXT, " + FINGERPRINT + " TEXT, " + FINGERPRINTLEN + " INTEGER, " + id + " TEXT "
+            + TABLE_PREMISE_RESIDENTS + "(" + IDNUMBER + " TEXT, "+ FIRSTNAME + " TEXT, " + LASTNAME + " TEXT, " + FINGERPRINT + " TEXT, " + FINGERPRINTLEN + " INTEGER, " + id + " TEXT, " + house + " TEXT, " + hostId + " TEXT "
             +");";
 
     public DatabaseHandler(Context context) {
@@ -133,7 +133,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             onCreate(db);
 
         }
-        public void insertPremiseVisitor(String _id,String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen){
+        public void insertPremiseVisitor(String _id,String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId){
             SQLiteDatabase db = this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
@@ -143,6 +143,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(LASTNAME, lastName);
             values.put(IDNUMBER, idNumber);
             values.put(FINGERPRINTLEN, fingerprintLen);
+            values.put(house, _house);
+            values.put(hostId, _hostId);
             db.insert(TABLE_PREMISE_RESIDENTS, null, values);
             db.close();
         }
@@ -161,6 +163,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     premiseResident.setFingerPrint(cursor.getString(3));
                     premiseResident.setFingerPrintLen(cursor.getInt(4));
                     premiseResident.setId(cursor.getString(5));
+                    premiseResident.setHouse(cursor.getString(6));
+                    premiseResident.setHostId(cursor.getString(7));
+
                     premiseResidents.add(premiseResident);
                 } while (cursor.moveToNext());
             }
