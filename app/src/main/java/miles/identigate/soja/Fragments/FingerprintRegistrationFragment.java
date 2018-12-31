@@ -30,8 +30,10 @@ import org.json.JSONTokener;
 import java.util.ArrayList;
 
 import miles.identigate.soja.Adapters.FingerprintAdapter;
+import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.Models.PremiseResident;
 import miles.identigate.soja.Models.Visitor;
 import miles.identigate.soja.R;
 import miles.identigate.soja.listeners.OnRecyclerViewClicked;
@@ -41,7 +43,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
     EditText searchbox;
     ContentLoadingProgressBar loading;
     RecyclerView recyclerView;
-    ArrayList<Visitor> visitors = new ArrayList<>();
+    ArrayList<PremiseResident> premiseResidents = new ArrayList<>();
     LinearLayoutManager lLayout;
     NestedScrollView main_content;
     FingerprintAdapter fingerprintAdapter;
@@ -50,6 +52,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
     Preferences preferences;
 
     private OnFragmentInteractionListener mListener;
+    DatabaseHandler handler;
 
     public FingerprintRegistrationFragment() {
         // Required empty public constructor
@@ -77,6 +80,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         context = getActivity();
         preferences = new Preferences(context);
+        handler = new DatabaseHandler(context);
     }
 
     @Override
@@ -91,7 +95,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setNestedScrollingEnabled(false);
 
-        fingerprintAdapter = new FingerprintAdapter(visitors);
+        fingerprintAdapter = new FingerprintAdapter(premiseResidents);
 
         lLayout = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -102,7 +106,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new OnRecyclerViewClicked() {
             @Override
             public void onClick(View view, int position) {
-                Visitor visitor = visitors.get(position);
+                PremiseResident visitor = premiseResidents.get(position);
                 onButtonPressed(visitor);
             }
 
@@ -122,11 +126,9 @@ public class FingerprintRegistrationFragment extends DialogFragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String text = searchbox.getText().toString().toLowerCase().trim();
                 if (!text.isEmpty()){
-                    String s = preferences.getBaseURL();
-                    String url = s.substring(0,s.length()-11);
-                    new SearchService().execute((url+"api/visitors/visitors_in/" + preferences.getPremise()));
+                    new SearchService().execute(text);
                 }else{
-                    visitors.clear();
+                    premiseResidents.clear();
                     fingerprintAdapter.notifyDataSetChanged();
                 }
 
@@ -141,7 +143,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         return view;
     }
 
-    public void onButtonPressed(Visitor visitor) {
+    public void onButtonPressed(PremiseResident visitor) {
         if (mListener != null) {
             mListener.onFragmentInteraction(visitor);
         }
@@ -167,57 +169,39 @@ public class FingerprintRegistrationFragment extends DialogFragment {
 
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Visitor visitor);
+        void onFragmentInteraction(PremiseResident visitor);
     }
 
-    private class SearchService extends AsyncTask<String, Void,String> {
+    private class SearchService extends AsyncTask<String, Void,ArrayList<PremiseResident>> {
         protected void onPreExecute(){
             main_content.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected String doInBackground(String... strings) {
-            return NetworkHandler.GET(strings[0]);
-        }
-        @Override
-        protected void onPostExecute(String s){
-            loading.setVisibility(View.GONE);
-            main_content.setVisibility(View.VISIBLE);
-            if(s !=null) {
-                Object json = null;
-                try {
-                    json = new JSONTokener(s).nextValue();
-                    if (json instanceof JSONObject) {
-                        JSONObject object = new JSONObject(s);
-                        JSONArray array = object.getJSONArray("result_content");
-                        if (array.length() > 0) {
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject item = array.getJSONObject(i);
-                                String name = item.getString("fullname");
-                                String id = item.getString("id_number");
-                                String entry = item.getString("entry_time");
-                                String house = item.getString("house");
-
-                                Visitor visitor = new Visitor();
-                                visitor.setName(name);
-                                visitor.setNational_id(id);
-                                visitors.add(visitor);
-                            }
-                            loading.setVisibility(View.GONE);
-                            main_content.setVisibility(View.VISIBLE);
-                            fingerprintAdapter.notifyDataSetChanged();
-                        } else {
-                            loading.setVisibility(View.GONE);
-                            main_content.setVisibility(View.GONE);
-                        }
-                    } else {
-                        loading.setVisibility(View.GONE);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        protected ArrayList<PremiseResident> doInBackground(String... strings) {
+            String text =  strings[0];
+            ArrayList<PremiseResident> premiseResidents = new ArrayList<>();
+            ArrayList<PremiseResident> allPremiseResidents = handler.getPremiseResidents();
+            for (PremiseResident premiseResident: allPremiseResidents){
+                if (premiseResident.getFirstName().toLowerCase().trim().contains(text.toLowerCase().trim())) {
+                    premiseResidents.add(premiseResident);
+                }else if (premiseResident.getLastName().toLowerCase().trim().contains(text.toLowerCase().trim())){
+                    premiseResidents.add(premiseResident);
+                }else if (premiseResident.getIdNumber().toLowerCase().trim().contains(text.toLowerCase().trim())){
+                    premiseResidents.add(premiseResident);
                 }
             }
+            return premiseResidents;
+        }
+        @Override
+        protected void onPostExecute(ArrayList<PremiseResident> _premiseResidents){
+            loading.setVisibility(View.GONE);
+            main_content.setVisibility(View.VISIBLE);
+            for (int i = 0; i < _premiseResidents.size(); i++) {
+                premiseResidents.add(_premiseResidents.get(i));
+            }
+            fingerprintAdapter.notifyDataSetChanged();
 
         }
     }

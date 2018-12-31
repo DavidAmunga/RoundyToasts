@@ -58,6 +58,7 @@ public class Dashboard extends SojaActivity {
     String providerResult;
     String incidentsResult;
     String houseResult;
+    String premiseResidentResult;
     Preferences preferences;
     private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
@@ -199,6 +200,7 @@ public class Dashboard extends SojaActivity {
                             db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
                             db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
                             db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
+                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_PREMISE_RESIDENTS);
 
                             SharedPreferences getPrefs = PreferenceManager
                                     .getDefaultSharedPreferences(getBaseContext());
@@ -287,6 +289,7 @@ public class Dashboard extends SojaActivity {
             providerResult=NetworkHandler.GET(preferences.getBaseURL()+"service-providers");
             incidentsResult=NetworkHandler.GET(preferences.getBaseURL()+"incident-types");
             houseResult=NetworkHandler.GET(preferences.getBaseURL()+"houses-blocks/zone/"+preferences.getPremiseZoneId());
+            premiseResidentResult =  NetworkHandler.GET(preferences.getBaseURL() + "houses-residents/?premise=" + preferences.getPremise());
             return "success";
         }
 
@@ -297,7 +300,7 @@ public class Dashboard extends SojaActivity {
         }
     }
     public void getAllData(){
-        if(visitorResult==null||providerResult==null||incidentsResult==null||houseResult==null){
+        if(visitorResult==null||providerResult==null||incidentsResult==null||houseResult==null || premiseResidentResult == null){
             Toast.makeText(getApplicationContext(),"An error occurred",Toast.LENGTH_LONG).show();
         }else {
             try {
@@ -305,17 +308,21 @@ public class Dashboard extends SojaActivity {
                 JSONObject providerObject = new JSONObject(providerResult);
                 JSONObject incidentsObject = new JSONObject(incidentsResult);
                 JSONObject housesObject=new JSONObject(houseResult);
+                JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
                 db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
                 db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
                 db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
+                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_PREMISE_RESIDENTS);
 
                 db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
                 db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);
                 db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS_TYPES);
                 db.execSQL(handler.CREATE_TABLE_HOUSES);
+                db.execSQL(handler.CREATE_PREMISE_RESIDENTS_TABLE);
+
                 /*db.execSQL(handler.CREATE_TABLE_DRIVE_IN);
                 db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS);
                 db.execSQL(handler.CREATE_TABLE_RESIDENTS);
@@ -352,7 +359,7 @@ public class Dashboard extends SojaActivity {
                 }
 
                 //Houses
-                if (housesObject.getInt("result_code") == 0 && incidentsObject.getString("result_text").equals("OK")) {
+                if (housesObject.getInt("result_code") == 0 && housesObject.getString("result_text").equals("OK")) {
                     JSONArray housesArray = housesObject.getJSONArray("result_content");
                     for (int i = 0; i < housesArray.length(); i++) {
                         JSONObject house = housesArray.getJSONObject(i);
@@ -361,6 +368,17 @@ public class Dashboard extends SojaActivity {
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve houses", Toast.LENGTH_SHORT).show();
                 }
+
+                if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
+                    JSONArray residentsArray = premiseResidentObject.getJSONArray("result_content");
+                    for (int i = 0; i < residentsArray.length(); i++) {
+                        JSONObject resident = residentsArray.getJSONObject(i);
+                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), resident.isNull("fingerprint")?null:resident.getString("fingerprint"), resident.getInt("fingerprint_length"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

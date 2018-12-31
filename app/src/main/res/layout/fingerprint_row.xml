@@ -10,4 +10,9 @@
         android:id="@+id/name"
         android:text="Soja"
         android:layout_height="wrap_content" />
+    <miles.identigate.soja.Font.OpenSansRegular
+        android:layout_width="wrap_content"
+        android:id="@+id/idNumber"
+        android:text="0000000"
+        android:layout_height="wrap_content" />
 </LinearLayout>

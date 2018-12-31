@@ -77,4 +77,7 @@ dependencies {
     implementation project(':libBioMini_v20')
     implementation files('libs/PosUtil.jar')
     implementation files('libs/fingerprintControl.jar')
+
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.11'
+
 }

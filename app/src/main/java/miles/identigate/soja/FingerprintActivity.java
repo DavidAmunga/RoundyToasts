@@ -1,7 +1,6 @@
 package miles.identigate.soja;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -34,7 +34,11 @@ import com.suprema.CaptureResponder;
 import com.suprema.IBioMiniDevice;
 import com.suprema.IUsbEventHandler;
 
-import java.util.ArrayList;
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,8 +46,11 @@ import java.util.Locale;
 
 import miles.identigate.soja.Fragments.FingerprintRegistrationFragment;
 import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.DatabaseHandler;
+import miles.identigate.soja.Helpers.NetworkHandler;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Models.Visitor;
+import miles.identigate.soja.Models.PremiseResident;
 
 public class FingerprintActivity extends SojaActivity implements FingerprintRegistrationFragment.OnFragmentInteractionListener {
 
@@ -53,6 +60,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     private PendingIntent mPermissionIntent= null;
 
     public static final int REQUEST_WRITE_PERMISSION = 786;
+
+    DatabaseHandler handler;
 
     ImageView fingerprint;
     TextView place_finger;
@@ -65,15 +74,15 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     byte[] scannedFingerprint = null;
     int scannedLen = 0;
 
-    Visitor matchedVisitor = null;
+    PremiseResident matchedPremiseResident = null;
 
     MaterialDialog progressDialog;
     MaterialDialog dialog;
+    Preferences preferences;
 
     private static BioMiniFactory mBioMiniFactory = null;
     public IBioMiniDevice mCurrentDevice = null;
 
-    private ArrayList<Visitor> visitors = new ArrayList<>();
     private IBioMiniDevice.CaptureOption mCaptureOptionDefault = new IBioMiniDevice.CaptureOption();
     private CaptureResponder mCaptureResponseDefault = new CaptureResponder() {
         @Override
@@ -150,6 +159,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fingerprint);
+        preferences = new Preferences(this);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         fingerprint = (ImageView)findViewById(R.id.fingerprint);
@@ -159,6 +170,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         info = (LinearLayout)findViewById(R.id.info);
         name = (TextView)findViewById(R.id.name);
         idNUmber = (TextView)findViewById(R.id.idNUmber);
+
+        handler = new DatabaseHandler(FingerprintActivity.this);
 
         mCaptureOptionDefault.captureImage = true;
         mCaptureOptionDefault.captureTemplate = true;
@@ -179,19 +192,20 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
                 boolean isMatched = false;
 
-                for (Visitor visitor :
-                        visitors) {
-                    if (mCurrentDevice.verify(scannedFingerprint, scannedLen, visitor.getFingerprint(), visitor.getFingerprint().length)){
+                for (PremiseResident premiseResident :
+                        handler.getPremiseResidents()) {
+                    byte[] decoded_data = org.apache.commons.codec.binary.Base64.decodeBase64(premiseResident.getFingerPrint().getBytes());
+                    if (mCurrentDevice.verify(scannedFingerprint, scannedLen, decoded_data, decoded_data.length)){
                         isMatched = true;
-                        matchedVisitor = visitor;
+                        matchedPremiseResident = premiseResident;
                         break;
                     }
                 }
 
                 progressDialog.dismiss();
 
-                if (isMatched && matchedVisitor != null){
-                    Constants.showDialog(FingerprintActivity.this, "Match Found", "A match has been found for " + matchedVisitor.getName() + ". Tap OK to record", "OK", new MaterialDialog.SingleButtonCallback() {
+                if (isMatched && matchedPremiseResident != null){
+                    Constants.showDialog(FingerprintActivity.this, "Match Found", "A match has been found for " + matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName() + ". Tap OK to record", "OK", new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             dialog.dismiss();
@@ -352,20 +366,69 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         return super.onOptionsItemSelected(item);
     }
     @Override
-    public void onFragmentInteraction(Visitor visitor) {
-        //TODO: Update UI
+    public void onFragmentInteraction(PremiseResident visitor) {
         //Send to server
-        matchedVisitor = visitor;
+        matchedPremiseResident = visitor;
+
         info.setVisibility(View.VISIBLE);
-        name.setText(visitor.getName());
-        idNUmber.setText(visitor.getNational_id());
+        name.setText(visitor.getFirstName() + " " + visitor.getLastName());
+        idNUmber.setText(visitor.getIdNumber());
         ok_button.setText("SUBMIT");
         ok_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Send register to server and check in automatically
-                Toast.makeText(FingerprintActivity.this, "Registered", Toast.LENGTH_SHORT).show();
+                // Send registration data to server and check in automatically
+                //Toast.makeText(FingerprintActivity.this, "Registered", Toast.LENGTH_SHORT).show();
+                Base64 codec = new Base64();
+                String fingerprintData = codec.encodeBase64String(new String(scannedFingerprint).getBytes());
+
+                String urlParameters = "id=" + matchedPremiseResident.getId()+
+                                        "&template=" + fingerprintData +
+                                        "&length=" + scannedLen;
+                new RegisterFingerPrint().execute(preferences.getBaseURL() + "record_fingerprint", urlParameters);
             }
         });
+    }
+    private class RegisterFingerPrint extends AsyncTask<String, Void, String>{
+
+        protected void onPreExecute(){
+            progressDialog = Constants.showProgressDialog(FingerprintActivity.this,"Registering Fingerprint", "Registering fingerprint...");
+            progressDialog.show();
+        }
+        @Override
+        protected String doInBackground(String... strings) {
+            return NetworkHandler.executePost(strings[0], strings[1]);
+        }
+        protected void onPostExecute(String result) {
+            progressDialog.dismiss();
+            if(result !=null){
+                if(result.contains("result_code")) {
+                    try {
+                        Object json=new JSONTokener(result).nextValue();
+                        if (json instanceof JSONObject){
+                            //
+                            JSONObject obj = new JSONObject(result);
+                            int resultCode = obj.getInt("result_code");
+                            String resultText = obj.getString("result_text");
+                            if (resultCode == 0 && resultText.equals("OK")) {
+                                //Go to check in screen
+
+                            }
+                        } else {
+                            // Failed
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        //Failed
+                    }
+                }else {
+                    //Failed
+                }
+
+            }else{
+                //Network issues
+            }
+
+        }
     }
 }
