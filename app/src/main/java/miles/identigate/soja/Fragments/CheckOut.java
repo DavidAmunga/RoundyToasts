@@ -27,14 +27,14 @@ public class CheckOut extends ListFragment {
             "Drive Out",
             "Walk Out",
             "Residents",
-            "Biometric Checkin"
+            "Biometric Checkout"
     };
     private String[] descriptions={
             "Scan QR to check out visitor",
             "Check out a driving visitor ",
             "Check out a visitor on foot",
             "Check out a resident",
-            "Check in using biometrics"
+            "Check out using biometrics"
 
     };
     private int[] drawables={
