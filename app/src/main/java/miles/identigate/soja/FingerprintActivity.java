@@ -212,9 +212,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                         continue;
                     }
 
-                    String sample = "RRyRFJIAU0IihCGtBhkEYAMLIwThUIc2xRGlhwFkQ6MJkbBrIkjB5BTBzfH4KAHIIgwAwsHCOBvBTAJkKOEJAsQBJQdi8AXkAqMYBqFLAyAoowhTMAaGhFNQB2JMw3APoclDkAkbiXOUD3bIw5gJLIlTtA1sQ5PMCIJFUAJgkyD7E5CyyRcJMdHVGBOBAiEiFAjP////////////8G////////////////AgUHCQkK/////////////3YDBwoNDhEV/////////21ydQIGCAsNDxQZ//////9kaW9zdwUIDA0QExgb////XWBla3B1AwYLDQ8UGBwf/1dcXmJnbHMBBgsOERUaHCH/V1tdYGRpcHYECg8TFxocIP9YW11fYmZtdAIJEBUYGhsf/1lbXV9gY2lxAgoSFxgaGhz/W1xdXV5gZGx2CRIZGhsbHCBbW1tbW11fZnIJFBsdHR0fIlhYWFdWVlhdaQcXHyEhICElVlVVVFJRUlVcDB0jJCMhIv9SUlJQTUtKS0g0JScnJSMk/09QUE1JRkRCPTMrLCwoJCT//01MSURBPjo0LSsuLyoo////SkpGQT04MyojIysuLP//////RUIODMtIxgUHSkt/////////zgzLScgEQ8VH/////8=";
-
-                    byte[] decoded_data = Base64.decode(sample.replace(" ", "").trim(), Base64.DEFAULT);
+                    byte[] decoded_data = Base64.decode(premiseResident.getFingerPrint(), Base64.DEFAULT);
                     if (mCurrentDevice.verify(scannedFingerprint, scannedLen, decoded_data, decoded_data.length)){
                         isMatched = true;
                         matchedPremiseResident = premiseResident;

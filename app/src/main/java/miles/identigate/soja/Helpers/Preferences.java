@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 /**
  * Created by miles on 2/2/16.
+ *
  */
 public class Preferences {
     private Context _context;
