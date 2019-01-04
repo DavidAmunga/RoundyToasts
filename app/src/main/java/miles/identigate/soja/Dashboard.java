@@ -369,8 +369,7 @@ public class Dashboard extends SojaActivity {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve houses", Toast.LENGTH_SHORT).show();
                 }
 
-                /**
-                 * if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
+               if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
                     JSONArray residentsArray = premiseResidentObject.getJSONArray("result_content");
                     for (int i = 0; i < residentsArray.length(); i++) {
                         JSONObject resident = residentsArray.getJSONObject(i);
@@ -378,12 +377,12 @@ public class Dashboard extends SojaActivity {
                         if(resident.getString("length") != "null"){
                             length = Integer.valueOf(resident.getString("length"));
                         }
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), resident.get("fingerprint")==null?null:resident.getString("fingerprint"),length, resident.getString("house_id"), resident.getString("host_id"));
+                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), null,0, resident.getString("house_id"), resident.getString("host_id"));
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();
                 }
-                 */
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
