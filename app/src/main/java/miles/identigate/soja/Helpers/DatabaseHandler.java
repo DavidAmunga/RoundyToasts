@@ -176,9 +176,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
 
-            values.put(FIRSTNAME, premiseResident.getFirstName());
-            values.put(LASTNAME, premiseResident.getLastName());
-            values.put(IDNUMBER, premiseResident.getIdNumber());
             values.put(FINGERPRINT, premiseResident.getFingerPrint());
             values.put(FINGERPRINTLEN, premiseResident.getFingerPrintLen());
 

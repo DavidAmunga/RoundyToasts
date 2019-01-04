@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import miles.identigate.soja.Fragments.CheckIn;
 import miles.identigate.soja.Fragments.CheckOut;
 import miles.identigate.soja.Fragments.Logs;
@@ -40,6 +43,7 @@ import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
+import miles.identigate.soja.Models.PremiseResident;
 import miles.identigate.soja.Services.SyncService;
 //import miles.identigate.soja.UserInterface.Login;
 
@@ -131,6 +135,7 @@ public class Dashboard extends SojaActivity {
             finish();
         }
         askPermissions();
+
     }
     private void askPermissions(){
         if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

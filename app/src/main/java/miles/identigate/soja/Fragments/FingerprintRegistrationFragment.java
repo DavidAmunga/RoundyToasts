@@ -3,12 +3,10 @@ package miles.identigate.soja.Fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,19 +20,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import java.util.ArrayList;
 
 import miles.identigate.soja.Adapters.FingerprintAdapter;
 import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Models.PremiseResident;
-import miles.identigate.soja.Models.Visitor;
 import miles.identigate.soja.R;
 import miles.identigate.soja.listeners.OnRecyclerViewClicked;
 import miles.identigate.soja.listeners.RecyclerTouchListener;
@@ -198,9 +189,13 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         protected void onPostExecute(ArrayList<PremiseResident> _premiseResidents){
             loading.setVisibility(View.GONE);
             main_content.setVisibility(View.VISIBLE);
+
+            premiseResidents.clear();
+
             for (int i = 0; i < _premiseResidents.size(); i++) {
                 premiseResidents.add(_premiseResidents.get(i));
             }
+
             fingerprintAdapter.notifyDataSetChanged();
 
         }
