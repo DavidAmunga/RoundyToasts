@@ -218,6 +218,7 @@
             android:name=".AdminSettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".FingerprintActivity" />
+        <activity android:name=".SmsCheckInActivity" android:parentActivityName=".Dashboard"></activity>
     </application>
 
 </manifest>

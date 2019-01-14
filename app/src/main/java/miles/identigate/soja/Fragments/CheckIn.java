@@ -3,6 +3,7 @@ package miles.identigate.soja.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.ScanQRActivity;
+import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.app.Common;
 
@@ -24,6 +26,8 @@ public class CheckIn extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String TAG = "CheckIn";
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -32,6 +36,7 @@ public class CheckIn extends Fragment {
             "Walk In",
             "Residents",
             "Biometric Checkin",
+            "SMS Check In",
             "Incident"
     };
     private String[] descriptions={
@@ -39,6 +44,7 @@ public class CheckIn extends Fragment {
             "Record walking visitor",
             "Check in a resident",
             "Check in using biometrics",
+            "Check in a Visitor without an ID",
             "Report an incident"
 
     };
@@ -47,6 +53,7 @@ public class CheckIn extends Fragment {
             R.drawable.ic_action_walk,
             R.drawable.ic_action_walk,
             R.drawable.fingerprint,
+            R.drawable.ic_message,
             R.drawable.ic_incident
 
     };
@@ -87,6 +94,8 @@ public class CheckIn extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent(getActivity(), ScanActivity.class);
                 Bundle extras=new Bundle();
+
+                Log.d(TAG, "onItemClick: "+position);
              switch (position) {
                     case 0:
                         extras.putInt("TargetActivity", Common.DRIVE_IN);
@@ -115,8 +124,15 @@ public class CheckIn extends Fragment {
                        /* extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);
                         startActivity(intent);*/
-                        startActivity(new Intent(getActivity(), Incident.class));
+                        startActivity(new Intent(getActivity(), SmsCheckInActivity.class));
                         break;
+                    case 5:
+
+                       /* extras.putInt("TargetActivity", Common.RESIDENTS);
+                        intent.putExtras(extras);
+                        startActivity(intent);*/
+                     startActivity(new Intent(getActivity(), Incident.class));
+                     break;
                 }
                 //startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_left);
