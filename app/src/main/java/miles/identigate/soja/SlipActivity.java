@@ -1,6 +1,6 @@
 package miles.identigate.soja;
 
-import android.bluetooth.BluetoothAdapter;;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -56,13 +56,13 @@ public class SlipActivity extends SojaActivity {
         super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
         setContentView(R.layout.activity_slip);
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ok = (ImageView)findViewById(R.id.ok);
-        cancel = (ImageView)findViewById(R.id.cancel);
-        slip = (TextView)findViewById(R.id.title);
+        ok = findViewById(R.id.ok);
+        cancel = findViewById(R.id.cancel);
+        slip = findViewById(R.id.title);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null){
@@ -235,7 +235,7 @@ public class SlipActivity extends SojaActivity {
                 })
                 .build();
         View view=dialog.getCustomView();
-        TextView messageText=(TextView)view.findViewById(R.id.message);
+        TextView messageText = view.findViewById(R.id.message);
         messageText.setText("Visitor has been successfully recorded.");
         dialog.show();
     }
@@ -252,18 +252,18 @@ public class SlipActivity extends SojaActivity {
             int iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.Buzzer=(Value[0]==0?false:true);
+            PrinterProperty.Buzzer = (Value[0] != 0);
 
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.Cut=(Value[0]==0?false:true);
+            PrinterProperty.Cut = (Value[0] != 0);
             //btnCut.setVisibility((PrinterProperty.Cut?View.VISIBLE:View.GONE));
 
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_DRAWER, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.Cashdrawer=(Value[0]==0?false:true);
+            PrinterProperty.Cashdrawer = (Value[0] != 0);
             //btnOpenCashDrawer.setVisibility((PrinterProperty.Cashdrawer?View.VISIBLE:View.GONE));
 
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BARCODE, propType, Value,DataLen);
@@ -279,12 +279,12 @@ public class SlipActivity extends SojaActivity {
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.Pagemode=(Value[0]==0?false:true);
+            PrinterProperty.Pagemode = (Value[0] != 0);
 
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_GET_REMAINING_POWER, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.GetRemainingPower=(Value[0]==0?false:true);
+            PrinterProperty.GetRemainingPower = (Value[0] != 0);
             //btnGetRemainingPower.setVisibility((PrinterProperty.GetRemainingPower?View.VISIBLE:View.GONE));
 
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_CONNECT_TYPE, propType, Value,DataLen);
@@ -295,7 +295,7 @@ public class SlipActivity extends SojaActivity {
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PRINT_RECEIPT, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.SampleReceipt=(Value[0]==0?false:true);
+            PrinterProperty.SampleReceipt = (Value[0] != 0);
             //btnSampleReceipt.setVisibility((PrinterProperty.SampleReceipt?View.VISIBLE:View.GONE));
         }
         catch(Exception e)
@@ -344,7 +344,7 @@ public class SlipActivity extends SojaActivity {
             iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_WIDTH, propType, Value,DataLen);
             if(iRtn!=0)
                 return;
-            PrinterProperty.PrintableWidth=(int)(Value[0] & 0xFF | ((Value[1] & 0xFF) <<8));
+            PrinterProperty.PrintableWidth = Value[0] & 0xFF | ((Value[1] & 0xFF) << 8);
         }
         catch(Exception e)
         {

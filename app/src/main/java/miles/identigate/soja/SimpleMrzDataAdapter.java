@@ -35,9 +35,9 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
 		DocumentReaderTextField p = getItem(position);
 
 		if (p != null) {
-			TextView name = (TextView) v.findViewById(R.id.nameTv);
-			TextView textValue = (TextView) v.findViewById(R.id.valueTv);
-			LinearLayout layout = (LinearLayout) v.findViewById(R.id.simpleItemLayout);
+            TextView name = v.findViewById(R.id.nameTv);
+            TextView textValue = v.findViewById(R.id.valueTv);
+            LinearLayout layout = v.findViewById(R.id.simpleItemLayout);
 
 			textValue.setTypeface(Typeface.MONOSPACE);
 

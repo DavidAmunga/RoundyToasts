@@ -47,7 +47,7 @@ public class ScanQRActivity extends AppCompatActivity {
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
-        scan_icon=(ImageView)findViewById(R.id.scan_icon);
+        scan_icon = findViewById(R.id.scan_icon);
         scan_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

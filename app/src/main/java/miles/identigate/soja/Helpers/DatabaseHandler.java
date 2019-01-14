@@ -547,34 +547,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         public void insertVisitorType(String id,String name){
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put(this.name,name);
-            values.put(this.id,id);
+            values.put(DatabaseHandler.name, name);
+            values.put(DatabaseHandler.id, id);
             db.insert(TABLE_VISITOR_TYPES, null, values);
             db.close();
         }
         public void insertServiceProviderType(String id,String name,String description){
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put(this.name,name);
-            values.put(this.id,id);
-            values.put(this.description,description);
+            values.put(DatabaseHandler.name, name);
+            values.put(DatabaseHandler.id, id);
+            values.put(DatabaseHandler.description, description);
             db.insert(TABLE_SERVICE_PROVIDERS_TYPES, null, values);
             db.close();
         }
         public void insertIncidentTypes(String id,String description){
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put(this.description,description);
-            values.put(this.id,id);
+            values.put(DatabaseHandler.description, description);
+            values.put(DatabaseHandler.id, id);
             db.insert(TABLE_INCIDENT_TYPES, null, values);
             db.close();
         }
         public void insertHouse(String houseId,String houseDescription,String hostId){
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
-            values.put(this.id,houseId);
-            values.put(this.description,houseDescription);
-            values.put(this.hostId,hostId);
+            values.put(id, houseId);
+            values.put(description, houseDescription);
+            values.put(DatabaseHandler.hostId, hostId);
             db.insert(TABLE_HOUSES, null, values);
             db.close();
         }

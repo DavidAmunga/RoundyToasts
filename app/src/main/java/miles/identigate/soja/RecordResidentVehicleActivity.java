@@ -64,15 +64,15 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
-        title=(TextView)findViewById(R.id.title);
-        car_number=(EditText)findViewById(R.id.car_number);
-        ownerLayout=(LinearLayout)findViewById(R.id.ownerLayout);
+        title = findViewById(R.id.title);
+        car_number = findViewById(R.id.car_number);
+        ownerLayout = findViewById(R.id.ownerLayout);
 
         houses=handler.getTypes("houses");
-        car_house=(Spinner)findViewById(R.id.car_house);
-        car_owner=(EditText)findViewById(R.id.car_owner);
-        car_house_edit=(EditText)findViewById(R.id.car_house_edit);
-        record=(Button)findViewById(R.id.record);
+        car_house = findViewById(R.id.car_house);
+        car_owner = findViewById(R.id.car_owner);
+        car_house_edit = findViewById(R.id.car_house_edit);
+        record = findViewById(R.id.record);
         if (getIntent().getExtras()== null){
             finish();
         }else {

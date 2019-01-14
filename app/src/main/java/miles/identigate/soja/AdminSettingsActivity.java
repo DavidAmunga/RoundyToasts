@@ -42,23 +42,23 @@ public class AdminSettingsActivity extends SojaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         preferences = new Preferences(this);
         handler=new DatabaseHandler(this);
 
-        custom_ip = (EditText)findViewById(R.id.custom_ip);
-        set = (Button)findViewById(R.id.set);
-        custom = (RadioButton)findViewById(R.id.custom);
-        main = (RadioButton)findViewById(R.id.main);
+        custom_ip = findViewById(R.id.custom_ip);
+        set = findViewById(R.id.set);
+        custom = findViewById(R.id.custom);
+        main = findViewById(R.id.main);
 
-        printerSwitch = (Switch)findViewById(R.id.printer);
-        phoneSwitch = (Switch)findViewById(R.id.phone);
-        companySwitch = (Switch)findViewById(R.id.company);
-        host = (Switch)findViewById(R.id.host);
-        fingerprints = (Switch)findViewById(R.id.fingerprints);
+        printerSwitch = findViewById(R.id.printer);
+        phoneSwitch = findViewById(R.id.phone);
+        companySwitch = findViewById(R.id.company);
+        host = findViewById(R.id.host);
+        fingerprints = findViewById(R.id.fingerprints);
 
         printerSwitch.setChecked(preferences.canPrint());
         phoneSwitch.setChecked(preferences.isPhoneNumberEnabled());

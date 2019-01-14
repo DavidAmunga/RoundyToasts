@@ -66,16 +66,16 @@ public class Incident extends SojaActivity {;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incident);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         handler=new DatabaseHandler(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        incident_types=(Spinner)findViewById(R.id.incident_types);
-        visitorInvolved=(Spinner)findViewById(R.id.visitorInvolved);
-        visitor=(Spinner)findViewById(R.id.visitor);
-        description=(EditText)findViewById(R.id.comment);
-        record=(Button)findViewById(R.id.record);
-        visitorLayout=(LinearLayout)findViewById(R.id.visitorLayout);
+        incident_types = findViewById(R.id.incident_types);
+        visitorInvolved = findViewById(R.id.visitorInvolved);
+        visitor = findViewById(R.id.visitor);
+        description = findViewById(R.id.comment);
+        record = findViewById(R.id.record);
+        visitorLayout = findViewById(R.id.visitorLayout);
         preferences=new Preferences(this);
 
         //visitorTypes=handler.getTypes("visitors");

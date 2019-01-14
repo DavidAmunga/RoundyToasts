@@ -24,10 +24,10 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
        View view=inflater.inflate(R.layout.fragment_menu, container, false);
-       recordDrive=(CardView)view.findViewById(R.id.recordDrive);
-        recordWalk=(CardView)view.findViewById(R.id.recordWalk);
-        activeVisitors=(CardView)view.findViewById(R.id.activeVisitors);
-        logout=(CardView)view.findViewById(R.id.logout);
+        recordDrive = view.findViewById(R.id.recordDrive);
+        recordWalk = view.findViewById(R.id.recordWalk);
+        activeVisitors = view.findViewById(R.id.activeVisitors);
+        logout = view.findViewById(R.id.logout);
         recordDrive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

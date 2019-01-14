@@ -50,16 +50,16 @@ public class RecordExit extends SojaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_exit);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         handler=new DatabaseHandler(this);
-        record=(Button)findViewById(R.id.commentRecord);
-        mode=(Spinner)findViewById(R.id.mode);
-        name=(TextView)findViewById(R.id.name);
-        idNumber=(TextView)findViewById(R.id.idNumber);
-        car=(TextView)findViewById(R.id.car);
-        entry=(TextView)findViewById(R.id.entry);
+        record = findViewById(R.id.commentRecord);
+        mode = findViewById(R.id.mode);
+        name = findViewById(R.id.name);
+        idNumber = findViewById(R.id.idNumber);
+        car = findViewById(R.id.car);
+        entry = findViewById(R.id.entry);
         //comment=(EditText)findViewById(R.id.comment);
         preferences=new Preferences(this);
         if(getIntent() !=null){

@@ -57,8 +57,8 @@ public class Visitors extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visitors);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView title=(TextView)toolbar.findViewById(R.id.title);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView title = toolbar.findViewById(R.id.title);
         title.setText("Check Out");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -68,9 +68,9 @@ public class Visitors extends AppCompatActivity {
         walkIns=new ArrayList<>();
         serviceProviderModels=new ArrayList<>();
         residents=new ArrayList<>();
-        lv=(ListView)findViewById(R.id.visitors);
-        loading=(ContentLoadingProgressBar)findViewById(R.id.loading);
-        searchbox=(EditText)findViewById(R.id.searchbox);
+        lv = findViewById(R.id.visitors);
+        loading = findViewById(R.id.loading);
+        searchbox = findViewById(R.id.searchbox);
         handler=new DatabaseHandler(this);
         VectorDrawableCompat someVectorDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_search_dark, null);
         VectorDrawableCompat background = VectorDrawableCompat.create(getResources(), R.drawable.border, null);

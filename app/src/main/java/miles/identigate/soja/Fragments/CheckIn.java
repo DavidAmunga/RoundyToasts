@@ -86,7 +86,7 @@ public class CheckIn extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_check_in, container, false);
-        ListView lv=(ListView)view.findViewById(R.id.options);
+        ListView lv = view.findViewById(R.id.options);
         Option option=new Option(getActivity(),titles,descriptions,drawables);
         lv.setAdapter(option);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

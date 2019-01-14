@@ -91,7 +91,7 @@ public class RecordDriveIn extends SojaActivity {
         setContentView(R.layout.activity_record_drive_in);
         if (Constants.documentReaderResults == null)
             finish();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -101,16 +101,16 @@ public class RecordDriveIn extends SojaActivity {
 
         handler=new DatabaseHandler(this);
         preferences=new Preferences(this);
-        vehicleRegNo=(EditText)findViewById(R.id.car_number);
+        vehicleRegNo = findViewById(R.id.car_number);
         vehicleRegNo.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        visitor_type = (Spinner) findViewById(R.id.visitor_type);
-        record=(Button)findViewById(R.id.record);
-        host=(Spinner)findViewById(R.id.host);
-        numberOfPeople=(EditText)findViewById(R.id.numberOfPeople);
-        phoneNumberLayout = (LinearLayout)findViewById(R.id.phoneNumberLayout);
-        phoneNumberEdittext = (EditText)findViewById(R.id.phoneNumberEdittext);
-        companyNameLayout = (LinearLayout)findViewById(R.id.companyNameLayout);
-        companyNameEdittext = (EditText)findViewById(R.id.companyNameEdittext);
+        visitor_type = findViewById(R.id.visitor_type);
+        record = findViewById(R.id.record);
+        host = findViewById(R.id.host);
+        numberOfPeople = findViewById(R.id.numberOfPeople);
+        phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
+        phoneNumberEdittext = findViewById(R.id.phoneNumberEdittext);
+        companyNameLayout = findViewById(R.id.companyNameLayout);
+        companyNameEdittext = findViewById(R.id.companyNameEdittext);
 
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);

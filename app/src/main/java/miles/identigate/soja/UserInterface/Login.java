@@ -45,10 +45,10 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        toolbar=(Toolbar)findViewById(R.id.app_bar);
-        login=(Button)findViewById(R.id.login);
-        username=(EditText)findViewById(R.id.username);
-        pin=(EditText)findViewById(R.id.pin);
+        toolbar = findViewById(R.id.app_bar);
+        login = findViewById(R.id.login);
+        username = findViewById(R.id.username);
+        pin = findViewById(R.id.pin);
         setSupportActionBar(toolbar);
         preferences=new Preferences(this);
         handler=new DatabaseHandler(this);

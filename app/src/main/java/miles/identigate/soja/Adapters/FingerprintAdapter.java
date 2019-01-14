@@ -21,8 +21,8 @@ public class FingerprintAdapter extends RecyclerView.Adapter<FingerprintAdapter.
 
         public ViewHolder(View view){
             super(view);
-            name=(TextView)view.findViewById(R.id.name);
-            idNumber = (TextView)view.findViewById(R.id.idNumber);
+            name = view.findViewById(R.id.name);
+            idNumber = view.findViewById(R.id.idNumber);
         }
     }
     public FingerprintAdapter(ArrayList<PremiseResident> items){

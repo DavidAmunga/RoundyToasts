@@ -47,11 +47,11 @@ public class RecordResident extends SojaActivity {
         setContentView(R.layout.activity_record_resident);
         if (Constants.documentReaderResults == null)
             finish();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        host=(Spinner)findViewById(R.id.host);
-        record=(Button)findViewById(R.id.record);
+        host = findViewById(R.id.host);
+        record = findViewById(R.id.record);
         handler=new DatabaseHandler(this);
         preferences=new Preferences(this);
         houses=handler.getTypes("houses");

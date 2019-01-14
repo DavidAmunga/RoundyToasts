@@ -198,7 +198,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
             try {
                 urlParameters =
 
-                                "scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
+                        "scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
                                 "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                                 "&company=" + URLEncoder.encode("PHONE", "UTF-8") +
                                 "&scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
@@ -228,15 +228,15 @@ public class SmsCheckInActivity extends AppCompatActivity {
             try {
                 urlParameters =
                         "company=" + URLEncoder.encode("PHONE", "UTF-8") +
-                        "&scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
-                        "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
-                        "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                        "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                        "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
-                        "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
-                        "&houseID=" + URLEncoder.encode(selectedHost.getId(), "UTF-8") +
-                        "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
-                        "&vehicleRegNO=" + URLEncoder.encode(carNo, "UTF-8");
+                                "&scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
+                                "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
+                                "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                                "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                                "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
+                                "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
+                                "&houseID=" + URLEncoder.encode(selectedHost.getId(), "UTF-8") +
+                                "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
+                                "&vehicleRegNO=" + URLEncoder.encode(carNo, "UTF-8");
 
                 new SMSRecordAsync().execute(preferences.getBaseURL() + "record_visit", urlParameters);
             } catch (UnsupportedEncodingException e) {
@@ -247,9 +247,19 @@ public class SmsCheckInActivity extends AppCompatActivity {
     }
 
     private class SMSRecordAsync extends AsyncTask<String, Void, String> {
+        MaterialDialog builder = new MaterialDialog.Builder(SmsCheckInActivity.this)
+                .title(spinnerTypeOfVisit.getSelectedItem().toString())
+                .content("Recording...")
+                .progress(true, 0)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            builder.show();
+
             btnRecord.setEnabled(false);
             btnRecord.setText("Please wait...");
             btnConfirm.setEnabled(false);
@@ -257,6 +267,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
             btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             btnRecord.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
 
 
         }
@@ -270,6 +281,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            builder.dismiss();
+
 
             if (result != null) {
                 if (result.contains("result_code")) {
@@ -402,10 +415,134 @@ public class SmsCheckInActivity extends AppCompatActivity {
             startActivity(new Intent(this, Dashboard.class));
 
         } else {
-            Toast.makeText(SmsCheckInActivity.this, "Error: " + resultText, Toast.LENGTH_SHORT).show();
+            if (resultText.contains("still in")) {
+
+                new MaterialDialog.Builder(this)
+                        .title("Soja")
+                        .content(resultText)
+                        .positiveText("OK")
+                        .negativeText("Check out")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                dialog.dismiss();
+                            }
+
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                dialog.dismiss();
+
+                                String urlParameters = null;
+                                try {
+                                    urlParameters = "idNumber=" + edtPhoneNo.getText().toString().trim() +
+                                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                                            "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+                                    new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        })
+                        .show();
+            } else {
+                new MaterialDialog.Builder(this)
+                        .title("Soja")
+                        .content(result)
+                        .positiveText("OK")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                dialog.dismiss();
+                                //finish();
+                            }
+                        })
+                        .show();
+            }
 
         }
+
+
     }
+
+    private class ExitAsync extends AsyncTask<String, Void, String> {
+        MaterialDialog builder = new MaterialDialog.Builder(SmsCheckInActivity.this)
+                .title("Exit")
+                .content("Removing visitor...")
+                .progress(true, 0)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+
+        protected String doInBackground(String... params) {
+            return NetworkHandler.executePost(params[0], params[1]);
+        }
+
+        protected void onPostExecute(String result) {
+            builder.dismiss();
+            if (result != null) {
+                try {
+                    if (result.contains("result_code")) {
+                        JSONObject obj = new JSONObject(result);
+                        int resultCode = obj.getInt("result_code");
+                        String resultText = obj.getString("result_text");
+                        String resultContent = obj.getString("result_content");
+                        if (resultText.equals("OK") && resultContent.equals("success")) {
+                            recordInternet();
+                        } else {
+                            new MaterialDialog.Builder(SmsCheckInActivity.this)
+                                    .title("ERROR")
+                                    .content(resultText)
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                            //finish();
+                                        }
+                                    })
+                                    .show();
+                        }
+                    } else {
+                        new MaterialDialog.Builder(SmsCheckInActivity.this)
+                                .title("Result")
+                                .content("Poor internet connection.")
+                                .positiveText("Ok")
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                new MaterialDialog.Builder(SmsCheckInActivity.this)
+                        .title("Result")
+                        .content("Poor internet connection.")
+                        .positiveText("Ok")
+                        .show();
+            }
+        }
+    }
+
+    public void recordInternet() {
+        if (spinnerTypeOfVisit.getSelectedItem().toString().equals("Walk In")) {
+            Log.d(TAG, "onClick: Walk");
+
+            recordSMSCheckInWalk();
+        }
+        if (spinnerTypeOfVisit.getSelectedItem().toString().equals("Drive In")) {
+            Log.d(TAG, "onClick: Drive");
+
+            recordSMSCheckInDrive();
+        }
+
+    }
+
 
 
 }

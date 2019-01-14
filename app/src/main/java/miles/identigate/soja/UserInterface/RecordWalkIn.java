@@ -84,7 +84,7 @@ public class RecordWalkIn extends SojaActivity {
         if (Constants.documentReaderResults == null)
             finish();
         preferences=new Preferences(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -94,16 +94,16 @@ public class RecordWalkIn extends SojaActivity {
 
         handler=new DatabaseHandler(this);
 
-        visitor_type = (Spinner) findViewById(R.id.visitor_type);
-        record=(Button)findViewById(R.id.record);
-        host=(Spinner)findViewById(R.id.host);
+        visitor_type = findViewById(R.id.visitor_type);
+        record = findViewById(R.id.record);
+        host = findViewById(R.id.host);
 
-        phoneNumberLayout = (LinearLayout)findViewById(R.id.phoneNumberLayout);
-        phoneNumberEdittext = (EditText)findViewById(R.id.phoneNumberEdittext);
-        companyNameLayout = (LinearLayout)findViewById(R.id.companyNameLayout);
-        companyNameEdittext = (EditText)findViewById(R.id.companyNameEdittext);
-        hostLayout = (LinearLayout)findViewById(R.id.hostLayout);
-        host_1 = (Spinner)findViewById(R.id.host_1);
+        phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
+        phoneNumberEdittext = findViewById(R.id.phoneNumberEdittext);
+        companyNameLayout = findViewById(R.id.companyNameLayout);
+        companyNameEdittext = findViewById(R.id.companyNameEdittext);
+        hostLayout = findViewById(R.id.hostLayout);
+        host_1 = findViewById(R.id.host_1);
 
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);
