@@ -80,8 +80,8 @@ public class Incident extends SojaActivity {;
 
         //visitorTypes=handler.getTypes("visitors");
         visitorTypes = new ArrayList<>();
-        houses= handler.getTypes("houses");
-        objects=handler.getTypes("incidents");
+        houses = handler.getTypes("houses", null);
+        objects = handler.getTypes("incidents", null);
         visitorTypes.add(new TypeObject("1","Visitor"));
         visitorTypes.add(new TypeObject("2","Resident"));
         visitorTypes.add(new TypeObject("3","None"));

@@ -47,15 +47,14 @@ public class SmsCheckInActivity extends AppCompatActivity {
     private static final String TAG = "SmsCheckInActivity";
 
     Button btnRecord, btnConfirm;
-    LinearLayout lin_walk_confirm, lin_drive_confirm, lin_checkin, lin_spinner;
+    LinearLayout lin_walk_confirm, lin_drive_confirm, lin_checkin, lin_spinner, lin_host;
     EditText edtPhoneNo, edtHost, edtCode, edtPeopleNo, edtCarNo;
     Preferences preferences;
-    Spinner spinnerTypeOfVisit, spinnerVisitType, spinnerHouse;  // spinnerTypeVisit is the Type of Visitor
+    Spinner spinnerTypeOfVisit, spinnerVisitType, spinnerHouse, spinnerHost;
     ArrayList<String> visitTypes = new ArrayList<>();
-    ArrayList<TypeObject> houses;
-    ArrayList<TypeObject> visitorTypes;
+    ArrayList<TypeObject> houses, hosts, visitorTypes;
     DatabaseHandler handler;
-    TypeObject selectedHost, selectedType;
+    TypeObject selectedDestination, selectedType, selectedHost;
 
 
     @Override
@@ -72,18 +71,22 @@ public class SmsCheckInActivity extends AppCompatActivity {
         spinnerTypeOfVisit = findViewById(R.id.spinnerTypeOfVisit);
         spinnerVisitType = findViewById(R.id.spinnerVisitType);
         spinnerHouse = findViewById(R.id.spinnerHouse);
+        spinnerHost = findViewById(R.id.spinnerHost);
         btnRecord = findViewById(R.id.btnRecord);
         btnConfirm = findViewById(R.id.btnConfirm);
         lin_walk_confirm = findViewById(R.id.lin_walk_confirm);
         lin_drive_confirm = findViewById(R.id.lin_drive_confirm);
         lin_checkin = findViewById(R.id.lin_checkin);
         lin_spinner = findViewById(R.id.lin_spinner);
+        lin_host = findViewById(R.id.lin_host);
         edtPhoneNo = findViewById(R.id.edtPhoneNo);
         edtHost = findViewById(R.id.edtHost);
         edtCode = findViewById(R.id.edtCode);
         edtPeopleNo = findViewById(R.id.edtPeopleNo);
         edtCarNo = findViewById(R.id.edtCarNo);
 
+
+//        ADD VISIT TYPES
         visitTypes.add("Drive In");
         visitTypes.add("Walk In");
 
@@ -136,10 +139,43 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
 
 //        HOUSE Select
-        houses = handler.getTypes("houses");
+        houses = handler.getTypes("houses", null);
         TypeAdapter adapter = new TypeAdapter(this, R.layout.tv, houses);
         spinnerHouse.setAdapter(adapter);
         spinnerHouse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TypeObject object = (TypeObject) parent.getSelectedItem();
+                selectedDestination = object;
+
+                Log.d(TAG, "Selected Destination: " + selectedDestination.getId());
+
+                hosts = handler.getTypes("hosts", selectedDestination.getId());
+
+
+                lin_host.setVisibility(preferences.isSelectHostsEnabled() && hosts.size() > 0 ? View.VISIBLE : View.GONE);
+
+                Log.d(TAG, "Host ID " + selectedDestination.getId());
+                Log.d(TAG, "Hosts: " + hosts);
+
+
+                TypeAdapter hostsAdapter = new TypeAdapter(SmsCheckInActivity.this, R.layout.tv, hosts);
+                spinnerHost.setAdapter(hostsAdapter);
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+//        HOST Select
+//        if(selectedDestination!=null){
+
+        Log.d(TAG, "All Hosts " + handler.getTypes("hosts", null));
+
+
+        spinnerHost.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TypeObject object = (TypeObject) parent.getSelectedItem();
@@ -151,8 +187,13 @@ public class SmsCheckInActivity extends AppCompatActivity {
             }
         });
 
+
+//        }
+
+
+
 //        VISIT TYPE SELECT
-        visitorTypes = handler.getTypes("visitors");
+        visitorTypes = handler.getTypes("visitors", null);
         TypeAdapter visitorsAdapter = new TypeAdapter(this, R.layout.tv, visitorTypes);
         spinnerVisitType.setAdapter(visitorsAdapter);
         spinnerVisitType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -171,7 +212,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
     }
 
-    //    Send Confirmation Code
+    //    Send Verification Code
     public void sendConfirmationCode() {
         String urlParameters = null;
         String phoneNo = edtPhoneNo.getText().toString();
@@ -206,7 +247,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                 "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
                                 "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                                 "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
-                                "&houseID=" + URLEncoder.encode(selectedHost.getId(), "UTF-8") +
+                                "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                                 "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                 new SMSRecordAsync().execute(preferences.getBaseURL() + "record_visit", urlParameters);
             } catch (UnsupportedEncodingException e) {
@@ -221,6 +262,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
         String phoneNo = edtPhoneNo.getText().toString();
         String carNo = edtCarNo.getText().toString();
 
+
         Log.d(TAG, "recordSMSCheckInDrive: Start");
 
 
@@ -232,11 +274,14 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                 "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                 "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                                (preferences.isSelectHostsEnabled() ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
                                 "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
                                 "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
-                                "&houseID=" + URLEncoder.encode(selectedHost.getId(), "UTF-8") +
+                                "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                                 "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                                 "&vehicleRegNO=" + URLEncoder.encode(carNo, "UTF-8");
+
+                Log.d(TAG, "URL Parameters " + urlParameters);
 
                 new SMSRecordAsync().execute(preferences.getBaseURL() + "record_visit", urlParameters);
             } catch (UnsupportedEncodingException e) {
@@ -294,19 +339,19 @@ public class SmsCheckInActivity extends AppCompatActivity {
                             btnRecord.setEnabled(true);
                             btnRecord.setText("RECORD");
                             btnConfirm.setEnabled(true);
-                            btnConfirm.setText("SEND CONFIRMATION CODE");
+                            btnConfirm.setText("SEND VERIFICATION CODE");
 
                             btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                             btnRecord.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                         } else {
-                            Toast.makeText(SmsCheckInActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SmsCheckInActivity.this, "Error" + result, Toast.LENGTH_SHORT).show();
                             //TODO remove this.Temporary workaround
 //                            recordOffline();
 //                            parseResult();
                             btnRecord.setEnabled(true);
                             btnRecord.setText("RECORD");
                             btnConfirm.setEnabled(true);
-                            btnConfirm.setText("SEND CONFIRMATION CODE");
+                            btnConfirm.setText("SEND VERIFICATION CODE");
 
                             btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                             btnRecord.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -356,11 +401,13 @@ public class SmsCheckInActivity extends AppCompatActivity {
                         Object json = new JSONTokener(result).nextValue();
                         if (json instanceof JSONObject) {
                             confirmResultHandler(result);
+                            Log.d(TAG, "onPostExecute: " + result);
                         } else {
-                            Toast.makeText(SmsCheckInActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SmsCheckInActivity.this, "Error" + result, Toast.LENGTH_SHORT).show();
                             //TODO remove this.Temporary workaround
 //                            recordOffline();
 //                            parseResult();
+                            Log.d(TAG, "onPostExecute: " + result);
 
                         }
                     } catch (JSONException e) {
@@ -395,8 +442,9 @@ public class SmsCheckInActivity extends AppCompatActivity {
             btnConfirm.setText("SEND CONFIRMATION CODE");
             btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
+            Log.d(TAG, "confirmResultHandler: " + result);
         } else {
-            Toast.makeText(SmsCheckInActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SmsCheckInActivity.this, "Error" + resultText, Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -447,7 +495,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
             } else {
                 new MaterialDialog.Builder(this)
                         .title("Soja")
-                        .content(result)
+                        .content(resultText)
                         .positiveText("OK")
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override

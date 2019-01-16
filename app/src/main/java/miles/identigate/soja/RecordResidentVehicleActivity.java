@@ -68,7 +68,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
         car_number = findViewById(R.id.car_number);
         ownerLayout = findViewById(R.id.ownerLayout);
 
-        houses=handler.getTypes("houses");
+        houses = handler.getTypes("houses", null);
         car_house = findViewById(R.id.car_house);
         car_owner = findViewById(R.id.car_owner);
         car_house_edit = findViewById(R.id.car_house_edit);

@@ -18,7 +18,7 @@
             android:orientation="vertical"
             >
 
-            <!--SEND CONFIRM CODE-->
+            <!--SEND VERIFICATION CODE-->
             <LinearLayout
                 android:id="@+id/lin_checkin"
                 android:layout_width="match_parent"
@@ -62,7 +62,7 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:background="@color/colorPrimary"
-                    android:text="SEND CONFIRMATION CODE"
+                    android:text="SEND VERIFICATION CODE"
                     android:textColor="@android:color/white"
                     android:visibility="visible" />
             </LinearLayout>
@@ -117,6 +117,8 @@
                     android:textSize="16sp"
                     android:layout_marginBottom="5.0dip"
                     android:text="Destination"/>
+
+
                 <Spinner
                     android:layout_width="match_parent"
                     android:id="@+id/spinnerHouse"
@@ -125,6 +127,47 @@
                     android:layout_height="50dp">
                 </Spinner>
 
+                <!--HOST-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/lin_host"
+                    android:visibility="gone">
+
+                    <miles.identigate.soja.Font.OpenSansBold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="5.0dip"
+                        android:text="Host" />
+
+                    <Spinner
+                        android:id="@+id/spinnerHost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:tooltipText="Please Select Premise Host"
+                        android:background="@drawable/border" />
+
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/edtHost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/border"
+                    android:ems="10"
+                    android:hint=""
+                    android:visibility="gone"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:singleLine="false"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null" />
 
 
             </LinearLayout>
@@ -141,32 +184,13 @@
                 android:visibility="gone">
 
 
-
-
-
-                <miles.identigate.soja.Font.OpenSansBold
-                    android:id="@+id/typeLabel3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5.0dip"
-                    android:text="Enter Host"
-                    android:textSize="16sp" />
-
-
-                <EditText
-                    android:id="@+id/edtHost"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/border"
-                    android:ems="10"
-                    android:hint=""
-                    android:inputType="text"
-                    android:padding="10dp"
-                    android:singleLine="false"
-                    android:text=""
-                    android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null" />
+                <!--<miles.identigate.soja.Font.OpenSansBold-->
+                <!--android:id="@+id/typeLabel3"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="5.0dip"-->
+                <!--android:text="Enter Host"-->
+                <!--android:textSize="16sp" />-->
 
 
             </LinearLayout>

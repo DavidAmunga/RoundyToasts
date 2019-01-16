@@ -46,29 +46,23 @@ public class RecordDriveIn extends SojaActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
-    Spinner visitor_type;
+
+    Spinner visitor_type, spinnerDestination, spinnerHost;
     DatabaseHandler handler;
     Button record;
     String vehicleNo;
     EditText vehicleRegNo;
     EditText numberOfPeople;
-    Spinner host;
-    TypeObject selectedType;
-    ArrayList<TypeObject> visitorTypes;
-    ArrayList<TypeObject>houses;
+    TypeObject selectedType, selectedDestination, selectedHost;
+    ArrayList<TypeObject> houses, visitorTypes, hosts;
     Preferences preferences;
-    TypeObject selectedHouse;
     MaterialDialog progressDialog;
     MaterialDialog dialog;
 
-    LinearLayout phoneNumberLayout;
-    EditText phoneNumberEdittext;
-    LinearLayout companyNameLayout;
-    EditText companyNameEdittext;
+    LinearLayout phoneNumberLayout, hostLayout, companyNameLayout;
+    EditText phoneNumberEdittext, companyNameEdittext;
 
-    String firstName;
-    String lastName;
-    String idNumber;
+    String firstName, lastName, idNumber;
     String result_slip = "";
     int visit_id = 0;
 
@@ -105,11 +99,13 @@ public class RecordDriveIn extends SojaActivity {
         vehicleRegNo.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         visitor_type = findViewById(R.id.visitor_type);
         record = findViewById(R.id.record);
-        host = findViewById(R.id.host);
+        spinnerDestination = findViewById(R.id.spinnerDestination);
+        spinnerHost = findViewById(R.id.spinnerHost);
         numberOfPeople = findViewById(R.id.numberOfPeople);
         phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
         phoneNumberEdittext = findViewById(R.id.phoneNumberEdittext);
         companyNameLayout = findViewById(R.id.companyNameLayout);
+        hostLayout = findViewById(R.id.hostLayout);
         companyNameEdittext = findViewById(R.id.companyNameEdittext);
 
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
@@ -117,8 +113,6 @@ public class RecordDriveIn extends SojaActivity {
 
 
 
-        visitorTypes=handler.getTypes("visitors");
-        houses=handler.getTypes("houses");
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +131,10 @@ public class RecordDriveIn extends SojaActivity {
                 }
             }
         });
+
+
+//        VISITOR TYPES
+        visitorTypes = handler.getTypes("visitors", null);
         TypeAdapter adapter =new TypeAdapter(RecordDriveIn.this,R.layout.tv,visitorTypes);
         visitor_type.setAdapter(adapter);
         visitor_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -151,13 +149,26 @@ public class RecordDriveIn extends SojaActivity {
 
             }
         });
+
+
+//      DESTINATION / HOUSE
+
+        houses = handler.getTypes("houses", null);
+
         TypeAdapter housesAdapter =new TypeAdapter(RecordDriveIn.this,R.layout.tv,houses);
-        host.setAdapter(housesAdapter);
-        host.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerDestination.setAdapter(housesAdapter);
+        spinnerDestination.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TypeObject object=(TypeObject)parent.getSelectedItem();
-                selectedHouse = object;
+                selectedDestination = object;
+
+                hosts = handler.getTypes("hosts", selectedDestination.getId());
+                hostLayout.setVisibility(preferences.isSelectHostsEnabled() && hosts.size() > 0 ? View.VISIBLE : View.GONE);
+
+                TypeAdapter hostsAdapter = new TypeAdapter(RecordDriveIn.this, R.layout.tv, hosts);
+                spinnerHost.setAdapter(hostsAdapter);
+
             }
 
             @Override
@@ -165,6 +176,19 @@ public class RecordDriveIn extends SojaActivity {
             }
         });
 
+
+//        HOST
+        spinnerHost.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TypeObject object = (TypeObject) parent.getSelectedItem();
+                selectedHost = object;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
     @Override
     protected void onResume() {
@@ -207,8 +231,10 @@ public class RecordDriveIn extends SojaActivity {
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
-                    "&houseID=" + URLEncoder.encode(selectedHouse.getId(), "UTF-8")+
-                    "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8")+
+                            "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
+                            (preferences.isSelectHostsEnabled() ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+
+                            "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                     "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8")+
                     "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8")+
                     "&genderID=" + URLEncoder.encode(gender, "UTF-8")+
@@ -245,7 +271,7 @@ public class RecordDriveIn extends SojaActivity {
         driveIn.setStatus("IN");
         driveIn.setRecordType("DRIVE");
         driveIn.setExitTime("NULL");
-        driveIn.setHouseID(selectedHouse.getId());
+        driveIn.setHouseID(selectedDestination.getId());
         driveIn.setNationalId(idN);
         driveIn.setDob(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"));
         driveIn.setSex(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n"));
@@ -308,7 +334,7 @@ public class RecordDriveIn extends SojaActivity {
         if (preferences.canPrint()){
             Intent intent = new Intent(getApplicationContext(), SlipActivity.class);
             intent.putExtra("title", "RECORD DRIVE IN");
-            intent.putExtra("house", selectedHouse.getName());
+            intent.putExtra("house", selectedDestination.getName());
             intent.putExtra("firstName", firstName);
             intent.putExtra("lastName", lastName);
             intent.putExtra("idNumber", idNumber);

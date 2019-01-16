@@ -62,9 +62,9 @@ public class ServiceProvider extends SojaActivity {
         hostLabel = findViewById(R.id.hostLabel);
         host = findViewById(R.id.host);
         handler=new DatabaseHandler(this);
-        visitorTypes=handler.getTypes("service_providers");
+        visitorTypes = handler.getTypes("service_providers", null);
         preferences=new Preferences(this);
-        houses=handler.getTypes("houses");
+        houses = handler.getTypes("houses", null);
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -45,6 +45,7 @@ import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.PremiseResident;
 import miles.identigate.soja.Services.SyncService;
+import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
@@ -64,6 +65,8 @@ public class Dashboard extends SojaActivity {
     String houseResult;
     String premiseResidentResult;
     Preferences preferences;
+
+    private static final String TAG = "Dashboard";
     private BroadcastReceiver receiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -98,7 +101,9 @@ public class Dashboard extends SojaActivity {
         SharedPreferences getPrefs = PreferenceManager
                         .getDefaultSharedPreferences(getBaseContext());
         boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
-        if (isFirstStart&&preferences.isLoggedin()) {
+
+        Log.d(TAG, "isFirstStart: " + isFirstStart);
+        if (isFirstStart && preferences.isLoggedin()) {
             if (new CheckConnection().check(this)) {
                 new FetchDetails().execute();
                 SharedPreferences.Editor e = getPrefs.edit();
@@ -212,6 +217,7 @@ public class Dashboard extends SojaActivity {
                             SharedPreferences.Editor e = getPrefs.edit();
                             e.putBoolean("firstStart", true);
                             e.apply();
+                            startActivity(new Intent(Dashboard.this, Login.class));
                            finish();
                         }
 
@@ -294,17 +300,23 @@ public class Dashboard extends SojaActivity {
             providerResult=NetworkHandler.GET(preferences.getBaseURL()+"service-providers");
             incidentsResult=NetworkHandler.GET(preferences.getBaseURL()+"incident-types");
             houseResult=NetworkHandler.GET(preferences.getBaseURL()+"houses-blocks/zone/"+preferences.getPremiseZoneId());
-            premiseResidentResult =  NetworkHandler.GET(preferences.getBaseURL() + "houses-residents/?premise=" + preferences.getPremise());
+            premiseResidentResult = NetworkHandler.GET(preferences.getBaseURL() + "premise_residents?premise=" + preferences.getPremise());
+
+//            Log.d(TAG, "Premise Resident ID "+preferences.getPremise());
+//            Log.d(TAG, "Premise Resident Result: "+premiseResidentResult);
+
             return "success";
         }
 
         protected void onPostExecute(String result) {
             builder.dismiss();
             getAllData();
+            Log.d(TAG, "onPostExecute: Done");
 
         }
     }
     public void getAllData(){
+        Log.d(TAG, "getAllData: Start");
         if(visitorResult==null||providerResult==null||incidentsResult==null||houseResult==null || premiseResidentResult == null){
             Toast.makeText(getApplicationContext(),"An error occurred",Toast.LENGTH_LONG).show();
         }else {
@@ -314,6 +326,8 @@ public class Dashboard extends SojaActivity {
                 JSONObject incidentsObject = new JSONObject(incidentsResult);
                 JSONObject housesObject=new JSONObject(houseResult);
                 JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
+
+//                Log.d(TAG, "Premise Resident Object: "+premiseResidentObject);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
@@ -376,13 +390,18 @@ public class Dashboard extends SojaActivity {
 
                if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
                     JSONArray residentsArray = premiseResidentObject.getJSONArray("result_content");
+                   Log.d(TAG, "Resident No " + residentsArray.length());
                     for (int i = 0; i < residentsArray.length(); i++) {
                         JSONObject resident = residentsArray.getJSONObject(i);
-                        int length = 0;
-                        if(resident.getString("length") != "null"){
-                            length = Integer.valueOf(resident.getString("length"));
-                        }
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), null,0, resident.getString("house_id"), resident.getString("host_id"));
+
+//                        int length = 0;
+//                        if(resident.getString("length") != "null"){
+//                            length = Integer.valueOf(resident.getString("length"));
+//                        }
+
+                        Log.d(TAG, "Resident " + resident);
+
+                        handler.insertPremiseVisitor(resident.getString("idnumber"), resident.getString("firstname"), resident.getString("lastname"), null, 0, resident.getString("houseid"), resident.getString("host_id"));
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();

@@ -18,6 +18,7 @@ import miles.identigate.soja.Models.TypeObject;
  * Created by myles on 10/23/15.
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
+    private static final String TAG = "DatabaseHandler";
     public static final String DB_NAME="SOJADB";
 
     public static final String TABLE_DRIVE_IN="driveIn";
@@ -133,11 +134,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             onCreate(db);
 
         }
-        public void insertPremiseVisitor(String _id,String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId){
+
+    public void insertPremiseVisitor(String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId) {
+        Log.d(TAG, "insertPremiseVisitor: Start");
+        
             SQLiteDatabase db = this.getWritableDatabase();
 
             ContentValues values = new ContentValues();
-            values.put(id, _id);
             values.put(FINGERPRINT, fingerprint);
             values.put(FIRSTNAME, firstName);
             values.put(LASTNAME, lastName);
@@ -147,9 +150,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(hostId, _hostId);
             db.insert(TABLE_PREMISE_RESIDENTS, null, values);
             db.close();
+
+        Log.d(TAG, "insertPremiseVisitor: End");
         }
 
-        public ArrayList<PremiseResident> getPremiseResidents(){
+
+    public ArrayList<PremiseResident> getPremiseResidents() {
             ArrayList<PremiseResident> premiseResidents = new ArrayList<PremiseResident>();
             String selectQuery = "SELECT  * FROM " + TABLE_PREMISE_RESIDENTS;
             SQLiteDatabase db = this.getWritableDatabase();
@@ -172,7 +178,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.close();
             return premiseResidents;
         }
-        public void updatePremiseResident(PremiseResident premiseResident){
+
+
+    public ArrayList<PremiseResident> getPremiseResidentsByHouse(String houseID) {
+        ArrayList<PremiseResident> premiseResidents = new ArrayList<PremiseResident>();
+        String selectQuery = "SELECT  * FROM " + TABLE_PREMISE_RESIDENTS + " WHERE house = " + houseID;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                PremiseResident premiseResident = new PremiseResident();
+                premiseResident.setIdNumber(cursor.getString(0));
+                premiseResident.setFirstName(cursor.getString(1));
+                premiseResident.setLastName(cursor.getString(2));
+                premiseResident.setFingerPrint(cursor.getString(3));
+                premiseResident.setFingerPrintLen(cursor.getInt(4));
+                premiseResident.setId(cursor.getString(5));
+                premiseResident.setHouse(cursor.getString(6));
+                premiseResident.setHostId(cursor.getString(7));
+
+                premiseResidents.add(premiseResident);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return premiseResidents;
+    }
+
+
+    public void updatePremiseResident(PremiseResident premiseResident) {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues values = new ContentValues();
 
@@ -578,9 +611,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.insert(TABLE_HOUSES, null, values);
             db.close();
         }
-        public ArrayList<TypeObject> getTypes(String type){
+
+    public ArrayList<TypeObject> getTypes(String type, String id) {
             ArrayList<TypeObject> hashMap=new ArrayList<>();
-            SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
             if(type.equals("visitors")){
                 if (!hashMap.isEmpty())
                     hashMap.clear();
@@ -636,6 +670,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         typeObject.setHostId(cursor.getString(2));
                         hashMap.add(typeObject);
                     } while (cursor.moveToNext());
+                }
+                return hashMap;
+            } else if (type.equals("hosts")) {
+//                Log.d(TAG, "getTypes: start");
+
+
+                if (id != null) {
+                    if (!hashMap.isEmpty())
+                        hashMap.clear();
+                    String selectQuery = "SELECT  * FROM " + TABLE_PREMISE_RESIDENTS + " WHERE house = '" + id + "'";
+
+                    Log.d(TAG, "SELECT QUERY: " + selectQuery);
+
+                    Cursor cursor = db.rawQuery(selectQuery, null);
+
+                    if (cursor.moveToFirst()) {
+                        do {
+                            TypeObject typeObject = new TypeObject();
+                            typeObject.setId(cursor.getString(0));
+                            typeObject.setName(cursor.getString(1) + " " + cursor.getString((2)));
+                            typeObject.setHostId(cursor.getString(cursor.getColumnIndex("hostId")));
+                            hashMap.add(typeObject);
+                        } while (cursor.moveToNext());
+                    }
+
+                } else {
+                    if (!hashMap.isEmpty())
+                        hashMap.clear();
+                    String selectQuery = "SELECT  * FROM " + TABLE_PREMISE_RESIDENTS;
+                    Cursor cursor = db.rawQuery(selectQuery, null);
+
+//                Log.d(TAG, "Host ID:  "+cursor.getString(cursor.getColumnIndex(hostId)));
+                    if (cursor.moveToFirst()) {
+                        do {
+                            TypeObject typeObject = new TypeObject();
+                            typeObject.setId(cursor.getString(0));
+                            typeObject.setName(cursor.getString(1) + " " + cursor.getString((2)));
+                            typeObject.setHostId(cursor.getString(cursor.getColumnIndex("hostId")));
+                            hashMap.add(typeObject);
+                        } while (cursor.moveToNext());
+                    }
                 }
                 return hashMap;
             }

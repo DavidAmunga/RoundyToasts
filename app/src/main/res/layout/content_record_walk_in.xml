@@ -70,7 +70,7 @@
                     android:text="DESTINATION"/>
                 <Spinner
                     android:layout_width="match_parent"
-                    android:id="@+id/host"
+                    android:id="@+id/spinnerDestination"
                     android:background="@drawable/border"
                     android:layout_marginBottom="10dp"
                     android:layout_height="50dp">
@@ -92,7 +92,7 @@
                     android:text="HOST"/>
                 <Spinner
                     android:layout_width="match_parent"
-                    android:id="@+id/host_1"
+                    android:id="@+id/spinnerHost"
                     android:background="@drawable/border"
                     android:layout_marginBottom="10dp"
                     android:layout_height="50dp">

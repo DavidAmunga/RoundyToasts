@@ -54,7 +54,7 @@ public class RecordResident extends SojaActivity {
         record = findViewById(R.id.record);
         handler=new DatabaseHandler(this);
         preferences=new Preferences(this);
-        houses=handler.getTypes("houses");
+        houses = handler.getTypes("houses", null);
        record.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
