@@ -537,6 +537,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         String urlParameters = null;
         try {
             urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
+                    "&fp_checkout=" + URLEncoder.encode("1", "UTF-8") +
                     "&peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8") +
                     "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
