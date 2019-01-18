@@ -13,12 +13,12 @@ import miles.identigate.soja.R;
 /**
  * Created by myles on 10/31/15.
  */
-public class Option extends BaseAdapter{
+public class CheckInAdapter extends BaseAdapter{
     String[] titles;
     String[] descriptions;
-    int[] drawables;
+    Integer[] drawables;
     Activity activity;
-    public Option(Activity activity,String[] titles,String[] descriptions,int[] drawables){
+    public CheckInAdapter(Activity activity, String[] titles, String[] descriptions, Integer[] drawables){
         this.activity=activity;
         this.titles=titles;
         this.descriptions=descriptions;

@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import miles.identigate.soja.Adapters.Option;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import miles.identigate.soja.Adapters.CheckInAdapter;
 import miles.identigate.soja.FingerprintActivity;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
@@ -19,43 +22,14 @@ import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.app.Common;
 
 public class CheckIn extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private String[] titles={
-            "Drive In",
-            "Walk In",
-            "Residents",
-            "Biometric Checkin",
-            "Incident"
-    };
-    private String[] descriptions={
-            "Record driving visitor",
-            "Record walking visitor",
-            "Check in a resident",
-            "Check in using biometrics",
-            "Report an incident"
-
-    };
-    private int[] drawables={
-            R.drawable.ic_action_car,
-            R.drawable.ic_action_walk,
-            R.drawable.ic_action_walk,
-            R.drawable.fingerprint,
-            R.drawable.ic_incident
-
-    };
+    private String[] titles;
+    private String[] descriptions;
+    private Integer[] drawables;
     private Preferences preferences;
     public static CheckIn newInstance(String param1, String param2) {
         CheckIn fragment = new CheckIn();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,11 +41,44 @@ public class CheckIn extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         preferences = new Preferences(getActivity());
+
+        ArrayList<String> checkinTitles = new ArrayList<>();
+        checkinTitles.add("Drive In");
+        checkinTitles.add("Walk In");
+        checkinTitles.add("Residents");
+        if (preferences.isFingerprintsEnabled())
+            checkinTitles.add("Biometric Checkin");
+        checkinTitles.add("Incident");
+
+
+        ArrayList<String> checkinDescriptions =  new ArrayList<>();
+        checkinDescriptions.add("Record driving visitor");
+        checkinDescriptions.add("Record walking visitor");
+        checkinDescriptions.add("Check in a resident");
+        if (preferences.isFingerprintsEnabled())
+            checkinDescriptions.add("Check in using biometrics");
+        checkinDescriptions.add("Report an incident");
+
+        ArrayList<Integer> checkinDrawables = new ArrayList<>();
+        checkinDrawables.add(R.drawable.ic_action_car);
+        checkinDrawables.add(R.drawable.ic_action_walk);
+        checkinDrawables.add(R.drawable.ic_action_walk);
+        if (preferences.isFingerprintsEnabled())
+            checkinDrawables.add(R.drawable.fingerprint);
+        checkinDrawables.add(R.drawable.ic_incident);
+
+
+
+        Object[] a = checkinTitles.toArray();
+        titles = Arrays.copyOf(a, a.length, String[].class);
+
+        Object[] b = checkinDescriptions.toArray();
+        descriptions = Arrays.copyOf(b, b.length, String[].class);
+
+        Object[] c  = checkinDrawables.toArray();
+        drawables = Arrays.copyOf(c, c.length, Integer[].class);
+
     }
 
     @Override
@@ -80,8 +87,10 @@ public class CheckIn extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_check_in, container, false);
         ListView lv=(ListView)view.findViewById(R.id.options);
-        Option option=new Option(getActivity(),titles,descriptions,drawables);
-        lv.setAdapter(option);
+
+
+        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables);
+        lv.setAdapter(checkInAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -106,9 +115,13 @@ public class CheckIn extends Fragment {
                         startActivity(new Intent(getActivity(), ScanQRActivity.class));
                         break;
                     case 3:
-                        Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
-                        fingerPrint.putExtra("CHECKOUT", false);
-                        startActivity(fingerPrint);
+                        if (preferences.isFingerprintsEnabled()){
+                            Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
+                            fingerPrint.putExtra("CHECKOUT", false);
+                            startActivity(fingerPrint);
+                        }else {
+                            startActivity(new Intent(getActivity(), Incident.class));
+                        }
                         break;
                     case 4:
 
@@ -118,7 +131,6 @@ public class CheckIn extends Fragment {
                         startActivity(new Intent(getActivity(), Incident.class));
                         break;
                 }
-                //startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_left);
             }
         });

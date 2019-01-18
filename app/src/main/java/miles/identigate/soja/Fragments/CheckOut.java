@@ -6,73 +6,74 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
 
-import miles.identigate.soja.Adapters.Option;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import miles.identigate.soja.Adapters.CheckInAdapter;
 import miles.identigate.soja.ExpressCheckoutActivity;
 import miles.identigate.soja.FingerprintActivity;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 import miles.identigate.soja.UserInterface.Visitors;
 
 public class CheckOut extends ListFragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private String[] titles={
-            "Express Checkout",
-            "Drive Out",
-            "Walk Out",
-            "Residents",
-            "Biometric Checkout"
-    };
-    private String[] descriptions={
-            "Scan QR to check out visitor",
-            "Check out a driving visitor ",
-            "Check out a visitor on foot",
-            "Check out a resident",
-            "Check out using biometrics"
+    private String[] titles;
+    private String[] descriptions;
+    private Integer[] drawables;
+    Preferences preferences;
 
-    };
-    private int[] drawables={
-            R.drawable.ic_action_out,
-            R.drawable.ic_action_car,
-            R.drawable.ic_action_walk,
-            R.drawable.ic_action_many,
-            R.drawable.fingerprint
-
-    };
-    // TODO: Rename and change types of parameters
-    public static CheckOut newInstance(String param1, String param2) {
-        CheckOut fragment = new CheckOut();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public CheckOut() {
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences= new Preferences(getActivity());
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        Option option=new Option(getActivity(),titles,descriptions,drawables);
-        // TODO: Change Adapter to display your content
-        setListAdapter(option);
+        ArrayList<String> checkoutTitles = new ArrayList<>();
+        checkoutTitles.add("Express Checkout");
+        checkoutTitles.add("Drive Out");
+        checkoutTitles.add("Walk Out");
+        checkoutTitles.add("Residents");
+        if (preferences.isFingerprintsEnabled())
+            checkoutTitles.add("Biometric Checkout");
+
+
+        ArrayList<String> checkoutDescriptions =  new ArrayList<>();
+        checkoutDescriptions.add("Scan QR to check out visitor");
+        checkoutDescriptions.add("Check out a driving visitor");
+        checkoutDescriptions.add("Check out a visitor on foot");
+        checkoutDescriptions.add("Check out a resident");
+        if (preferences.isFingerprintsEnabled())
+            checkoutDescriptions.add("Check out using biometrics");
+
+        ArrayList<Integer> checkoutDrawables = new ArrayList<>();
+        checkoutDrawables.add(R.drawable.ic_action_out);
+        checkoutDrawables.add(R.drawable.ic_action_car);
+        checkoutDrawables.add(R.drawable.ic_action_walk);
+        checkoutDrawables.add(R.drawable.ic_action_many);
+        if (preferences.isFingerprintsEnabled())
+            checkoutDrawables.add(R.drawable.fingerprint);
+
+        Object[] a = checkoutTitles.toArray();
+        titles = Arrays.copyOf(a, a.length, String[].class);
+
+        Object[] b = checkoutDescriptions.toArray();
+        descriptions = Arrays.copyOf(b, b.length, String[].class);
+
+        Object[] c  = checkoutDrawables.toArray();
+        drawables = Arrays.copyOf(c, c.length, Integer[].class);
+
+        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables);
+        setListAdapter(checkInAdapter);
 
     }
     @Override
@@ -97,9 +98,11 @@ public class CheckOut extends ListFragment {
                 startActivity(resident);
                 break;
             case 4:
-                Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
-                fingerPrint.putExtra("CHECKOUT", true);
-                startActivity(fingerPrint);
+                if (preferences.isFingerprintsEnabled()){
+                    Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
+                    fingerPrint.putExtra("CHECKOUT", true);
+                    startActivity(fingerPrint);
+                }
                 break;
         }
     }

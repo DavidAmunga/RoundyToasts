@@ -203,7 +203,7 @@ public class Visitors extends AppCompatActivity {
             loading.setVisibility(View.GONE);
             //adapter.notifyDataSetChanged();
             if (s != null){
-                Log.e("Result",s);
+                //Log.e("Result",s);
                 Object json=null;
                 try {
                     json=new JSONTokener(s).nextValue();
