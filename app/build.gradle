@@ -77,7 +77,14 @@ dependencies {
     implementation project(':libBioMini_v20')
     implementation files('libs/PosUtil.jar')
     implementation files('libs/fingerprintControl.jar')
+    implementation 'com.android.volley:volley:1.1.1'
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.11'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
+    implementation 'org.apache.httpcomponents:httpcore:4.3.3'
+    implementation('org.apache.httpcomponents:httpmime:4.3.6') {
+        exclude module: 'httpclient'
+    }
+
 
 }

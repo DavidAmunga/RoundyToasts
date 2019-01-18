@@ -1,6 +1,5 @@
 package miles.identigate.soja.Helpers;
 
-import android.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -10,11 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-
 /**
  * Created by myles on 9/26/15.
  */
 public class NetworkHandler {
+
+
     public static String executePost(String targetURL, String urlParameters) {
        /* String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),

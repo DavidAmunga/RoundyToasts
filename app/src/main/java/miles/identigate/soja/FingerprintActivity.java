@@ -35,11 +35,24 @@ import com.suprema.IBioMiniDevice;
 import com.suprema.IUsbEventHandler;
 
 import android.util.Base64;
+
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -425,15 +438,19 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             public void onClick(View v) {
                 // Send registration data to server and check in automatically
                 //Toast.makeText(FingerprintActivity.this, "Registered", Toast.LENGTH_SHORT).show();
-
-                String urlParameters = "id=" + matchedPremiseResident.getId()+
-                                        "&template=" + fingerprintData +
-                                        "&length=" + scannedLen;
-
+                String urlParameters = null;
+                try {
+                    urlParameters = "id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8")+
+                            "&template=" + URLEncoder.encode(fingerprintData, "UTF-8") +
+                            "&length=" + URLEncoder.encode(scannedLen+"", "UTF-8");
+                } catch (UnsupportedEncodingException e){
+                    e.printStackTrace();
+                }
                 new RegisterFingerPrint().execute(preferences.getBaseURL() + "record_fingerprint", urlParameters);
             }
         });
     }
+
     private class RegisterFingerPrint extends AsyncTask<String, Void, String>{
 
         protected void onPreExecute(){
@@ -504,18 +521,23 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         }
     }
     private void recordCheckIn(){
-        String urlParameters = "peoplerecord_id=" + matchedPremiseResident.getId()+
-                "&host_id=" + matchedPremiseResident.getHostId() +
-                "&house_id=" + matchedPremiseResident.getHouse() +
-                "&premise_zone_id=" + preferences.getPremiseZoneId() +
-                "&device_id=" + preferences.getDeviceId();
+        String urlParameters = null;
+        try {
+            urlParameters = "peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8")+
+                    "&host_id=" + URLEncoder.encode(matchedPremiseResident.getHostId(), "UTF-8") +
+                    "&house_id=" + URLEncoder.encode(matchedPremiseResident.getHouse(), "UTF-8") +
+                    "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                    "&device_id=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8");
+        } catch (UnsupportedEncodingException e){
+            e.printStackTrace();
+        }
         new ExpressCheckIn().execute(preferences.getBaseURL() + "express_checkin", urlParameters);
     }
     private void  recordCheckout(){
         String urlParameters = null;
         try {
-            urlParameters = "deviceID=" + preferences.getDeviceId()+
-                    "&peoplerecord_id=" + matchedPremiseResident.getId() +
+            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
+                    "&peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8") +
                     "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

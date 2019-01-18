@@ -134,6 +134,7 @@ public class Dashboard extends SojaActivity {
            //startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
         }
+
         askPermissions();
 
     }
@@ -187,6 +188,10 @@ public class Dashboard extends SojaActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.logout) {
+            /*for (PremiseResident premiseResident: handler.getPremiseResidents()){
+                if (premiseResident.getFingerPrint() != null)
+                    Log.d(premiseResident.getFirstName() + premiseResident.getLastName(), premiseResident.getFingerPrint());
+            }*/
             dialog = new MaterialDialog.Builder(Dashboard.this)
                     .title("Logout")
                     .content("You are about to logout of Soja.\nYou will need to login next time you use the app.Are you sure?")
@@ -195,11 +200,16 @@ public class Dashboard extends SojaActivity {
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
+
                             preferences.setIsLoggedin(false);
                             preferences.setDeviceId(null);
                             preferences.setPremiseName("");
                             preferences.setName("");
                             preferences.setId("");
+                            preferences.setCanPrint(false);
+                            preferences.setFingerprintsEnabled(false);
+
+
                             SQLiteDatabase db = handler.getWritableDatabase();
                             db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
                             db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
@@ -382,11 +392,18 @@ public class Dashboard extends SojaActivity {
                         if(resident.getString("length") != "null"){
                             length = Integer.valueOf(resident.getString("length"));
                         }
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), null,0, resident.getString("house_id"), resident.getString("host_id"));
+                        String fingerPrint = resident.get("fingerprint")==null?null:resident.getString("fingerprint");
+                        if (fingerPrint == "0")
+                            fingerPrint = null;
+                        fingerPrint = fingerPrint.replaceAll("\\n", "");
+                        fingerPrint = fingerPrint.replace("\\r", "");
+                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), fingerPrint,length, resident.getString("house_id"), resident.getString("host_id"));
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();
                 }
+
+
 
 
             } catch (JSONException e) {
