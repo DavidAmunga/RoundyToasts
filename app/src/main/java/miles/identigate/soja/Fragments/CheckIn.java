@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.ScanQRActivity;
+import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.app.Common;
 
@@ -49,6 +51,8 @@ public class CheckIn extends Fragment {
         checkinTitles.add("Residents");
         if (preferences.isFingerprintsEnabled())
             checkinTitles.add("Biometric Checkin");
+        if (preferences.isSMSCheckInEnabled())
+            checkinTitles.add("SMS Checkin");
         checkinTitles.add("Incident");
 
 
@@ -58,6 +62,8 @@ public class CheckIn extends Fragment {
         checkinDescriptions.add("Check in a resident");
         if (preferences.isFingerprintsEnabled())
             checkinDescriptions.add("Check in using biometrics");
+        if (preferences.isSMSCheckInEnabled())
+            checkinDescriptions.add("Check in a Visitor without an ID");
         checkinDescriptions.add("Report an incident");
 
         ArrayList<Integer> checkinDrawables = new ArrayList<>();
@@ -66,6 +72,8 @@ public class CheckIn extends Fragment {
         checkinDrawables.add(R.drawable.ic_action_walk);
         if (preferences.isFingerprintsEnabled())
             checkinDrawables.add(R.drawable.fingerprint);
+        if (preferences.isSMSCheckInEnabled())
+            checkinDrawables.add(R.drawable.ic_message);
         checkinDrawables.add(R.drawable.ic_incident);
 
 
@@ -124,6 +132,19 @@ public class CheckIn extends Fragment {
                         }
                         break;
                     case 4:
+                        if (preferences.isSMSCheckInEnabled()) {
+                       /* extras.putInt("TargetActivity", Common.RESIDENTS);
+                        intent.putExtras(extras);
+                        startActivity(intent);*/
+                            startActivity(new Intent(getActivity(), SmsCheckInActivity.class));
+
+                        }else{
+                            Toast.makeText(getActivity(), "SMS Not Enabled", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getActivity(), SmsCheckInActivity.class));
+                        }
+                     break;
+
+                    case 5:
 
                        /* extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);

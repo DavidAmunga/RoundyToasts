@@ -135,5 +135,13 @@ public class Preferences {
         editor.putBoolean("fingerprints", isEnabled);
         editor.commit();
     }
+    public boolean isSMSCheckInEnabled(){
+        return settings.getBoolean("sms", false);
+    }
+    public void setSMSCheckInEnabled(boolean isEnabled){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("sms", isEnabled);
+        editor.commit();
+    }
 
 }
