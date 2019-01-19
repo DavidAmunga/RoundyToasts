@@ -245,6 +245,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                 "&scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                 "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
+                                (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
                                 "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                                 "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
                                 "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
@@ -274,7 +275,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                 "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                 "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                                (preferences.isSelectHostsEnabled() ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+                                (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
                                 "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
                                 "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
                                 "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +

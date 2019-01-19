@@ -210,7 +210,7 @@ public class RecordWalkIn extends SojaActivity {
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
-                            (preferences.isSelectHostsEnabled() ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
 
                             "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                     "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8")+
@@ -381,10 +381,12 @@ public class RecordWalkIn extends SojaActivity {
                                     idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
                                 }else if (classCode.equals("P")){
                                     idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                                    Log.d(TAG, "onNegative: " + idN);
+
                                 }
                                 String urlParameters = null;
                                 try {
-                                    urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length() - 1), "UTF-8") +
+                                    urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                             "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                                     new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);

@@ -232,7 +232,7 @@ public class RecordDriveIn extends SojaActivity {
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
                             "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
-                            (preferences.isSelectHostsEnabled() ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
 
                             "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                     "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8")+
@@ -384,7 +384,7 @@ public class RecordDriveIn extends SojaActivity {
                         }
                         try {
                             urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                                    "&idNumber=" + URLEncoder.encode(idN.substring(2, idN.length()-1), "UTF-8") +
+                                    "&idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                     "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                             new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
                         } catch (UnsupportedEncodingException e) {
