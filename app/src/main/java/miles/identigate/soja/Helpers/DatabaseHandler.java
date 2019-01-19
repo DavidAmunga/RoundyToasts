@@ -135,25 +135,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         }
 
-    public void insertPremiseVisitor(String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId) {
-        Log.d(TAG, "insertPremiseVisitor: Start");
-        
-            SQLiteDatabase db = this.getWritableDatabase();
+    public void insertPremiseVisitor(String _id,String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId){
+        SQLiteDatabase db = this.getWritableDatabase();
 
-            ContentValues values = new ContentValues();
-            values.put(FINGERPRINT, fingerprint);
-            values.put(FIRSTNAME, firstName);
-            values.put(LASTNAME, lastName);
-            values.put(IDNUMBER, idNumber);
-            values.put(FINGERPRINTLEN, fingerprintLen);
-            values.put(house, _house);
-            values.put(hostId, _hostId);
-            db.insert(TABLE_PREMISE_RESIDENTS, null, values);
-            db.close();
-
-        Log.d(TAG, "insertPremiseVisitor: End");
-        }
-
+        ContentValues values = new ContentValues();
+        values.put(id, _id);
+        values.put(FINGERPRINT, fingerprint);
+        values.put(FIRSTNAME, firstName);
+        values.put(LASTNAME, lastName);
+        values.put(IDNUMBER, idNumber);
+        values.put(FINGERPRINTLEN, fingerprintLen);
+        values.put(house, _house);
+        values.put(hostId, _hostId);
+        db.insert(TABLE_PREMISE_RESIDENTS, null, values);
+        db.close();
+    }
 
     public ArrayList<PremiseResident> getPremiseResidents() {
             ArrayList<PremiseResident> premiseResidents = new ArrayList<PremiseResident>();
