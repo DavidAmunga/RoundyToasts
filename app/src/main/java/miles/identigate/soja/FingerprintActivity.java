@@ -157,7 +157,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             String action = intent.getAction();
             if(ACTION_USB_PERMISSION.equals(action)){
                 synchronized(this){
-                    UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if(intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)){
                         if(device != null){
                             if( mBioMiniFactory == null) return;
@@ -183,14 +183,14 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
         isCheckout = getIntent().getBooleanExtra("CHECKOUT", false);
 
-        fingerprint = (ImageView)findViewById(R.id.fingerprint);
-        place_finger = (TextView)findViewById(R.id.place_finger);
-        ok_button = (Button)findViewById(R.id.ok_button);
-        submit_button = (Button)findViewById(R.id.submit_button);
-        info = (LinearLayout)findViewById(R.id.info);
-        name = (TextView)findViewById(R.id.name);
-        idNUmber = (TextView)findViewById(R.id.idNUmber);
-        record_type = (TextView)findViewById(R.id.record_type);
+        fingerprint = findViewById(R.id.fingerprint);
+        place_finger = findViewById(R.id.place_finger);
+        ok_button = findViewById(R.id.ok_button);
+        submit_button = findViewById(R.id.submit_button);
+        info = findViewById(R.id.info);
+        name = findViewById(R.id.name);
+        idNUmber = findViewById(R.id.idNUmber);
+        record_type = findViewById(R.id.record_type);
 
         if (isCheckout) {
             record_type.setText("BIOMETRIC CHECKOUT");

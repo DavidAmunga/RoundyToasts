@@ -125,10 +125,10 @@ public class DriveInAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view=activity.getLayoutInflater().inflate(R.layout.visitor,null);
-        TextView name=(TextView)view.findViewById(R.id.name);
-        TextView id=(TextView)view.findViewById(R.id.idNumber);
-        TextView car=(TextView)view.findViewById(R.id.car);
-        TextView entry=(TextView)view.findViewById(R.id.entry);
+        TextView name = view.findViewById(R.id.name);
+        TextView id = view.findViewById(R.id.idNumber);
+        TextView car = view.findViewById(R.id.car);
+        TextView entry = view.findViewById(R.id.entry);
         if(type.equals("DRIVE")){
             name.setText(driveIns.get(position).getName());
             id.setText(driveIns.get(position).getCarNumber());

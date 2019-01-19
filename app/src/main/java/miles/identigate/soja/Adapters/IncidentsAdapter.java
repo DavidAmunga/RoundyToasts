@@ -39,11 +39,11 @@ public class IncidentsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view=activity.getLayoutInflater().inflate(R.layout.incident,null);
-        TextView name=(TextView)view.findViewById(R.id.name);
-        TextView id=(TextView)view.findViewById(R.id.idNumber);
-        TextView type=(TextView)view.findViewById(R.id.type);
-        TextView date=(TextView)view.findViewById(R.id.date);
-        TextView descr=(TextView)view.findViewById(R.id.description);
+        TextView name = view.findViewById(R.id.name);
+        TextView id = view.findViewById(R.id.idNumber);
+        TextView type = view.findViewById(R.id.type);
+        TextView date = view.findViewById(R.id.date);
+        TextView descr = view.findViewById(R.id.description);
         name.setText(models.get(position).getName());
         id.setText("ID: "+models.get(position).getNationalId());
         type.setText("TYPE: "+models.get(position).getCategory());

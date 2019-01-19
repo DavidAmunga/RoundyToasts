@@ -70,7 +70,7 @@ public class DeviceListActivity extends Activity {
             intent.putExtra("BTAddress", toothAddress);
             setResult(HPRTPrinterHelper.ACTIVITY_CONNECT_BT, intent);
             finish();
-        };
+        }
     };
     private Message message;
     IntentFilter intent;
@@ -85,8 +85,8 @@ public class DeviceListActivity extends Activity {
         preferences = new Preferences(this);
         setContentView(R.layout.activity_devicelist);
         setResult(Activity.RESULT_CANCELED);
-        progress = (ProgressBar) findViewById(R.id.progress);
-        Button scanButton = (Button) findViewById(R.id.button_scan);
+        progress = findViewById(R.id.progress);
+        Button scanButton = findViewById(R.id.button_scan);
         scanButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 strAddressList="";
@@ -99,8 +99,8 @@ public class DeviceListActivity extends Activity {
         // 初始化 arryadapter 已经配对的设备和新扫描到得设备
         mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getPairedData());
         mNewDevicesArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
-        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
-        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
+        ListView pairedListView = findViewById(R.id.paired_devices);
+        ListView newDevicesListView = findViewById(R.id.new_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
@@ -129,8 +129,8 @@ public class DeviceListActivity extends Activity {
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         // 得到当前的一个已经配对的蓝牙设备
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
-        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
-        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
+        ListView pairedListView = findViewById(R.id.paired_devices);
+        ListView newDevicesListView = findViewById(R.id.new_devices);
         if (pairedDevices.size() > 0)
         {
             findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);

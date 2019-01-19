@@ -12,7 +12,7 @@ public class Visitor  {
     }
 
     public void setFingerprint(byte[] fingerprint, int len) {
-        this.fingerprint = Arrays.copyOf(fingerprint, len);;
+        this.fingerprint = Arrays.copyOf(fingerprint, len);
     }
 
     byte[] fingerprint;

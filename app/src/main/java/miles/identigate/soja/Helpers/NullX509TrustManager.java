@@ -22,7 +22,7 @@ public class NullX509TrustManager implements X509TrustManager {
      */
     @Override
     public void checkClientTrusted(final X509Certificate[] chain,
-                                   final String authType) throws CertificateException {
+                                   final String authType) {
         // Does nothing
     }
 
@@ -36,7 +36,7 @@ public class NullX509TrustManager implements X509TrustManager {
      */
     @Override
     public void checkServerTrusted(final X509Certificate[] chain,
-                                   final String authType) throws CertificateException {
+                                   final String authType) {
         // Does nothing
     }
 

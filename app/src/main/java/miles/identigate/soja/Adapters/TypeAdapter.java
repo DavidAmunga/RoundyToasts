@@ -50,7 +50,7 @@ public class TypeAdapter extends BaseAdapter {
             LayoutInflater inflater=context.getLayoutInflater();
             row = inflater.inflate(resource, parent, false);
             holder = new ViewHolder();
-            holder.text = (TextView) row.findViewById(R.id.text);
+            holder.text = row.findViewById(R.id.text);
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();

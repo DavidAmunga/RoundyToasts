@@ -78,10 +78,10 @@ public class FingerprintRegistrationFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fingerprint_registration, container, false);
-        searchbox = (EditText)view.findViewById(R.id.searchbox);
-        loading = (ContentLoadingProgressBar)view.findViewById(R.id.loading);
-        recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-        main_content = (NestedScrollView)view.findViewById(R.id.main_content);
+        searchbox = view.findViewById(R.id.searchbox);
+        loading = view.findViewById(R.id.loading);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        main_content = view.findViewById(R.id.main_content);
 
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setNestedScrollingEnabled(false);

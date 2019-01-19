@@ -41,20 +41,20 @@ public class AllLogs extends SojaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visitors);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView title=(TextView)toolbar.findViewById(R.id.title);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView title = toolbar.findViewById(R.id.title);
         title.setText("Logs");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);;
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         driveIns=new ArrayList<>();
         walkIns=new ArrayList<>();
         serviceProviderModels=new ArrayList<>();
         residents=new ArrayList<>();
-        lv=(ListView)findViewById(R.id.visitors);
+        lv = findViewById(R.id.visitors);
         lv.setVisibility(View.VISIBLE);
-        progressBar=(ContentLoadingProgressBar)findViewById(R.id.loading);
-        searchbox=(EditText)findViewById(R.id.searchbox);
+        progressBar = findViewById(R.id.loading);
+        searchbox = findViewById(R.id.searchbox);
         progressBar.setVisibility(View.GONE);
         lv.setEmptyView(findViewById(R.id.empty));
         //type=(TextView)findViewById(R.id.type);

@@ -41,7 +41,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
         setContentView(R.layout.activity_express_checkout);
-        ImageView scan_icon = (ImageView)findViewById(R.id.scan_icon);
+        ImageView scan_icon = findViewById(R.id.scan_icon);
         scan_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +151,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                 })
                 .build();
         View view = dialog.getCustomView();
-        TextView messageText=(TextView)view.findViewById(R.id.message);
+        TextView messageText = view.findViewById(R.id.message);
         messageText.setText("Visitor successfully checked out.");
         dialog.show();
     }

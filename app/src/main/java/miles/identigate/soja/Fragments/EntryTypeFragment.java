@@ -57,9 +57,9 @@ public class EntryTypeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_entry_type, container, false);
-        ImageView scan=(ImageView)view.findViewById(R.id.scan_icon);
-        ImageView manual=(ImageView)view.findViewById(R.id.manual_icon);
-        TextView record_type=(TextView)view.findViewById(R.id.record_type);
+        ImageView scan = view.findViewById(R.id.scan_icon);
+        ImageView manual = view.findViewById(R.id.manual_icon);
+        TextView record_type = view.findViewById(R.id.record_type);
         switch(TargetActivity){
             case Common.DRIVE_IN:
                 record_type.setText("RECORD DRIVE IN");
@@ -95,7 +95,7 @@ public class EntryTypeFragment extends Fragment {
     }
 
     public interface OnEntrySelectedListener{
-        public void OnEntrySelected(int type);
+        void OnEntrySelected(int type);
     }
     @Override
     public void onAttach(Activity activity) {

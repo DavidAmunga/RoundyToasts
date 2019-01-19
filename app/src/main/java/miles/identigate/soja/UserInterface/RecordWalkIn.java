@@ -38,31 +38,26 @@ import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
 import miles.identigate.soja.SlipActivity;
+import miles.identigate.soja.SmsCheckInActivity;
 
 public class RecordWalkIn extends SojaActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
+    private static final String TAG = "RecordWalkIn";
     Spinner visitor_type;
     DatabaseHandler handler;
     Button record;
-    Spinner host;
-    Spinner host_1;
-    TypeObject selectedType;
-    TypeObject selectedHouse;
-    ArrayList<TypeObject> houses;
-    ArrayList<TypeObject> visitorTypes;
+    Spinner spinnerDestination, spinnerHost;
+    TypeObject selectedDestination, selectedHost, selectedType;
+    ArrayList<TypeObject> houses, visitorTypes, hosts;
     Preferences preferences;
 
-    LinearLayout phoneNumberLayout;
-    EditText phoneNumberEdittext;
-    LinearLayout companyNameLayout;
-    EditText companyNameEdittext;
-    LinearLayout hostLayout;
+    LinearLayout phoneNumberLayout, companyNameLayout, hostLayout;
+    EditText phoneNumberEdittext, companyNameEdittext;
 
-    String firstName;
-    String lastName;
-    String idNumber;
+    String firstName, lastName, idNumber;
     String result_slip = "";
     int visit_id = 0;
     private IntentFilter receiveFilter;
@@ -84,7 +79,7 @@ public class RecordWalkIn extends SojaActivity {
         if (Constants.documentReaderResults == null)
             finish();
         preferences=new Preferences(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -94,23 +89,24 @@ public class RecordWalkIn extends SojaActivity {
 
         handler=new DatabaseHandler(this);
 
-        visitor_type = (Spinner) findViewById(R.id.visitor_type);
-        record=(Button)findViewById(R.id.record);
-        host=(Spinner)findViewById(R.id.host);
+        visitor_type = findViewById(R.id.visitor_type);
+        record = findViewById(R.id.record);
+        spinnerDestination = findViewById(R.id.spinnerDestination);
 
-        phoneNumberLayout = (LinearLayout)findViewById(R.id.phoneNumberLayout);
-        phoneNumberEdittext = (EditText)findViewById(R.id.phoneNumberEdittext);
-        companyNameLayout = (LinearLayout)findViewById(R.id.companyNameLayout);
-        companyNameEdittext = (EditText)findViewById(R.id.companyNameEdittext);
-        hostLayout = (LinearLayout)findViewById(R.id.hostLayout);
-        host_1 = (Spinner)findViewById(R.id.host_1);
+        phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
+        phoneNumberEdittext = findViewById(R.id.phoneNumberEdittext);
+        companyNameLayout = findViewById(R.id.companyNameLayout);
+        companyNameEdittext = findViewById(R.id.companyNameEdittext);
+        hostLayout = findViewById(R.id.hostLayout);
+        spinnerHost = findViewById(R.id.spinnerHost);
 
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);
         hostLayout.setVisibility(preferences.isSelectHostsEnabled()?View.VISIBLE:View.GONE);
 
-        houses=handler.getTypes("houses");
-        visitorTypes=handler.getTypes("visitors");
+        houses = handler.getTypes("houses", null);
+        Log.d(TAG, "Houses: " + houses);
+        visitorTypes = handler.getTypes("visitors", null);
         record.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -135,14 +131,23 @@ public class RecordWalkIn extends SojaActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+//        DESTINATION
         TypeAdapter housesAdapter =new TypeAdapter(RecordWalkIn.this,R.layout.tv,houses);
-        host.setAdapter(housesAdapter);
-        host.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerDestination.setAdapter(housesAdapter);
+        spinnerDestination.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 TypeObject object=(TypeObject)parent.getSelectedItem();
-                selectedHouse=object;
-                //TODO: call    FetchHostsService
+                selectedDestination = object;
+
+
+                hosts = handler.getTypes("hosts", selectedDestination.getId());
+                hostLayout.setVisibility(preferences.isSelectHostsEnabled() && hosts.size() > 0 ? View.VISIBLE : View.GONE);
+
+                TypeAdapter hostsAdapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, hosts);
+                spinnerHost.setAdapter(hostsAdapter);
+
+
             }
 
             @Override
@@ -150,6 +155,20 @@ public class RecordWalkIn extends SojaActivity {
 
             }
         });
+
+//        HOSTS
+        spinnerHost.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TypeObject object = (TypeObject) parent.getSelectedItem();
+                selectedHost = object;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
     }
     @Override
     protected void onResume() {
@@ -181,6 +200,7 @@ public class RecordWalkIn extends SojaActivity {
             String gender=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M")?"0":"1";
             String mrzLines =  Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
 
+
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8")+
                     "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
@@ -190,7 +210,9 @@ public class RecordWalkIn extends SojaActivity {
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                     "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
                     "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
-                    "&houseID=" + URLEncoder.encode(selectedHouse.getId(), "UTF-8")+
+                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+
+                            "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                     "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8")+
                     "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8")+
                     "&genderID=" + URLEncoder.encode(gender, "UTF-8")+
@@ -223,7 +245,7 @@ public class RecordWalkIn extends SojaActivity {
         driveIn.setEntryTime(Constants.getCurrentTimeStamp());
         driveIn.setStatus("IN");
         driveIn.setExitTime("NULL");
-        driveIn.setHouseID(selectedHouse.getId());
+        driveIn.setHouseID(selectedDestination.getId());
         driveIn.setNationalId(idN);
         driveIn.setDob(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"));
         driveIn.setSex(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n"));
@@ -303,7 +325,7 @@ public class RecordWalkIn extends SojaActivity {
        if (preferences.canPrint()){
            Intent intent = new Intent(getApplicationContext(), SlipActivity.class);
            intent.putExtra("title", "RECORD WALK IN");
-           intent.putExtra("house", selectedHouse.getName());
+           intent.putExtra("house", selectedDestination.getName());
            intent.putExtra("firstName", firstName);
            intent.putExtra("lastName", lastName);
            intent.putExtra("idNumber", idNumber);
@@ -359,10 +381,12 @@ public class RecordWalkIn extends SojaActivity {
                                     idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
                                 }else if (classCode.equals("P")){
                                     idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                                    Log.d(TAG, "onNegative: " + idN);
+
                                 }
                                 String urlParameters = null;
                                 try {
-                                    urlParameters = "idNumber=" + URLEncoder.encode(idN.substring(2, idN.length() - 1), "UTF-8") +
+                                    urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                             "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                                     new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
@@ -375,7 +399,7 @@ public class RecordWalkIn extends SojaActivity {
             } else {
                 new MaterialDialog.Builder(RecordWalkIn.this)
                         .title("Soja")
-                        .content(result)
+                        .content(resultText)
                         .positiveText("OK")
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override

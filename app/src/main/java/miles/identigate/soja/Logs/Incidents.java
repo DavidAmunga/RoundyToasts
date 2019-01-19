@@ -21,11 +21,11 @@ public class Incidents extends SojaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incidents);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         handler=new DatabaseHandler(this);
-        listView=(ListView)findViewById(R.id.incidents);
+        listView = findViewById(R.id.incidents);
         listView.setEmptyView(findViewById(R.id.empty));
         adapter=new IncidentsAdapter(this,handler.getIncidents());
         listView.setAdapter(adapter);

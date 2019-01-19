@@ -71,10 +71,10 @@ public class ManualFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_manual, container, false);
-        Button next=(Button)view.findViewById(R.id.next);
-        final EditText name=(EditText) view.findViewById(R.id.name);
-        final EditText id=(EditText) view.findViewById(R.id.id);
-        final Spinner idTypes=(Spinner)view.findViewById(R.id.id_types);
+        Button next = view.findViewById(R.id.next);
+        final EditText name = view.findViewById(R.id.name);
+        final EditText id = view.findViewById(R.id.id);
+        final Spinner idTypes = view.findViewById(R.id.id_types);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.id_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

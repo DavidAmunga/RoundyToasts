@@ -18,11 +18,7 @@ public class CheckConnection {
      public static  boolean check(Activity activity){
         ConnectivityManager connectivityManager=(ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info=connectivityManager.getActiveNetworkInfo();
-        if(info != null && info.isConnectedOrConnecting()){
-            return true;
-        }else{
-            return false;
-        }
+         return info != null && info.isConnectedOrConnecting();
     }
     public boolean isOnline() {
 

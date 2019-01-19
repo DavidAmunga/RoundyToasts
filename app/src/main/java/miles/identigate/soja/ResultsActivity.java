@@ -63,10 +63,10 @@ public class ResultsActivity extends AppCompatActivity {
         receiveFilter.addAction(Constants.RECORDED_VISITOR);
 
 
-        mrzImgView = (ImageView) findViewById(R.id.mrzImgView);
-		mrzItemsList = (ListView) findViewById(R.id.mrzItemsList);
-        cancel=(Button)findViewById(R.id.cancel);
-        next=(Button)findViewById(R.id.next);
+        mrzImgView = findViewById(R.id.mrzImgView);
+        mrzItemsList = findViewById(R.id.mrzItemsList);
+        cancel = findViewById(R.id.cancel);
+        next = findViewById(R.id.next);
 
         mResultItems = new ArrayList<>();
         mrzItemsList.setEmptyView(findViewById(R.id.empty));

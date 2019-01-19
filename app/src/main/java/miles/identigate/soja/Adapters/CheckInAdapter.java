@@ -43,9 +43,9 @@ public class CheckInAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view=activity.getLayoutInflater().inflate(R.layout.option,null);
-        TextView title=(TextView)view.findViewById(R.id.title);
-        TextView description=(TextView)view.findViewById(R.id.description);
-        ImageView image=(ImageView)view.findViewById(R.id.image);
+        TextView title = view.findViewById(R.id.title);
+        TextView description = view.findViewById(R.id.description);
+        ImageView image = view.findViewById(R.id.image);
         title.setText(titles[position]);
         description.setText(descriptions[position]);
         image.setImageResource(drawables[position]);

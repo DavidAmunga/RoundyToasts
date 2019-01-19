@@ -52,19 +52,19 @@ public class ServiceProvider extends SojaActivity {
         setContentView(R.layout.activity_service_provider);
         if (Constants.documentReaderResults == null)
             finish();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        company=(Spinner)findViewById(R.id.company);
-        record=(Button)findViewById(R.id.record);
-        companyLabel=(TextView)findViewById(R.id.companyLabel);
-        image=(ImageView)findViewById(R.id.image);
-        hostLabel=(TextView)findViewById(R.id.hostLabel);
-        host=(Spinner)findViewById(R.id.host);
+        company = findViewById(R.id.company);
+        record = findViewById(R.id.record);
+        companyLabel = findViewById(R.id.companyLabel);
+        image = findViewById(R.id.image);
+        hostLabel = findViewById(R.id.hostLabel);
+        host = findViewById(R.id.host);
         handler=new DatabaseHandler(this);
-        visitorTypes=handler.getTypes("service_providers");
+        visitorTypes = handler.getTypes("service_providers", null);
         preferences=new Preferences(this);
-        houses=handler.getTypes("houses");
+        houses = handler.getTypes("houses", null);
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
