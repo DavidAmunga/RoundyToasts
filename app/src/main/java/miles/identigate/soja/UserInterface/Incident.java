@@ -242,7 +242,7 @@ public class Incident extends SojaActivity {;
     private class IncidentAsync extends AsyncTask<String, Void, String> {
         MaterialDialog builder=new MaterialDialog.Builder(Incident.this)
                 .title("Soja")
-                .content("Recording...")
+                .content("Reporting...")
                 .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)

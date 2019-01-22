@@ -18,6 +18,10 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.Helpers.CheckConnection;
@@ -53,6 +57,7 @@ public class RecordExit extends SojaActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Record Exit");
         handler=new DatabaseHandler(this);
         record = findViewById(R.id.commentRecord);
         mode = findViewById(R.id.mode);
@@ -62,14 +67,18 @@ public class RecordExit extends SojaActivity {
         entry = findViewById(R.id.entry);
         //comment=(EditText)findViewById(R.id.comment);
         preferences=new Preferences(this);
+
+
+
         if(getIntent() !=null){
            type=getIntent().getStringExtra("TYPE");
             name.setText(getIntent().getStringExtra("NAME"));
-            idNumber.setText("ID: "+getIntent().getStringExtra("ID"));
+            idNumber.setText(getIntent().getStringExtra("ID"));
             ID=getIntent().getStringExtra("ID");
-            entry.setText("ENTRY: "+getIntent().getStringExtra("ENTRY"));
+
+            entry.setText(convertDateFormat(getIntent().getStringExtra("ENTRY")));
             if(type.equals("DRIVE")){
-                car.setText("CAR:"+ getIntent().getStringExtra("CAR"));
+                car.setText(getIntent().getStringExtra("CAR"));
             }else if(type.equals("WALK")){
                 car.setVisibility(View.GONE);
             }else if(type.equals("RESIDENT")){
@@ -102,6 +111,27 @@ public class RecordExit extends SojaActivity {
                 }
             }
         });
+    }
+
+//    Converts String Date into More Readable
+    public String convertDateFormat(String dateString){
+
+
+        String newDate="";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("EEE, MMM d yyyy hh:mm aaa");
+
+        Date convertedDate=new Date();
+        try{
+            convertedDate=dateFormat.parse(dateString);
+            newDate=newDateFormat.format(convertedDate);
+
+            return newDate;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newDate;
     }
     public void exitLocal(){
         handler.updateExitTime(type,Constants.getCurrentTimeStamp(), ID);

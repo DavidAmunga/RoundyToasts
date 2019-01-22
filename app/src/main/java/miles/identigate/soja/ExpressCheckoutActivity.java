@@ -41,6 +41,8 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
         setContentView(R.layout.activity_express_checkout);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Express Checkout");
         ImageView scan_icon = findViewById(R.id.scan_icon);
         scan_icon.setOnClickListener(new View.OnClickListener() {
             @Override

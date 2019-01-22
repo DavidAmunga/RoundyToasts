@@ -3,6 +3,7 @@ package miles.identigate.soja.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,14 @@ import miles.identigate.soja.app.Common;
 
 public class CheckIn extends Fragment {
 
+    private static final String TAG = "CheckIn";
+
     private String[] titles;
     private String[] descriptions;
     private Integer[] drawables;
     private Preferences preferences;
+    ArrayList<String> checkinTitles = new ArrayList<>();
+
     public static CheckIn newInstance(String param1, String param2) {
         CheckIn fragment = new CheckIn();
         Bundle args = new Bundle();
@@ -45,7 +50,6 @@ public class CheckIn extends Fragment {
         super.onCreate(savedInstanceState);
         preferences = new Preferences(getActivity());
 
-        ArrayList<String> checkinTitles = new ArrayList<>();
         checkinTitles.add("Drive In");
         checkinTitles.add("Walk In");
         checkinTitles.add("Residents");
@@ -104,25 +108,31 @@ public class CheckIn extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent(getActivity(), ScanActivity.class);
                 Bundle extras=new Bundle();
-             switch (position) {
-                    case 0:
+
+                String item=parent.getItemAtPosition(position).toString();
+
+
+
+                Log.d(TAG, "onItemClick: "+parent.getItemAtPosition(position).toString());
+             switch (item) {
+                    case "Drive In":
                         extras.putInt("TargetActivity", Common.DRIVE_IN);
                         intent.putExtras(extras);
                         startActivity(intent);
                         break;
-                    case 1:
+                    case "Walk In":
                         extras.putInt("TargetActivity", Common.WALK_IN);
                         intent.putExtras(extras);
                         startActivity(intent);
                          break;
-                    case 2:
+                    case "Residents":
 
                        /* extras.putInt("TargetActivity", Common.SERVICE_PROVIDER);
                         intent.putExtras(extras);
                         startActivity(intent);*/
                         startActivity(new Intent(getActivity(), ScanQRActivity.class));
                         break;
-                    case 3:
+                    case "Biometric Checkin":
                         if (preferences.isFingerprintsEnabled()){
                             Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
                             fingerPrint.putExtra("CHECKOUT", false);
@@ -131,7 +141,7 @@ public class CheckIn extends Fragment {
                             startActivity(new Intent(getActivity(), Incident.class));
                         }
                         break;
-                    case 4:
+                    case "SMS Checkin":
                         if (preferences.isSMSCheckInEnabled()) {
                        /* extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);
@@ -142,9 +152,8 @@ public class CheckIn extends Fragment {
                             Toast.makeText(getActivity(), "SMS Not Enabled", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getActivity(), SmsCheckInActivity.class));
                         }
-                     break;
-
-                    case 5:
+                        break;
+                    case "Incident":
 
                        /* extras.putInt("TargetActivity", Common.RESIDENTS);
                         intent.putExtras(extras);

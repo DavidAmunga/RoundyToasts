@@ -49,6 +49,7 @@ public class Visitors extends AppCompatActivity {
     private ContentLoadingProgressBar loading;
     private Preferences preferences;
     private EditText searchbox;
+    private static final String TAG = "Visitors";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -72,10 +73,7 @@ public class Visitors extends AppCompatActivity {
         loading = findViewById(R.id.loading);
         searchbox = findViewById(R.id.searchbox);
         handler=new DatabaseHandler(this);
-        VectorDrawableCompat someVectorDrawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_search_dark, null);
-        VectorDrawableCompat background = VectorDrawableCompat.create(getResources(), R.drawable.border, null);
-        searchbox.setCompoundDrawablesWithIntrinsicBounds(someVectorDrawable, null, null,null);
-        searchbox.setBackgroundDrawable(background);
+
         if(getIntent()!=null){
             str=getIntent().getStringExtra("TYPE");
             if(str.equals("DRIVE")){
@@ -107,6 +105,7 @@ public class Visitors extends AppCompatActivity {
             String s = preferences.getBaseURL();
             String url = s.substring(0,s.length()-11);
             new GetActiveVisitors().execute(url+"api/visitors/visitors_in/"+preferences.getPremise());
+            Log.d(TAG, "Visitors: "+url+"api/visitors/visitors_in/"+preferences.getPremise());
         }else {
             loading.setVisibility(View.GONE);
             findViewById(R.id.empty).setVisibility(View.VISIBLE);

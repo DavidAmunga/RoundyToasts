@@ -295,7 +295,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
     private class SMSRecordAsync extends AsyncTask<String, Void, String> {
         MaterialDialog builder = new MaterialDialog.Builder(SmsCheckInActivity.this)
                 .title(spinnerTypeOfVisit.getSelectedItem().toString())
-                .content("Recording...")
+                .content("Checking In...")
                 .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
@@ -450,6 +450,48 @@ public class SmsCheckInActivity extends AppCompatActivity {
         }
     }
 
+    private void parseResult(){
+        if (preferences.canPrint()){
+            Intent intent = new Intent(getApplicationContext(), SlipActivity.class);
+            intent.putExtra("title", "SMS");
+            intent.putExtra("house", selectedDestination.getName());
+
+            if(!edtCarNo.getText().toString().equals("")){
+                intent.putExtra("vehicleNo",edtCarNo.getText().toString());
+            }
+            if(preferences.isSelectHostsEnabled() && selectedHost!=null){
+                intent.putExtra("host",selectedHost.getName());
+            }
+            if(selectedType.equals("Drive In")){
+                intent.putExtra("checkInType","drive");
+            }else{
+                intent.putExtra("checkInType","walk");
+            }
+            if(!edtPeopleNo.getText().toString().equals("")){
+                intent.putExtra("peopleNo",edtPeopleNo.getText().toString());
+            }
+            intent.putExtra("phoneNo",edtPhoneNo.getText().toString());
+            intent.putExtra("checkInMode","SMS");
+
+            startActivity(intent);
+        }
+//        else{
+//            new MaterialDialog.Builder(SmsCheckInActivity.this)
+//                    .title("SUCCESS")
+//                    .content("Visitor recorded successfully.")
+//                    .positiveText("OK")
+//                    .callback(new MaterialDialog.ButtonCallback() {
+//                        @Override
+//                        public void onPositive(MaterialDialog dialog) {
+//                            dialog.dismiss();
+//                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+//                            finish();
+//                        }
+//                    })
+//                    .show();
+//        }
+    }
+
     //    Handle Record
     private void recordResultHandler(String result) throws JSONException {
         Log.d("Record Result", result);
@@ -461,7 +503,13 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
             Toast.makeText(this, "Success! Visitor Checked In", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, Dashboard.class));
+//            parseResult();
+
+            if(preferences.canPrint()){
+                parseResult();
+            }else{
+                startActivity(new Intent(this, Dashboard.class));
+            }
 
         } else {
             if (resultText.contains("still in")) {

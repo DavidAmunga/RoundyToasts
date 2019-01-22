@@ -19,6 +19,9 @@
         android:layout_height="wrap_content"
         android:text="@string/turn_on_flashlight"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
         android:layout_centerHorizontal="true"
         android:onClick="switchFlashlight"/>
 

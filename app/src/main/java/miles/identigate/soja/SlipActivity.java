@@ -44,8 +44,10 @@ public class SlipActivity extends SojaActivity {
     String firstName;
     String lastName;
     String idNumber;
-    String house;
+    String house,host,peopleNo,phoneNo;
     String result_slip;
+    String vehicleNo;
+    String checkInType,checkInMode;
     int visit_id = 0;
     private String ConnectType="Bluetooth";
 
@@ -73,6 +75,17 @@ public class SlipActivity extends SojaActivity {
             house = extras.getString("house");
             result_slip = extras.getString("result_slip");
             visit_id = extras.getInt("visit_id");
+            checkInType=extras.getString("checkInType");
+            checkInMode=extras.getString("checkInMode");
+            phoneNo=extras.getString("phoneNo");
+            host=extras.getString("host");
+            vehicleNo=extras.getString("vehicleNo");
+            peopleNo=extras.getString("peopleNo");
+
+
+
+
+
             if (!title.isEmpty()){
                 slip.setText(title);
             }
@@ -89,6 +102,7 @@ public class SlipActivity extends SojaActivity {
             public void onClick(View view) {
                 dialog.show();
                 //TODO: Print
+//
                 doPrint();
             }
         });
@@ -111,7 +125,7 @@ public class SlipActivity extends SojaActivity {
         HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
         CapturePrinterFunction();
         GetPrinterProperty();
-        PrintSlip();
+//        PrintSlip();
     }
 
     @Override
@@ -165,6 +179,7 @@ public class SlipActivity extends SojaActivity {
     }
     private void PrintSlip()
     {
+        Log.d(TAG, "PrintSlip: Start");
         try
         {
             byte[] data=new byte[]{0x1b,0x40};
@@ -176,13 +191,44 @@ public class SlipActivity extends SojaActivity {
             msg += "\n";
             msg += "------------------------------";
             msg += "\n\n";
-            msg += "VISITOR NAME: " + firstName;
+            msg += "CHECK IN TYPE: " + checkInType;
             msg += "\n";
+            msg += "CHECK IN MODE: " + checkInMode;
+            msg += "\n";
+            if (!checkInMode.equals("SMS")){
+                msg += "VISITOR NAME: " + firstName;
+                msg += "\n";
+            }
             msg += "OFFICE VISITED: " + house;
             msg += "\n";
+            if (phoneNo!=null && !phoneNo.equals("")){
+
+                msg += "PHONE NUMBER: " + phoneNo;
+                msg += "\n";
+
+            }
+            if (host!=null && !host.equals("")){
+
+                msg += "HOST : " + host;
+                msg += "\n";
+
+            }
+            if (vehicleNo!=null && !vehicleNo.equals("")){
+
+                msg += "VEHICLE NO: " + vehicleNo;
+                msg += "\n";
+
+            }
+            if (peopleNo!=null && !peopleNo.equals("")){
+                msg += "PEOPLE NUMBER: " + peopleNo;
+                msg += "\n";
+            }
             msg += "ENTRY TIME: " + Constants.timeStamp();
             msg += "\n\n\n";
-            msg += "HOST NAME: " + "------------------";
+
+            if (host!=null && !host.equals("")) {
+                msg += "HOST NAME: " + host;
+            }
             msg += "\n\n";
             msg += "HOST SIGN: " + "------------------";
             msg += "\n\n";
@@ -191,11 +237,25 @@ public class SlipActivity extends SojaActivity {
                 msg += "\n\n";
             }
             msg += "POWERED BY WWW.SOJA.CO.KE";
-            msg += "\n\n";
+            msg += "\n\n\n";
 
             HPRTPrinterHelper.PrintText(msg);
-            HPRTPrinterHelper.PrintQRCode(idNumber,7,(3+0x30),1);
+//            if(!idNumber.equals("") && idNumber!=null){
+//                Log.d(TAG, "PrintSlip: ID No");
+            if(checkInMode.equals("SMS")){
+                HPRTPrinterHelper.PrintQRCode(phoneNo,7,(3+0x30),1);
+
+            }else{
+                HPRTPrinterHelper.PrintQRCode(idNumber,7,(3+0x30),1);
+            }
+//            }
+//            if(!phoneNo.equals("") && phoneNo!=null)
+//            {
+//                Log.d(TAG, "PrintSlip: SMS");
+//                HPRTPrinterHelper.PrintQRCode(phoneNo.substring(2),7,(3+0x30),1);
+//            }
             HPRTPrinterHelper.PrintText("\n\n\n",0,1,0);
+
             PAct.AfterPrintAction();
             if (dialog.isShowing())
                 dialog.dismiss();

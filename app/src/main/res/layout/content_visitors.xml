@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_visitors"
-    tools:context="miles.identigate.soja.UserInterface.Visitors">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/app_bar"
-        android:gravity="center_horizontal"
-        android:id="@+id/brand"
-        android:orientation="vertical">
-        <EditText
-            android:layout_gravity="center_horizontal"
+    tools:context="miles.identigate.soja.UserInterface.Visitors"
+    tools:showIn="@layout/activity_visitors">
+
+
+    <EditText
             android:id="@+id/searchbox"
-            android:layout_below="@+id/title"
-            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:textColorHint="#E1E1E1"
             android:hint="Search Visitors"
-            android:padding="10dp"
-            android:singleLine="true"/>
-    </LinearLayout>
+            android:inputType="text"
+            android:paddingLeft="25dp"
+            android:drawableLeft="@drawable/ic_search_dark"
+            android:drawablePadding="20dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:textSize="16sp"
+            android:paddingBottom="15dp"
+            android:elevation="5dp"
+            android:singleLine="true" />
+
     <ListView
-        android:layout_width="match_parent"
         android:id="@+id/visitors"
-        android:dividerHeight="0.5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchbox"
         android:divider="@color/divider"
-        android:visibility="gone"
-        android:layout_below="@+id/brand"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:dividerHeight="0.5dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:visibility="gone"/>
+
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/loading"
         style="?android:attr/progressBarStyleLarge"
@@ -44,23 +48,27 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="visible" />
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
         android:id="@+id/empty"
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:contentDescription="@string/imageViewNoData"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_no_data_70dp"/>
+            app:srcCompat="@drawable/ic_no_data_70dp" />
+
         <miles.identigate.soja.Font.OpenSansLight
             android:layout_width="match_parent"
-            android:textSize="20sp"
-            android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
-            android:text="There are currently no logs available."/>
+            android:layout_marginTop="15dp"
+            android:text="There are currently no logs available."
+            android:textSize="20sp" />
     </LinearLayout>
 </RelativeLayout>

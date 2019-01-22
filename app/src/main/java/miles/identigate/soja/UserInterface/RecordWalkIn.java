@@ -82,6 +82,7 @@ public class RecordWalkIn extends SojaActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Record Walk In");
 
         receiveFilter = new IntentFilter();
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
@@ -190,6 +191,7 @@ public class RecordWalkIn extends SojaActivity {
                 scan_id_type = "ID";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
                 idNumber = idN.substring(2, idN.length()-1);
+
             }else if (classCode.equals("P")){
                 scan_id_type = "P";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
@@ -204,7 +206,8 @@ public class RecordWalkIn extends SojaActivity {
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8")+
                     "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
-                    "&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8") +
+                            (preferences.isCompanyNameEnabled() && companyNameEdittext.getText().toString().equals("")?
+                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")):"")+
                     "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
                     "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
@@ -279,7 +282,7 @@ public class RecordWalkIn extends SojaActivity {
     private class DriveinAsync extends AsyncTask<String, Void, String> {
         MaterialDialog builder=new MaterialDialog.Builder(RecordWalkIn.this)
                 .title("Walk in")
-                .content("Recording...")
+                .content("Checking In...")
                 .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
@@ -331,6 +334,12 @@ public class RecordWalkIn extends SojaActivity {
            intent.putExtra("idNumber", idNumber);
            intent.putExtra("result_slip", result_slip);
            intent.putExtra("visit_id", visit_id);
+           intent.putExtra("checkInType","walk");
+           intent.putExtra("checkInMode","ID No");
+           if(preferences.isSelectHostsEnabled() && selectedHost!=null){
+               intent.putExtra("host",selectedHost.getName());
+           }
+
            startActivity(intent);
        }else{
            new MaterialDialog.Builder(RecordWalkIn.this)
@@ -376,17 +385,19 @@ public class RecordWalkIn extends SojaActivity {
                             public void onNegative(MaterialDialog dialog) {
                                 dialog.dismiss();
                                 String idN="000000000";
+                                String idNumber="";
                                 String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
                                 if(classCode.equals("ID")){
                                     idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                                    idNumber=idN.substring(2,idN.length()-1);
                                 }else if (classCode.equals("P")){
                                     idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                                     Log.d(TAG, "onNegative: " + idN);
-
+                                    idNumber=idN;
                                 }
                                 String urlParameters = null;
                                 try {
-                                    urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
+                                    urlParameters = "idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                             "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
                                     new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);

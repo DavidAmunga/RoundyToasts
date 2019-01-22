@@ -279,7 +279,7 @@
                 android:id="@+id/btnRecord"
                 android:background="@color/colorPrimary"
                 android:textColor="@android:color/white"
-                android:text="RECORD"/>
+                android:text="Check In"/>
 
         </LinearLayout>
 

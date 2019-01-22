@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.enums.DocReaderAction;
+import com.regula.documentreader.api.enums.DocReaderOrientation;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 import com.regula.documentreader.api.results.DocumentReaderScenario;
 
@@ -79,7 +80,7 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
                 }
             });
             //builder.show();
-            Toast.makeText(ScanActivity.this, "Invalid license.", Toast.LENGTH_LONG).show();
+//            Toast.makeText(ScanActivity.this, "Invalid license.", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -104,6 +105,7 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
                         Toast.makeText(ScanActivity.this, "Initializing failed:" + error, Toast.LENGTH_LONG).show();
                     }
                 }
+
             });
         }catch (Exception e){
             e.printStackTrace();
@@ -118,6 +120,7 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
             scenarios.add(scenario.name);
         }
         DocumentReader.Instance().processParams.scenario = scenarios.get(0);
+
         //starting video processing
         DocumentReader.Instance().showScanner(new DocumentReader.DocumentReaderCompletion() {
             @Override
@@ -141,6 +144,8 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
                 }
             }
         });
+        DocumentReader.Instance().functionality.orientation = DocReaderOrientation.LANDSCAPE;
+
     }
 
 }

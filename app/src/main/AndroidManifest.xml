@@ -64,6 +64,7 @@
         <activity
             android:name=".UserInterface.RecordDriveIn"
             android:label="Soja"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -73,7 +74,9 @@
         <activity
             android:name=".UserInterface.RecordWalkIn"
             android:label="Soja"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Dashboard"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -82,6 +85,7 @@
         <activity
             android:name=".UserInterface.RecordExit"
             android:label="Soja"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -91,6 +95,7 @@
         <activity
             android:name=".UserInterface.Visitors"
             android:label="Soja"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Dashboard"
@@ -148,6 +153,7 @@
         <activity
             android:name=".UserInterface.Incident"
             android:label="@string/title_activity_incident"
+            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -180,6 +186,7 @@
 
         <activity
             android:name=".ScanQRActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

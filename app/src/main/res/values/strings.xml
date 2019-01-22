@@ -75,5 +75,6 @@
     <string name="activity_main_underline">Underline:</string>
 
     <string name="capture_single_fail">Capture Single Fail</string>
+    <string name="imageViewNoData">No Data</string>
 
 </resources>

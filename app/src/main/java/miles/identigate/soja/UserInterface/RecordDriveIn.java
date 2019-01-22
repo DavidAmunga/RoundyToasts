@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -66,6 +67,8 @@ public class RecordDriveIn extends SojaActivity {
     String result_slip = "";
     int visit_id = 0;
 
+    private static final String TAG = "RecordDriveIn";
+
     private IntentFilter receiveFilter;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -88,6 +91,7 @@ public class RecordDriveIn extends SojaActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Record Drive In");
 
         receiveFilter = new IntentFilter();
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
@@ -212,6 +216,7 @@ public class RecordDriveIn extends SojaActivity {
                 scan_id_type = "ID";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
                 idNumber = idN.substring(2, idN.length()-1);
+                Log.d(TAG, "ID Number: "+idNumber);
             }else if (classCode.equals("P")){
                 scan_id_type = "P";
                 idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
@@ -225,7 +230,8 @@ public class RecordDriveIn extends SojaActivity {
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8")+
                     "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
-                    "&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8") +
+                            (preferences.isCompanyNameEnabled() && companyNameEdittext.getText().toString().equals("")?
+                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")):"") +
                     "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
                     "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
@@ -244,7 +250,7 @@ public class RecordDriveIn extends SojaActivity {
                     "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8")+
                     "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8")+
                     "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
-
+            Log.d(TAG, "URL Param: "+urlParameters);
             new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace(
@@ -340,7 +346,16 @@ public class RecordDriveIn extends SojaActivity {
             intent.putExtra("idNumber", idNumber);
             intent.putExtra("result_slip", result_slip);
             intent.putExtra("visit_id", visit_id);
-            intent.putExtra("vehicleNo", vehicleNo);
+            intent.putExtra("vehicleNo", vehicleRegNo.getText().toString());
+            intent.putExtra("checkInType","drive");
+            intent.putExtra("checkInMode","ID No");
+            intent.putExtra("peopleNo",numberOfPeople.getText().toString());
+            if(preferences.isSelectHostsEnabled() && selectedHost!=null){
+                intent.putExtra("host",selectedHost.getName());
+            }
+
+
+
             startActivity(intent);
         }else{
             new MaterialDialog.Builder(RecordDriveIn.this)
@@ -376,17 +391,26 @@ public class RecordDriveIn extends SojaActivity {
                         dialog.dismiss();
                         String urlParameters =null;
                         String idN="000000000";
+                        String idNumber="";
+
                         String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
                         if(classCode.equals("ID")){
                             idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                            idNumber=idN.substring(2,idN.length()-1);
                         }else if (classCode.equals("P")){
                             idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                            idNumber=idN;
                         }
                         try {
                             urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                                    "&idNumber=" + URLEncoder.encode(idN, "UTF-8") +
+                                    "&idNumber="+ URLEncoder.encode(idNumber,"UTF-8") +
                                     "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+
+
+                            Log.d(TAG, "URL Param : "+urlParameters);
+
                             new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
+
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -419,13 +443,17 @@ public class RecordDriveIn extends SojaActivity {
         }
         protected void onPostExecute(String result) {
             progressDialog.dismiss();
+
             if(result !=null){
+
                 try {
                     if(result.contains("result_code")) {
                         JSONObject obj = new JSONObject(result);
                         int resultCode = obj.getInt("result_code");
                         String resultText = obj.getString("result_text");
                         String resultContent = obj.getString("result_content");
+                        Log.d(TAG, "onPostExecute: "+result);
+
                         if (resultText.equals("OK") && resultContent.equals("success")) {
                             recordInternt();
                         } else {

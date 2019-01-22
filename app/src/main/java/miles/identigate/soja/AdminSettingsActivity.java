@@ -1,6 +1,8 @@
 package miles.identigate.soja;
 
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import miles.identigate.soja.Helpers.DatabaseHandler;
@@ -37,6 +40,9 @@ public class AdminSettingsActivity extends SojaActivity {
     Switch fingerprints;
     Switch sms;
 
+
+    TextView versionCode;
+
     boolean customServer  = false;
 
     @Override
@@ -61,6 +67,7 @@ public class AdminSettingsActivity extends SojaActivity {
         host = findViewById(R.id.host);
         fingerprints = findViewById(R.id.fingerprints);
         sms=findViewById(R.id.sms);
+        versionCode=findViewById(R.id.version_number);
 
         printerSwitch.setChecked(preferences.canPrint());
         phoneSwitch.setChecked(preferences.isPhoneNumberEnabled());
@@ -68,6 +75,20 @@ public class AdminSettingsActivity extends SojaActivity {
         host.setChecked(preferences.isSelectHostsEnabled());
         fingerprints.setChecked(preferences.isFingerprintsEnabled());
         sms.setChecked(preferences.isSMSCheckInEnabled());
+
+
+//        Get Version Name
+        PackageInfo pinfo = null;
+        try {
+            pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+//            int versionNumber = pinfo.versionCode;
+            String versionName = pinfo.versionName;
+
+            versionCode.setText("Version Name: "+versionName);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
 

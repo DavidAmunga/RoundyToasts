@@ -136,8 +136,21 @@
                 android:background="@color/colorPrimary"
                 android:id="@+id/set"
                 />
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:id="@+id/version_number"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5.0dip"
+                android:text="Version Code"/>
+
+
+
         </LinearLayout>
     </ScrollView>
+
+
 
 
 </RelativeLayout>

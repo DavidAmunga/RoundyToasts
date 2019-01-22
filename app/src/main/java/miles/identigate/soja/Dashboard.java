@@ -45,6 +45,7 @@ import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.PremiseResident;
 import miles.identigate.soja.Services.SyncService;
+import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
@@ -222,6 +223,7 @@ public class Dashboard extends SojaActivity {
                             SharedPreferences.Editor e = getPrefs.edit();
                             e.putBoolean("firstStart", true);
                             e.apply();
+                           startActivity(new Intent(Dashboard.this, Login.class));
                            finish();
                         }
 

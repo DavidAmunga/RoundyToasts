@@ -33,6 +33,8 @@ public class DriveInAdapter extends BaseAdapter {
     ArrayList<Resident> residentsSearch;
     //private boolean firstTime = true;
 
+    private static final String TAG = "DriveInAdapter";
+
 
     public DriveInAdapter(){
 
@@ -130,14 +132,16 @@ public class DriveInAdapter extends BaseAdapter {
         TextView car = view.findViewById(R.id.car);
         TextView entry = view.findViewById(R.id.entry);
         if(type.equals("DRIVE")){
-            name.setText(driveIns.get(position).getName());
+                   Log.d(TAG, "Name: "+driveIns.get(position).getIdType());
+
+            name.setText(!driveIns.get(position).getName().equals("null") ? (driveIns.get(position).getName()):driveIns.get(position).getNationalId());
             id.setText(driveIns.get(position).getCarNumber());
             //car.setText("CAR: " + driveIns.get(position).getCarNumber());
             car.setVisibility(View.GONE);
             entry.setVisibility(View.GONE);
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         }else if(type.equals("WALK")){
-            name.setText(walkIns.get(position).getName());
+            name.setText(walkIns.get(position).getName()!=null ? (walkIns.get(position).getName()):walkIns.get(position).getNationalId());
             id.setText("ID: " + walkIns.get(position).getNationalId());
             car.setVisibility(View.GONE);
             entry.setVisibility(View.GONE);

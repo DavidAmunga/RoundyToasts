@@ -154,7 +154,7 @@ public class RecordResident extends SojaActivity {
     private class DriveinAsync extends AsyncTask<String, Void, String> {
         MaterialDialog builder=new MaterialDialog.Builder(RecordResident.this)
                 .title("Resident")
-                .content("Recording...")
+                .content("Recording Resident...")
                 .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
