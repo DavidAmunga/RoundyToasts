@@ -54,6 +54,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,7 +73,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     public static final boolean mbUsbExternalUSBManager = false;
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     private UsbManager mUsbManager = null;
-    private PendingIntent mPermissionIntent= null;
+    private PendingIntent mPermissionIntent = null;
+    private static final String TAG = "FingerprintActivity";
 
     public static final int REQUEST_WRITE_PERMISSION = 786;
 
@@ -109,12 +111,12 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                                    final IBioMiniDevice.FingerState fingerState) {
 
             Log.d(FingerprintActivity.class.getName(), "onCapture : Capture successful!");
-            Log.d(FingerprintActivity.class.getName(), ((IBioMiniDevice)context).popPerformanceLog());
+            Log.d(FingerprintActivity.class.getName(), ((IBioMiniDevice) context).popPerformanceLog());
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(capturedImage != null) {
-                        if(fingerprint != null) {
+                    if (capturedImage != null) {
+                        if (fingerprint != null) {
                             fingerprint.setImageBitmap(capturedImage);
                         }
                     }
@@ -133,18 +135,17 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                     }
                 });
             }
-
             return true;
         }
 
         @Override
         public void onCaptureError(Object contest, int errorCode, final String error) {
             Log.d(FingerprintActivity.class.getName(), "onCaptureError : " + error);
-            if( errorCode != IBioMiniDevice.ErrorCode.OK.value()){
+            if (errorCode != IBioMiniDevice.ErrorCode.OK.value()) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        place_finger.setText(getResources().getText(R.string.capture_single_fail) + "("+error+")");
+                        place_finger.setText(getResources().getText(R.string.capture_single_fail) + "(" + error + ")");
                     }
                 });
             }
@@ -152,21 +153,20 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
         }
     };
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver(){
-        public void onReceive(Context context,Intent intent){
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(ACTION_USB_PERMISSION.equals(action)){
-                synchronized(this){
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
                     UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if(intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)){
-                        if(device != null){
-                            if( mBioMiniFactory == null) return;
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        if (device != null) {
+                            if (mBioMiniFactory == null) return;
                             mBioMiniFactory.addDevice(device);
-                            Log.d(FingerprintActivity.class.getName(),String.format(Locale.ENGLISH ,"Initialized device count- BioMiniFactory (%d)" , mBioMiniFactory.getDeviceCount() ));
+                            Log.d(FingerprintActivity.class.getName(), String.format(Locale.ENGLISH, "Initialized device count- BioMiniFactory (%d)", mBioMiniFactory.getDeviceCount()));
                         }
-                    }
-                    else{
-                        Log.d(FingerprintActivity.class.getName(),"permission denied for device"+ device);
+                    } else {
+                        Log.d(FingerprintActivity.class.getName(), "permission denied for device" + device);
                     }
                 }
             }
@@ -181,7 +181,12 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        getSupportActionBar().setElevation(0);
+
         isCheckout = getIntent().getBooleanExtra("CHECKOUT", false);
+
+        getSupportActionBar().setTitle("Biometric Check "+(isCheckout?"Out":"In"));
+
 
         fingerprint = findViewById(R.id.fingerprint);
         place_finger = findViewById(R.id.place_finger);
@@ -192,6 +197,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         idNUmber = findViewById(R.id.idNUmber);
         record_type = findViewById(R.id.record_type);
 
+
         if (isCheckout) {
             record_type.setText("BIOMETRIC CHECKOUT");
             ok_button.setText("CHECK OUT");
@@ -199,6 +205,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         }
 
         handler = new DatabaseHandler(FingerprintActivity.this);
+
 
         mCaptureOptionDefault.captureImage = true;
         mCaptureOptionDefault.captureTemplate = true;
@@ -210,23 +217,23 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             @Override
             public void onClick(View v) {
                 //Match fingerprint
-                if (scannedFingerprint == null || scannedLen == 0){
+                if (scannedFingerprint == null || scannedLen == 0) {
                     Toast.makeText(FingerprintActivity.this, "No Fingerprint scanned", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                progressDialog = Constants.showProgressDialog(FingerprintActivity.this,"Check In", "Verifying fingerprint...");
+                progressDialog = Constants.showProgressDialog(FingerprintActivity.this, "Check In", "Verifying fingerprint...");
                 progressDialog.show();
 
                 boolean isMatched = false;
 
                 for (PremiseResident premiseResident :
                         handler.getPremiseResidents()) {
-                    if (premiseResident.getFingerPrint() == null || premiseResident.getFingerPrint().isEmpty() || premiseResident.getFingerPrint().equals("null")){
+                    if (premiseResident.getFingerPrint() == null || premiseResident.getFingerPrint().isEmpty() || premiseResident.getFingerPrint().equals("null")) {
                         continue;
                     }
 
                     byte[] decoded_data = Base64.decode(premiseResident.getFingerPrint(), Base64.DEFAULT);
-                    if (mCurrentDevice.verify(scannedFingerprint, scannedLen, decoded_data, decoded_data.length)){
+                    if (mCurrentDevice.verify(scannedFingerprint, scannedLen, decoded_data, decoded_data.length)) {
                         isMatched = true;
                         matchedPremiseResident = premiseResident;
                         break;
@@ -235,7 +242,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
                 progressDialog.dismiss();
 
-                if (isCheckout){
+                if (isCheckout) {
                     if (isMatched && matchedPremiseResident != null) {
                         Constants.showDialog(FingerprintActivity.this, matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName(), "A match has been found for " + matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName() + ". Tap CHECKOUT to check out", "CHECKOUT", new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -254,7 +261,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                             }
                         }).show();
                     }
-                }else {
+                } else {
                     if (isMatched && matchedPremiseResident != null) {
                         Constants.showDialog(FingerprintActivity.this, matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName(), "A match has been found for " + matchedPremiseResident.getFirstName() + " " + matchedPremiseResident.getLastName() + ". Tap OK to record", "OK", new MaterialDialog.SingleButtonCallback() {
                             @Override
@@ -291,7 +298,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                 ok_button.setVisibility(View.GONE);
                 place_finger.setText("Place finger on the fingerprint reader");
 
-                if(mCurrentDevice != null) {
+                if (mCurrentDevice != null) {
                     mCurrentDevice.captureSingle(
                             mCaptureOptionDefault,
                             mCaptureResponseDefault,
@@ -299,68 +306,71 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                 }
             }
         });
-        if(mBioMiniFactory != null) {
+        if (mBioMiniFactory != null) {
             mBioMiniFactory.close();
         }
         restartBioMini();
 
     }
+
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},  REQUEST_WRITE_PERMISSION);
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == REQUEST_WRITE_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d(FingerprintActivity.class.getName(),"permission granted");
+            Log.d(FingerprintActivity.class.getName(), "permission granted");
         }
     }
+
     @Override
-    public void onPostCreate(Bundle savedInstanceState){
+    public void onPostCreate(Bundle savedInstanceState) {
         requestPermission();
         super.onPostCreate(savedInstanceState);
     }
+
     void restartBioMini() {
-        if(mBioMiniFactory != null) {
+        if (mBioMiniFactory != null) {
             mBioMiniFactory.close();
         }
-        if(!android.os.Build.MODEL.contains("Biowolf LE") || !android.os.Build.MODEL.contains("BioWolf 8n")) {
+        if (!android.os.Build.MODEL.contains("Biowolf LE") || !android.os.Build.MODEL.contains("BioWolf 8n")) {
             PosUtil.setFingerPrintPower(1);
 
             FrigerprintControl.frigerprint_power_on();
         }
 
-        if( mbUsbExternalUSBManager )
-        {
-            mUsbManager = (UsbManager)getSystemService(Context.USB_SERVICE);
-            mBioMiniFactory = new BioMiniFactory(FingerprintActivity.this, mUsbManager){
+        if (mbUsbExternalUSBManager) {
+            mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
+            mBioMiniFactory = new BioMiniFactory(FingerprintActivity.this, mUsbManager) {
                 @Override
                 public void onDeviceChange(DeviceChangeEvent event, Object dev) {
-                    Log.d(FingerprintActivity.class.getName(),"----------------------------------------");
-                    Log.d(FingerprintActivity.class.getName(),"onDeviceChange : " + event + " using external usb-manager");
-                    Log.d(FingerprintActivity.class.getName(),"----------------------------------------");
+                    Log.d(FingerprintActivity.class.getName(), "----------------------------------------");
+                    Log.d(FingerprintActivity.class.getName(), "onDeviceChange : " + event + " using external usb-manager");
+                    Log.d(FingerprintActivity.class.getName(), "----------------------------------------");
                     handleDevChange(event, dev);
                 }
             };
             //
-            mPermissionIntent = PendingIntent.getBroadcast(this,0,new Intent(ACTION_USB_PERMISSION),0);
+            mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
             IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
             registerReceiver(mUsbReceiver, filter);
             checkDevice();
-        }
-        else {
+        } else {
             mBioMiniFactory = new BioMiniFactory(FingerprintActivity.this) {
                 @Override
                 public void onDeviceChange(DeviceChangeEvent event, Object dev) {
-                    Log.d(FingerprintActivity.class.getName(),"----------------------------------------");
-                    Log.d(FingerprintActivity.class.getName(),"onDeviceChange : " + event);
-                    Log.d(FingerprintActivity.class.getName(),"----------------------------------------");
+                    Log.d(FingerprintActivity.class.getName(), "----------------------------------------");
+                    Log.d(FingerprintActivity.class.getName(), "onDeviceChange : " + event);
+                    Log.d(FingerprintActivity.class.getName(), "----------------------------------------");
                     handleDevChange(event, dev);
                 }
             };
         }
     }
+
     void handleDevChange(IUsbEventHandler.DeviceChangeEvent event, Object dev) {
         if (event == IUsbEventHandler.DeviceChangeEvent.DEVICE_ATTACHED && mCurrentDevice == null) {
             new Thread(new Runnable() {
@@ -375,9 +385,9 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                         mCurrentDevice = mBioMiniFactory.getDevice(0);
                         Log.d(FingerprintActivity.class.getName(), "mCurrentDevice attached : " + mCurrentDevice);
                         if (mCurrentDevice != null) {
-                            Log.d(FingerprintActivity.class.getName()," DeviceName : " + mCurrentDevice.getDeviceInfo().deviceName);
-                            Log.d(FingerprintActivity.class.getName(),"         SN : " + mCurrentDevice.getDeviceInfo().deviceSN);
-                            Log.d(FingerprintActivity.class.getName(),"SDK version : " + mCurrentDevice.getDeviceInfo().versionSDK);
+                            Log.d(FingerprintActivity.class.getName(), " DeviceName : " + mCurrentDevice.getDeviceInfo().deviceName);
+                            Log.d(FingerprintActivity.class.getName(), "         SN : " + mCurrentDevice.getDeviceInfo().deviceSN);
+                            Log.d(FingerprintActivity.class.getName(), "SDK version : " + mCurrentDevice.getDeviceInfo().versionSDK);
                         }
                     }
                 }
@@ -387,21 +397,23 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             mCurrentDevice = null;
         }
     }
-    public void checkDevice(){
-        if(mUsbManager == null) return;
-        Log.d(FingerprintActivity.class.getName(),"checkDevice");
-        HashMap<String , UsbDevice> deviceList = mUsbManager.getDeviceList();
+
+    public void checkDevice() {
+        if (mUsbManager == null) return;
+        Log.d(FingerprintActivity.class.getName(), "checkDevice");
+        HashMap<String, UsbDevice> deviceList = mUsbManager.getDeviceList();
         Iterator<UsbDevice> deviceIter = deviceList.values().iterator();
-        while(deviceIter.hasNext()){
+        while (deviceIter.hasNext()) {
             UsbDevice _device = deviceIter.next();
-            if( _device.getVendorId() ==0x16d1 ){
+            if (_device.getVendorId() == 0x16d1) {
                 //Suprema vendor ID
-                mUsbManager.requestPermission(_device , mPermissionIntent);
-            }else{
+                mUsbManager.requestPermission(_device, mPermissionIntent);
+            } else {
             }
         }
 
     }
+
     @Override
     protected void onDestroy() {
         if (mBioMiniFactory != null) {
@@ -410,13 +422,15 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         }
         super.onDestroy();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onFragmentInteraction(PremiseResident visitor) {
         //Store locally and Send to server
@@ -440,54 +454,57 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                 //Toast.makeText(FingerprintActivity.this, "Registered", Toast.LENGTH_SHORT).show();
                 String urlParameters = null;
                 try {
-                    urlParameters = "id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8")+
+                    urlParameters = "id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8") +
                             "&template=" + URLEncoder.encode(fingerprintData, "UTF-8") +
-                            "&length=" + URLEncoder.encode(scannedLen+"", "UTF-8");
-                } catch (UnsupportedEncodingException e){
+                            "&length=" + URLEncoder.encode(scannedLen + "", "UTF-8");
+                } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+                Log.d(TAG, "URL Param: " + (preferences.getBaseURL() + "record_fingerprint" + urlParameters));
                 new RegisterFingerPrint().execute(preferences.getBaseURL() + "record_fingerprint", urlParameters);
             }
         });
     }
 
-    private class RegisterFingerPrint extends AsyncTask<String, Void, String>{
+    private class RegisterFingerPrint extends AsyncTask<String, Void, String> {
 
-        protected void onPreExecute(){
-            progressDialog = Constants.showProgressDialog(FingerprintActivity.this,"Registering Fingerprint", "Registering fingerprint...");
+        protected void onPreExecute() {
+            progressDialog = Constants.showProgressDialog(FingerprintActivity.this, "Registering Fingerprint", "Registering fingerprint...");
             progressDialog.show();
         }
+
         @Override
         protected String doInBackground(String... strings) {
             return NetworkHandler.executePost(strings[0], strings[1]);
         }
+
         protected void onPostExecute(String result) {
             progressDialog.dismiss();
-            if(result !=null){
-                if(result.contains("result_code")) {
+            if (result != null) {
+                if (result.contains("result_code")) {
                     try {
-                        Object json=new JSONTokener(result).nextValue();
-                        if (json instanceof JSONObject){
+                        Object json = new JSONTokener(result).nextValue();
+                        if (json instanceof JSONObject) {
                             //
                             JSONObject obj = new JSONObject(result);
                             int resultCode = obj.getInt("result_code");
                             String resultText = obj.getString("result_text");
                             if (resultCode == 0 && resultText.equals("OK")) {
                                 recordCheckIn();
-                            }else{
+                            } else {
                                 new MaterialDialog.Builder(FingerprintActivity.this)
-                                    .title("ERROR")
-                                    .content(resultText)
-                                    .positiveText("OK")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
-                                            //finish();
-                                        }
-                                    })
-                                    .show();
-                             }
+                                        .title("ERROR")
+                                        .content(resultText)
+                                        .positiveText("OK")
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog dialog) {
+                                                dialog.dismiss();
+                                                //finish();
+                                            }
+                                        })
+                                        .show();
+                            }
                         } else {
                             // Failed
                             new MaterialDialog.Builder(FingerprintActivity.this)
@@ -500,7 +517,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                         e.printStackTrace();
                         //Failed
                     }
-                }else {
+                } else {
                     //Failed
                     new MaterialDialog.Builder(FingerprintActivity.this)
                             .title("Unable to record fingerprint")
@@ -509,7 +526,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                             .show();
                 }
 
-            }else{
+            } else {
                 //Network issues
                 new MaterialDialog.Builder(FingerprintActivity.this)
                         .title("Unable to record fingerprint")
@@ -520,41 +537,50 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
 
         }
     }
-    private void recordCheckIn(){
+
+    private void recordCheckIn() {
         String urlParameters = null;
         try {
-            urlParameters = "peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8")+
+            urlParameters = "peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8") +
                     "&host_id=" + URLEncoder.encode(matchedPremiseResident.getHostId(), "UTF-8") +
                     "&house_id=" + URLEncoder.encode(matchedPremiseResident.getHouse(), "UTF-8") +
                     "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                     "&device_id=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8");
-        } catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Log.d(TAG, "URL Param: " + (preferences.getBaseURL() + "express_checkin" + urlParameters));
         new ExpressCheckIn().execute(preferences.getBaseURL() + "express_checkin", urlParameters);
     }
-    private void  recordCheckout(){
+
+    private void recordCheckout() {
         String urlParameters = null;
         try {
-            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
+            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                     "&fp_checkout=" + URLEncoder.encode("1", "UTF-8") +
-                    "&peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8") +
+                    "&idNumber=" + URLEncoder.encode(matchedPremiseResident.getIdNumber(), "UTF-8") +
+//                    "&peoplerecord_id=" + URLEncoder.encode(matchedPremiseResident.getId(), "UTF-8") +
                     "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
+        Log.d(TAG, "URL Param: " + (preferences.getBaseURL() + "express_checkout" + urlParameters));
+
         new ExitAsync().execute(preferences.getBaseURL() + "express_checkout", urlParameters);
     }
-    private class  ExpressCheckIn extends AsyncTask<String, Void, String>{
-        protected void onPreExecute(){
-            progressDialog = Constants.showProgressDialog(FingerprintActivity.this,"Check in", "Checking in resident....");
+
+    private class ExpressCheckIn extends AsyncTask<String, Void, String> {
+        protected void onPreExecute() {
+            progressDialog = Constants.showProgressDialog(FingerprintActivity.this, "Check in", "Checking in resident....");
             progressDialog.show();
         }
+
         @Override
         protected String doInBackground(String... strings) {
             return NetworkHandler.executePost(strings[0], strings[1]);
         }
+
         protected void onPostExecute(String result) {
             progressDialog.dismiss();
             try {
@@ -614,14 +640,15 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                                 .show();
                     }
                 }
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
     }
+
     private class ExitAsync extends AsyncTask<String, Void, String> {
-        MaterialDialog builder=new MaterialDialog.Builder(FingerprintActivity.this)
+        MaterialDialog builder = new MaterialDialog.Builder(FingerprintActivity.this)
                 .title("Exit")
                 .content("Removing visitor...")
                 .progress(true, 0)
@@ -634,20 +661,40 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             super.onPreExecute();
             builder.show();
         }
-        protected String  doInBackground(String... params) {
+
+        protected String doInBackground(String... params) {
             return NetworkHandler.executePost(params[0], params[1]);
         }
+
         protected void onPostExecute(String result) {
+//            Toast.makeText(FingerprintActivity.this, result, Toast.LENGTH_LONG).show();
+
             builder.dismiss();
-            if(result !=null){
+            if (result != null) {
                 try {
-                    if(result.contains("result_code")) {
+                    if (result.contains("result_code")) {
                         JSONObject obj = new JSONObject(result);
                         int resultCode = obj.getInt("result_code");
                         String resultText = obj.getString("result_text");
                         String resultContent = obj.getString("result_content");
                         if (resultText.equals("OK") && resultContent.equals("success")) {
-                            recordCheckIn();
+                            if(isCheckout){
+                                new MaterialDialog.Builder(FingerprintActivity.this)
+                                        .title("SUCCESS")
+                                        .content("Visitor Checked Out.")
+                                        .positiveText("OK")
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog dialog) {
+                                                dialog.dismiss();
+                                                startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                                                finish();
+                                            }
+                                        })
+                                        .show();
+                            }else{
+                                recordCheckIn();
+                            }
                         } else {
                             new MaterialDialog.Builder(FingerprintActivity.this)
                                     .title("ERROR")
@@ -662,7 +709,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                                     })
                                     .show();
                         }
-                    }else {
+                    } else {
                         new MaterialDialog.Builder(FingerprintActivity.this)
                                 .title("Result")
                                 .content("Poor internet connection.")
@@ -673,7 +720,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                     e.printStackTrace();
                 }
 
-            }else{
+            } else {
                 new MaterialDialog.Builder(FingerprintActivity.this)
                         .title("Result")
                         .content("Poor internet connection.")

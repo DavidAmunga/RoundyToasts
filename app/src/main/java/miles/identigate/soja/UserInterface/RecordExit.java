@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -45,6 +46,7 @@ public class RecordExit extends SojaActivity {
     TextView idNumber;
     TextView car;
     TextView entry;
+    LinearLayout lin_id,lin_nm;
     //EditText comment;
     DatabaseHandler handler;
     String type;
@@ -65,6 +67,8 @@ public class RecordExit extends SojaActivity {
         idNumber = findViewById(R.id.idNumber);
         car = findViewById(R.id.car);
         entry = findViewById(R.id.entry);
+        lin_id=findViewById(R.id.lin_id);
+        lin_nm=findViewById(R.id.lin_nm);
         //comment=(EditText)findViewById(R.id.comment);
         preferences=new Preferences(this);
 
@@ -72,8 +76,14 @@ public class RecordExit extends SojaActivity {
 
         if(getIntent() !=null){
            type=getIntent().getStringExtra("TYPE");
-            name.setText(getIntent().getStringExtra("NAME"));
-            idNumber.setText(getIntent().getStringExtra("ID"));
+            if(!getIntent().getStringExtra("NAME").equals("null")){
+                lin_nm.setVisibility(View.GONE);
+                name.setText(getIntent().getStringExtra("NAME"));
+            }
+            if(!getIntent().getStringExtra("ID").equals("null")){
+                lin_id.setVisibility(View.GONE);
+                idNumber.setText(getIntent().getStringExtra("ID"));
+            }
             ID=getIntent().getStringExtra("ID");
 
             entry.setText(convertDateFormat(getIntent().getStringExtra("ENTRY")));

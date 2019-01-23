@@ -60,6 +60,8 @@ public class EntryTypeFragment extends Fragment {
         ImageView scan = view.findViewById(R.id.scan_icon);
         ImageView manual = view.findViewById(R.id.manual_icon);
         TextView record_type = view.findViewById(R.id.record_type);
+
+//        getActivity().getActionBar().setTitle("Record Resident");
         switch(TargetActivity){
             case Common.DRIVE_IN:
                 record_type.setText("RECORD DRIVE IN");

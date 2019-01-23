@@ -26,9 +26,9 @@ public class Logs extends ListFragment {
 
     };
     private Integer[] drawables = {
-            R.drawable.ic_action_car,
-            R.drawable.ic_action_walk,
-            R.drawable.ic_action_many
+            R.drawable.ic_car,
+            R.drawable.ic_walk,
+            R.drawable.ic_resident
 
     };
 

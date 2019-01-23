@@ -29,7 +29,7 @@
             android:layout_marginBottom="10dp"
             android:background="?android:selectableItemBackground"
             android:layout_centerInParent="true"
-            android:src="@drawable/qr"/>
+            android:src="@drawable/ic_qr_code_1"/>
         <miles.identigate.soja.Font.OpenSansBold
             android:layout_width="wrap_content"
             android:layout_below="@+id/scan_icon"

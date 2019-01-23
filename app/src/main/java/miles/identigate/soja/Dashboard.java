@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,7 @@ import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
+    private static final String TAG = "Dashboard";
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -94,8 +96,8 @@ public class Dashboard extends SojaActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.tabs);
+        tabLayout.setViewPager(mViewPager);
         SharedPreferences getPrefs = PreferenceManager
                         .getDefaultSharedPreferences(getBaseContext());
         boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
@@ -137,6 +139,8 @@ public class Dashboard extends SojaActivity {
         }
 
         askPermissions();
+//        Log.d(TAG, "Without Permissions: "+handler.getPremiseResidentsWithoutFingerprint().size());
+//        Log.d(TAG, "With Permissions: "+handler.getPremiseResidents().size());
 
     }
     private void askPermissions(){

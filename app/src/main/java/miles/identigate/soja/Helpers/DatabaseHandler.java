@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import miles.identigate.soja.Models.DriveIn;
@@ -174,6 +175,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.close();
             return premiseResidents;
         }
+    public ArrayList<PremiseResident> getPremiseResidentsWithoutFingerprint() {
+        ArrayList<PremiseResident> premiseResidents = new ArrayList<PremiseResident>();
+        String selectQuery = "SELECT  * FROM " + TABLE_PREMISE_RESIDENTS + " WHERE fingerprint = 'null'";
+        Log.d(TAG, "getPremiseResidentsWithoutFingerprint: "+selectQuery);
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                PremiseResident premiseResident = new PremiseResident();
+                premiseResident.setIdNumber(cursor.getString(0));
+                premiseResident.setFirstName(cursor.getString(1));
+                premiseResident.setLastName(cursor.getString(2));
+                premiseResident.setFingerPrint(cursor.getString(3));
+                premiseResident.setFingerPrintLen(cursor.getInt(4));
+                premiseResident.setId(cursor.getString(5));
+                premiseResident.setHouse(cursor.getString(6));
+                premiseResident.setHostId(cursor.getString(7));
+
+                premiseResidents.add(premiseResident);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return premiseResidents;
+    }
 
 
     public ArrayList<PremiseResident> getPremiseResidentsByHouse(String houseID) {

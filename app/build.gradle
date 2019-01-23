@@ -23,7 +23,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 18
-        versionName "11.6"
+        versionName "11.7"
         vectorDrawables.useSupportLibrary = true
 
     }
@@ -58,6 +58,8 @@ dependencies {
     implementation('com.regula.documentreader:api:+@aar') {
         transitive = true
     }
+    implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'

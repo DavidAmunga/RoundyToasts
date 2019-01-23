@@ -17,6 +17,7 @@
         android:id="@+id/switch_flashlight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:text="@string/turn_on_flashlight"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"

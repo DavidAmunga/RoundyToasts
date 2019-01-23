@@ -3,6 +3,8 @@ package miles.identigate.soja.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,14 +73,14 @@ public class CheckIn extends Fragment {
         checkinDescriptions.add("Report an incident");
 
         ArrayList<Integer> checkinDrawables = new ArrayList<>();
-        checkinDrawables.add(R.drawable.ic_action_car);
-        checkinDrawables.add(R.drawable.ic_action_walk);
-        checkinDrawables.add(R.drawable.ic_action_walk);
+        checkinDrawables.add(R.drawable.ic_car);
+        checkinDrawables.add(R.drawable.ic_walk);
+        checkinDrawables.add(R.drawable.ic_resident);
         if (preferences.isFingerprintsEnabled())
             checkinDrawables.add(R.drawable.fingerprint);
         if (preferences.isSMSCheckInEnabled())
-            checkinDrawables.add(R.drawable.ic_message);
-        checkinDrawables.add(R.drawable.ic_incident);
+            checkinDrawables.add(R.drawable.ic_sms);
+        checkinDrawables.add(R.drawable.ic_siren);
 
 
 
@@ -98,7 +100,11 @@ public class CheckIn extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_check_in, container, false);
-        ListView lv=(ListView)view.findViewById(R.id.options);
+
+
+        ListView lv=(ListView) view.findViewById(R.id.options);
+
+
 
 
         CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables);

@@ -141,7 +141,7 @@ public class DriveInAdapter extends BaseAdapter {
             entry.setVisibility(View.GONE);
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         }else if(type.equals("WALK")){
-            name.setText(walkIns.get(position).getName()!=null ? (walkIns.get(position).getName()):walkIns.get(position).getNationalId());
+            name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName():"SMS Login");
             id.setText("ID: " + walkIns.get(position).getNationalId());
             car.setVisibility(View.GONE);
             entry.setVisibility(View.GONE);

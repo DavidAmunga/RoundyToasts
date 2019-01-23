@@ -1,6 +1,7 @@
 package miles.identigate.soja;
 
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -50,6 +51,8 @@ public class AdminSettingsActivity extends SojaActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_settings);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView title=toolbar.findViewById(R.id.title);
+        title.setText("Settings");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -131,6 +134,7 @@ public class AdminSettingsActivity extends SojaActivity {
                     preferences.setBaseURL("https://soja.co.ke/soja-rest/index.php/api/visits/");
                 }
                 Toast.makeText(getApplicationContext(), "Settings updated successfully.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(AdminSettingsActivity.this,Dashboard.class));
                 finish();
             }
         });

@@ -87,8 +87,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
 
 //        ADD VISIT TYPES
-        visitTypes.add("Drive In");
         visitTypes.add("Walk In");
+        visitTypes.add("Drive In");
 
         SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, visitTypes);
 

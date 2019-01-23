@@ -14,6 +14,7 @@ import miles.identigate.soja.ExpressCheckoutActivity;
 import miles.identigate.soja.FingerprintActivity;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
+import miles.identigate.soja.ScanQRActivity;
 import miles.identigate.soja.UserInterface.Visitors;
 
 public class CheckOut extends ListFragment {
@@ -56,10 +57,10 @@ public class CheckOut extends ListFragment {
             checkoutDescriptions.add("Check out using biometrics");
 
         ArrayList<Integer> checkoutDrawables = new ArrayList<>();
-        checkoutDrawables.add(R.drawable.ic_action_out);
-        checkoutDrawables.add(R.drawable.ic_action_car);
-        checkoutDrawables.add(R.drawable.ic_action_walk);
-        checkoutDrawables.add(R.drawable.ic_action_many);
+        checkoutDrawables.add(R.drawable.ic_qr_code);
+        checkoutDrawables.add(R.drawable.ic_car);
+        checkoutDrawables.add(R.drawable.ic_walk);
+        checkoutDrawables.add(R.drawable.ic_resident);
         if (preferences.isFingerprintsEnabled())
             checkoutDrawables.add(R.drawable.fingerprint);
 

@@ -14,11 +14,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -36,8 +38,8 @@ public class FingerprintRegistrationFragment extends DialogFragment {
     RecyclerView recyclerView;
     ArrayList<PremiseResident> premiseResidents = new ArrayList<>();
     LinearLayoutManager lLayout;
-    NestedScrollView main_content;
     FingerprintAdapter fingerprintAdapter;
+    private static final String TAG = "FingerprintRegistration";
 
     Context context;
     Preferences preferences;
@@ -72,6 +74,8 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         context = getActivity();
         preferences = new Preferences(context);
         handler = new DatabaseHandler(context);
+
+
     }
 
     @Override
@@ -81,19 +85,33 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         searchbox = view.findViewById(R.id.searchbox);
         loading = view.findViewById(R.id.loading);
         recyclerView = view.findViewById(R.id.recyclerView);
-        main_content = view.findViewById(R.id.main_content);
 
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
+
+        premiseResidents.clear();
+
+        for (int i = 0; i < handler.getPremiseResidentsWithoutFingerprint().size(); i++) {
+//            Toast.makeText(context, handler.getPremiseResidentsWithoutFingerprint().get(i).getFirstName(), Toast.LENGTH_SHORT).show();
+            premiseResidents.add(handler.getPremiseResidentsWithoutFingerprint().get(i));
+        }
+
+//        Toast.makeText(context, premiseResidents.size(), Toast.LENGTH_SHORT).show();
+
+
 
         fingerprintAdapter = new FingerprintAdapter(premiseResidents);
 
+
+//        fingerprintAdapter.notifyDataSetChanged();
+
+
         lLayout = new LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(lLayout);
         recyclerView.setAdapter(fingerprintAdapter);
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(context, recyclerView, new OnRecyclerViewClicked() {
             @Override
             public void onClick(View view, int position) {
@@ -107,19 +125,27 @@ public class FingerprintRegistrationFragment extends DialogFragment {
             }
         }));
 
+
+
         searchbox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                    
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String text = searchbox.getText().toString().toLowerCase().trim();
                 if (!text.isEmpty()){
+//                    Toast.makeText(context, "Not Empty", Toast.LENGTH_SHORT).show();
+
                     new SearchService().execute(text);
                 }else{
-                    premiseResidents.clear();
+//                    Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show();
+                    for (int v = 0; v < handler.getPremiseResidentsWithoutFingerprint().size(); v++) {
+//            Toast.makeText(context, handler.getPremiseResidentsWithoutFingerprint().get(i).getFirstName(), Toast.LENGTH_SHORT).show();
+                        premiseResidents.add(handler.getPremiseResidentsWithoutFingerprint().get(v));
+                    }
                     fingerprintAdapter.notifyDataSetChanged();
                 }
 
@@ -165,7 +191,6 @@ public class FingerprintRegistrationFragment extends DialogFragment {
 
     private class SearchService extends AsyncTask<String, Void,ArrayList<PremiseResident>> {
         protected void onPreExecute(){
-            main_content.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
         }
 
@@ -173,7 +198,8 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         protected ArrayList<PremiseResident> doInBackground(String... strings) {
             String text =  strings[0];
             ArrayList<PremiseResident> premiseResidents = new ArrayList<>();
-            ArrayList<PremiseResident> allPremiseResidents = handler.getPremiseResidents();
+//            Toast.makeText(context, handler.getPremiseResidentsWithoutFingerprint().size(), Toast.LENGTH_SHORT).show();
+            ArrayList<PremiseResident> allPremiseResidents = handler.getPremiseResidentsWithoutFingerprint();
             for (PremiseResident premiseResident: allPremiseResidents){
                 if (premiseResident.getFirstName().toLowerCase().trim().contains(text.toLowerCase().trim())) {
                     premiseResidents.add(premiseResident);
@@ -188,8 +214,6 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         @Override
         protected void onPostExecute(ArrayList<PremiseResident> _premiseResidents){
             loading.setVisibility(View.GONE);
-            main_content.setVisibility(View.VISIBLE);
-
             premiseResidents.clear();
 
             for (int i = 0; i < _premiseResidents.size(); i++) {

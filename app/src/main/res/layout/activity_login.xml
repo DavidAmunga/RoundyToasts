@@ -1,96 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
     tools:context="miles.identigate.soja.UserInterface.Login">
-    <include
-        android:id="@+id/app_bar"
-        layout="@layout/app_bar"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/app_bar"
-        android:gravity="center_horizontal"
-        android:padding="20dp"
-        android:id="@+id/header"
-        android:orientation="vertical">
-    <miles.identigate.soja.Font.OpenSansBold
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:layout_alignParentBottom="true"
-        android:text="SOJA LOGIN"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".4"
+            android:background="@color/colorPrimary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".6"
+            android:background="@color/white" />
     </LinearLayout>
-    <LinearLayout
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/logo_img"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/soja_logo_outlined"
+        app:civ_border_color="#FFF"
+        app:civ_border_width="5dp"
+        app:civ_circle_background_color="@color/white" />
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-    <miles.identigate.soja.Font.OpenSansBold
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginBottom="10.0dip"
-        android:layout_marginLeft="30.0dip"
-        android:text="Enter sentry ID"/>
+        android:layout_below="@id/logo_img"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="30dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="3dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="ID/ Phone Number"
+                android:textStyle="bold" />
+
             <EditText
-                android:layout_gravity="center_horizontal"
                 android:id="@+id/username"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30.0dip"
-                android:layout_marginRight="30.0dip"
-                android:hint="ID"
-                android:textColor="@android:color/black"
-               android:textCursorDrawable="@null"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/border"
                 android:ems="10"
+                android:hint="ID"
+                android:inputType="number"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:inputType="number" />
-        <miles.identigate.soja.Font.OpenSansBold
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30.0dip"
-            android:layout_marginTop="10.0dip"
-            android:textSize="16sp"
-            android:text="Enter sentry PIN"/>
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null" />
+
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Password"
+                android:textStyle="bold" />
+
             <EditText
-                android:layout_gravity="center_horizontal"
                 android:id="@+id/pin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30.0dip"
-                android:layout_marginRight="30.0dip"
-                android:layout_marginTop="10.0dip"
-                android:hint="PIN"
-                android:textColor="@android:color/black"
-                android:textCursorDrawable="@null"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/border"
                 android:ems="10"
+                android:hint="PIN"
+                android:inputType="textPassword"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:inputType="textPassword"  />
-        <Button
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="20dp"
-            android:textSize="20sp"
-            android:text="LOGIN"
-            android:textColor="@color/primary_text"
-            android:background="@color/colorPrimary"
-            android:id="@+id/login"
-           />
-    </LinearLayout>
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null" />
+
+            <Button
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorPrimary"
+                android:text="LOGIN"
+                android:textColor="@color/primary_text"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <!--<include-->
+    <!--android:id="@+id/app_bar"-->
+    <!--layout="@layout/app_bar"/>-->
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/app_bar"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:padding="20dp"-->
+    <!--android:id="@+id/header"-->
+    <!--android:orientation="vertical">-->
+    <!--<miles.identigate.soja.Font.OpenSansBold-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="10dp"-->
+    <!--android:textSize="18sp"-->
+    <!--android:textStyle="bold"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:text="SOJA LOGIN"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/header"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:orientation="vertical">-->
+    <!--<miles.identigate.soja.Font.OpenSansBold-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textSize="16sp"-->
+    <!--android:layout_marginBottom="10.0dip"-->
+    <!--android:layout_marginLeft="30.0dip"-->
+    <!--android:text="Enter sentry ID"/>-->
+    <!--<EditText-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:id="@+id/username"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="30.0dip"-->
+    <!--android:layout_marginRight="30.0dip"-->
+    <!--android:hint="ID"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textCursorDrawable="@null"-->
+    <!--android:background="@drawable/border"-->
+    <!--android:ems="10"-->
+    <!--android:padding="10dp"-->
+    <!--android:singleLine="true"-->
+    <!--android:inputType="number" />-->
+    <!--<miles.identigate.soja.Font.OpenSansBold-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="30.0dip"-->
+    <!--android:layout_marginTop="10.0dip"-->
+    <!--android:textSize="16sp"-->
+    <!--android:text="Enter sentry PIN"/>-->
+    <!--<EditText-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:id="@+id/pin"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="30.0dip"-->
+    <!--android:layout_marginRight="30.0dip"-->
+    <!--android:layout_marginTop="10.0dip"-->
+    <!--android:hint="PIN"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:textCursorDrawable="@null"-->
+    <!--android:background="@drawable/border"-->
+    <!--android:ems="10"-->
+    <!--android:padding="10dp"-->
+    <!--android:singleLine="true"-->
+    <!--android:inputType="textPassword"  />-->
+
+    <!--</LinearLayout>-->
+
 
 </RelativeLayout>

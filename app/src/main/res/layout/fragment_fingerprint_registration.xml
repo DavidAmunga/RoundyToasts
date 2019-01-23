@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    android:paddingTop="0dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/content"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingTop="0dp">
+
     <EditText
-        android:layout_gravity="center"
         android:id="@+id/searchbox"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/title"
-        android:drawableLeft="@drawable/ic_search_dark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search For A Name"
-        android:background="@drawable/border"
-        android:padding="10dp"
-        android:singleLine="true"/>
-    <android.support.v4.widget.NestedScrollView
+        android:background="@color/colorPrimary"
+        android:drawableLeft="@drawable/ic_search_dark"
+        android:drawablePadding="20dp"
+        android:elevation="5dp"
+        android:hint="Search for a name"
+        android:inputType="text"
+        android:paddingLeft="25dp"
+        android:paddingTop="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="15dp"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="#E1E1E1"
+        android:textSize="16sp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main_content"
-        android:padding="20dp"
-        android:background="@color/white"
-        android:fillViewport="true">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_gravity="center_vertical"
-                android:visibility="visible"
-                android:id="@+id/recyclerView"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
+        android:orientation="vertical">
 
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:visibility="visible"/>
+
+    </LinearLayout>
+
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/loading"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="70dp"
-        android:layout_marginTop="50dp"
         android:layout_height="70dp"
-        android:visibility="gone"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:visibility="gone" />
 </LinearLayout>

@@ -50,7 +50,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                 new IntentIntegrator(ExpressCheckoutActivity.this).setCaptureActivity(ZxingHelperActivity.class).initiateScan();
             }
         });
-        new IntentIntegrator(ExpressCheckoutActivity.this).setCaptureActivity(ZxingHelperActivity.class).initiateScan();
+//        new IntentIntegrator(ExpressCheckoutActivity.this).setCaptureActivity(ZxingHelperActivity.class).initiateScan();
         dialog=new MaterialDialog.Builder(ExpressCheckoutActivity.this)
                 .title("QR")
                 .content("Checking QR...")

@@ -8,7 +8,7 @@ import android.widget.TextView;
 /**
  * Created by ADMIN on 9/13/2015.
  */
-public class OpenSansBold extends TextView {
+public class OpenSansBold extends android.support.v7.widget.AppCompatTextView {
     public OpenSansBold(Context context) {
         super(context);
         setFont();

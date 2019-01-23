@@ -56,6 +56,7 @@
         <activity
             android:name=".UserInterface.Login"
             android:label=""
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".UserInterface.Menu"
@@ -141,6 +142,7 @@
             android:name=".Logs.AllLogs"
             android:label="Soja"
             android:parentActivityName=".Dashboard"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -149,6 +151,7 @@
         <activity
             android:name=".Logs.Incidents"
             android:label="Soja"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".UserInterface.Incident"
@@ -196,6 +199,7 @@
             android:name=".Helpers.ZxingHelperActivity"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
+            android:parentActivityName=".ExpressCheckoutActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".RecordResidentVehicleActivity"
@@ -219,10 +223,12 @@
 
         <activity
             android:name=".SlipActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ExpressCheckoutActivity" />
+        <activity android:name=".ExpressCheckoutActivity" android:parentActivityName=".Dashboard" />
         <activity
             android:name=".AdminSettingsActivity"
+
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".FingerprintActivity" />
         <activity android:name=".SmsCheckInActivity" android:parentActivityName=".Dashboard"></activity>

@@ -5,7 +5,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-public class OpenSansRegular extends TextView {
+public class OpenSansRegular extends android.support.v7.widget.AppCompatTextView {
     public OpenSansRegular(Context context) {
         super(context);
         setFont();
