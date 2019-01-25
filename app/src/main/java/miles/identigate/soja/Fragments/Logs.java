@@ -16,19 +16,19 @@ public class Logs extends ListFragment {
 
     private String[] titles = {
             "Drive Logs",
-            "Pedestrian Logs",
-            "Incidents"
+            "Pedestrian Logs"
+//            "Incidents"
     };
     private String[] descriptions = {
             "Summary log of Motor Vehicles ",
-            "Summary log of Walking Visitors",
-            "List of incidents"
+            "Summary log of Walking Visitors"
+//            "List of incidents"
 
     };
     private Integer[] drawables = {
             R.drawable.ic_car,
-            R.drawable.ic_walk,
-            R.drawable.ic_resident
+            R.drawable.ic_walk
+//            R.drawable.ic_resident
 
     };
 

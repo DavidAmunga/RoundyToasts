@@ -59,7 +59,7 @@ public class CheckIn extends Fragment {
             checkinTitles.add("Biometric Checkin");
         if (preferences.isSMSCheckInEnabled())
             checkinTitles.add("SMS Checkin");
-        checkinTitles.add("Incident");
+//        checkinTitles.add("Incident");
 
 
         ArrayList<String> checkinDescriptions =  new ArrayList<>();
@@ -70,7 +70,7 @@ public class CheckIn extends Fragment {
             checkinDescriptions.add("Check in using biometrics");
         if (preferences.isSMSCheckInEnabled())
             checkinDescriptions.add("Check in a Visitor without an ID");
-        checkinDescriptions.add("Report an incident");
+//        checkinDescriptions.add("Report an incident");
 
         ArrayList<Integer> checkinDrawables = new ArrayList<>();
         checkinDrawables.add(R.drawable.ic_car);
@@ -80,7 +80,7 @@ public class CheckIn extends Fragment {
             checkinDrawables.add(R.drawable.fingerprint);
         if (preferences.isSMSCheckInEnabled())
             checkinDrawables.add(R.drawable.ic_sms);
-        checkinDrawables.add(R.drawable.ic_siren);
+//        checkinDrawables.add(R.drawable.ic_siren);
 
 
 

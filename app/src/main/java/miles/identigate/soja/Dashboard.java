@@ -8,11 +8,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -20,13 +23,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.journeyapps.barcodescanner.Util;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import org.json.JSONArray;
@@ -95,8 +104,38 @@ public class Dashboard extends SojaActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        final Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/OpenSans-Semibold.ttf");
+
 
         SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.tabs);
+//        Custom Font Tab
+        tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
+            @Override
+            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
+                LayoutInflater inflater=LayoutInflater.from(container.getContext());
+                View tab = inflater.inflate(R.layout.custom_tab, container, false);
+                TextView customText =   tab.findViewById(R.id.custom_text);
+
+                switch (position) {
+                    case 0:
+                        customText.setTypeface(font);
+                        customText.setText(adapter.getPageTitle(position));
+                        break;
+                    case 1:
+                        customText.setTypeface(font);
+                        customText.setText(adapter.getPageTitle(position));
+                        break;
+                    case 2:
+                        customText.setTypeface(font);
+                        customText.setText(adapter.getPageTitle(position));
+                        break;
+                    default:
+                        throw new IllegalStateException("Invalid position: " + position);
+                }
+                return tab;
+            }
+        });
+
         tabLayout.setViewPager(mViewPager);
         SharedPreferences getPrefs = PreferenceManager
                         .getDefaultSharedPreferences(getBaseContext());
@@ -139,10 +178,14 @@ public class Dashboard extends SojaActivity {
         }
 
         askPermissions();
-//        Log.d(TAG, "Without Permissions: "+handler.getPremiseResidentsWithoutFingerprint().size());
-//        Log.d(TAG, "With Permissions: "+handler.getPremiseResidents().size());
+
+
+//        Toast.makeText(this, getDeviceName(), Toast.LENGTH_SHORT).show();
+
 
     }
+
+
     private void askPermissions(){
         if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.CAMERA }, CAMERA_REQUEST);

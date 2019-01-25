@@ -12,7 +12,7 @@
         android:layout_marginTop="50dp"
         android:src="@drawable/soja_logo_only" />
 
-    <miles.identigate.soja.Font.OpenSansExtraBold
+    <miles.identigate.soja.Font.BrandonGrotesqueBold
         android:id="@+id/soja_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

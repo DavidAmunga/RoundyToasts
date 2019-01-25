@@ -75,7 +75,6 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         preferences = new Preferences(context);
         handler = new DatabaseHandler(context);
 
-
     }
 
     @Override
@@ -130,7 +129,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
         searchbox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    
+
             }
 
             @Override
