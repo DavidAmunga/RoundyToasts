@@ -1,2 +1,4 @@
 configurations.maybeCreate("default")
 artifacts.add("default", file('libBioMini_v20.aar'))
+dependencies {
+}

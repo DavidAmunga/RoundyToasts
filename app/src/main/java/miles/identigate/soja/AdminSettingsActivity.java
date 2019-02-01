@@ -97,6 +97,7 @@ public class AdminSettingsActivity extends SojaActivity {
         });
 
 
+
 //        Get Version Name
         PackageInfo pinfo = null;
         try {
@@ -149,7 +150,7 @@ public class AdminSettingsActivity extends SojaActivity {
                 } else {
                     preferences.setBaseURL("https://soja.co.ke/soja-rest/index.php/api/visits/");
                 }
-                Toast.makeText(getApplicationContext(), "Settings updated successfully.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Settings updated", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(AdminSettingsActivity.this, Dashboard.class));
                 finish();
             }

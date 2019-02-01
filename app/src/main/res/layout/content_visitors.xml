@@ -4,44 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EFEFEF"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="miles.identigate.soja.UserInterface.Visitors"
     tools:showIn="@layout/activity_visitors">
 
 
-    <EditText
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:elevation="5dp"
+        android:orientation="horizontal"
+        android:id="@+id/search_layout"
+        android:weightSum="1"
+        >
+        <EditText
             android:id="@+id/searchbox"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.9"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:textColor="@color/white"
-            android:textColorHint="#E1E1E1"
+            android:drawableLeft="@drawable/ic_search_dark"
+            android:drawablePadding="20dp"
             android:hint="Search Visitors"
             android:inputType="text"
             android:paddingLeft="25dp"
-            android:drawableLeft="@drawable/ic_search_dark"
-            android:drawablePadding="20dp"
-            android:paddingRight="15dp"
             android:paddingTop="15dp"
-            android:textSize="16sp"
+            android:paddingRight="15dp"
             android:paddingBottom="15dp"
-            android:elevation="5dp"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textColorHint="#E1E1E1"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="0.1"
+            android:id="@+id/ic_filter"
+            android:src="@drawable/ic_filter_list"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+
+
 
     <ListView
         android:id="@+id/visitors"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchbox"
-        android:divider="@color/divider"
-        android:dividerHeight="0.5dp"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/search_layout"
         android:fastScrollAlwaysVisible="true"
         android:fastScrollEnabled="true"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/loading"
@@ -62,13 +77,14 @@
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:contentDescription="@string/imageViewNoData"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_no_data_70dp" />
+            android:contentDescription="@string/imageViewNoData"
+            app:srcCompat="@drawable/ic_ghost" />
 
         <miles.identigate.soja.Font.OpenSansLight
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/info_message"
             android:layout_marginTop="15dp"
             android:text="There are currently no logs available."
             android:textSize="20sp" />

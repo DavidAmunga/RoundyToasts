@@ -49,14 +49,22 @@
                     android:id="@+id/hostLabel"
                     android:layout_marginBottom="5.0dip"
                     android:text="DESTINATION"/>
-                <Spinner
-                    android:layout_width="match_parent"
+                <miles.identigate.soja.Font.OpenSansBold
                     android:id="@+id/spinnerDestination"
-                    android:background="@drawable/border"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="50dp">
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/border_grey"
+                    android:ems="10"
+                    android:hint="Select Destination"
+                    android:inputType="text"
+                    android:padding="15dp"
+                    android:singleLine="false"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null" />
 
-                </Spinner>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,14 +79,25 @@
                     android:textSize="16sp"
                     android:layout_marginBottom="5.0dip"
                     android:text="HOST"/>
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:id="@+id/spinnerHost"
-                    android:background="@drawable/border"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="50dp">
 
-                </Spinner>
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:id="@+id/spinnerHost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/border_grey"
+                    android:ems="10"
+                    android:hint="Select Premise Host"
+                    android:inputType="text"
+                    android:padding="15dp"
+                    android:singleLine="false"
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null" />
+
+
+
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

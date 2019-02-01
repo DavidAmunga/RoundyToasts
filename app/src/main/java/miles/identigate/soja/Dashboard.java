@@ -460,6 +460,8 @@ public class Dashboard extends SojaActivity {
             }
         }
     }
+
+
     @Override
     protected void onResume(){
         super.onResume();

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -30,6 +31,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.SearchResultListener;
 import miles.identigate.soja.Adapters.SimpleListAdapter;
 import miles.identigate.soja.Adapters.TypeAdapter;
 import miles.identigate.soja.Helpers.CheckConnection;
@@ -50,11 +54,12 @@ public class SmsCheckInActivity extends AppCompatActivity {
     LinearLayout lin_walk_confirm, lin_drive_confirm, lin_checkin, lin_spinner, lin_host;
     EditText edtPhoneNo, edtHost, edtCode, edtPeopleNo, edtCarNo;
     Preferences preferences;
-    Spinner spinnerTypeOfVisit, spinnerVisitType, spinnerHouse, spinnerHost;
+    Spinner spinnerTypeOfVisit, spinnerVisitType;
     ArrayList<String> visitTypes = new ArrayList<>();
     ArrayList<TypeObject> houses, hosts, visitorTypes;
     DatabaseHandler handler;
     TypeObject selectedDestination, selectedType, selectedHost;
+    TextView spinnerDestination, spinnerHost;
 
 
     @Override
@@ -70,7 +75,6 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
         spinnerTypeOfVisit = findViewById(R.id.spinnerTypeOfVisit);
         spinnerVisitType = findViewById(R.id.spinnerVisitType);
-        spinnerHouse = findViewById(R.id.spinnerHouse);
         spinnerHost = findViewById(R.id.spinnerHost);
         btnRecord = findViewById(R.id.btnRecord);
         btnConfirm = findViewById(R.id.btnConfirm);
@@ -84,6 +88,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
         edtCode = findViewById(R.id.edtCode);
         edtPeopleNo = findViewById(R.id.edtPeopleNo);
         edtCarNo = findViewById(R.id.edtCarNo);
+        spinnerDestination = findViewById(R.id.spinnerDestination);
 
 
 //        ADD VISIT TYPES
@@ -139,57 +144,93 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
 
 //        HOUSE Select
+
+
         houses = handler.getTypes("houses", null);
-        TypeAdapter adapter = new TypeAdapter(this, R.layout.tv, houses);
-        spinnerHouse.setAdapter(adapter);
-        spinnerHouse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+        spinnerDestination.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TypeObject object = (TypeObject) parent.getSelectedItem();
-                selectedDestination = object;
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Clicked");
+                new SimpleSearchDialogCompat(SmsCheckInActivity.this,
+                        "Search for Destination...", "What destination is the visitor heading...?", null, houses, new SearchResultListener<TypeObject>() {
+                    @Override
+                    public void onSelected(BaseSearchDialogCompat baseSearchDialogCompat, TypeObject o, int i) {
 
-                Log.d(TAG, "Selected Destination: " + selectedDestination.getId());
+                        TypeObject object = o;
+                        selectedDestination = object;
 
-                hosts = handler.getTypes("hosts", selectedDestination.getId());
+                        Log.d(TAG, "Selected Destination: " + selectedDestination.getId());
 
-
-                lin_host.setVisibility(preferences.isSelectHostsEnabled() && hosts.size() > 0 ? View.VISIBLE : View.GONE);
-
-                Log.d(TAG, "Host ID " + selectedDestination.getId());
-                Log.d(TAG, "Hosts: " + hosts);
-
-
-                TypeAdapter hostsAdapter = new TypeAdapter(SmsCheckInActivity.this, R.layout.tv, hosts);
-                spinnerHost.setAdapter(hostsAdapter);
+                        hosts = handler.getTypes("hosts", selectedDestination.getId());
 
 
-            }
+                        lin_host.setVisibility(preferences.isSelectHostsEnabled() && hosts.size() > 0 ? View.VISIBLE : View.GONE);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                        if (hosts.size() == 0) {
+                            selectedHost = null;
+                        }
+
+                        Log.d(TAG, "Host ID " + selectedDestination.getId());
+                        Log.d(TAG, "Hosts: " + hosts);
+
+
+//                        Toast.makeText(SmsCheckInActivity.this, o.getName(), Toast.LENGTH_SHORT).show();
+                        spinnerDestination.setText(o.getName());
+                        baseSearchDialogCompat.dismiss();
+
+                    }
+                }).show();
             }
         });
+
 //        HOST Select
 //        if(selectedDestination!=null){
 
         Log.d(TAG, "All Hosts " + handler.getTypes("hosts", null));
 
-
-        spinnerHost.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerHost.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TypeObject object = (TypeObject) parent.getSelectedItem();
-                selectedHost = object;
-            }
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: Clicked");
+                if(selectedDestination==null){
+                    Toast.makeText(SmsCheckInActivity.this, "Select Destination First", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    new SimpleSearchDialogCompat(SmsCheckInActivity.this,
+                            "Search for Host...", "Who is the visitor seeing in " + selectedDestination.getName(), null, hosts, new SearchResultListener<TypeObject>() {
+                        @Override
+                        public void onSelected(BaseSearchDialogCompat baseSearchDialogCompat, TypeObject o, int i) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                            TypeObject object = o;
+                            selectedHost = object;
+
+//                            Toast.makeText(RecordDriveIn.this, o.getName(), Toast.LENGTH_SHORT).show();
+                            spinnerHost.setText(o.getName());
+                            baseSearchDialogCompat.dismiss();
+
+                        }
+                    }).show();
+                }
             }
         });
 
+//
+//        spinnerHost.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                TypeObject object = (TypeObject) parent.getSelectedItem();
+//                selectedHost = object;
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
+
 
 //        }
-
 
 
 //        VISIT TYPE SELECT
@@ -313,7 +354,6 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
             btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
             btnRecord.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
 
 
         }
@@ -450,28 +490,28 @@ public class SmsCheckInActivity extends AppCompatActivity {
         }
     }
 
-    private void parseResult(){
-        if (preferences.canPrint()){
+    private void parseResult() {
+        if (preferences.canPrint()) {
             Intent intent = new Intent(getApplicationContext(), SlipActivity.class);
             intent.putExtra("title", "SMS");
             intent.putExtra("house", selectedDestination.getName());
 
-            if(!edtCarNo.getText().toString().equals("")){
-                intent.putExtra("vehicleNo",edtCarNo.getText().toString());
+            if (!edtCarNo.getText().toString().equals("")) {
+                intent.putExtra("vehicleNo", edtCarNo.getText().toString());
             }
-            if(preferences.isSelectHostsEnabled() && selectedHost!=null){
-                intent.putExtra("host",selectedHost.getName());
+            if (preferences.isSelectHostsEnabled() && selectedHost != null) {
+                intent.putExtra("host", selectedHost.getName());
             }
-            if(selectedType.equals("Drive In")){
-                intent.putExtra("checkInType","drive");
-            }else{
-                intent.putExtra("checkInType","walk");
+            if (selectedType.equals("Drive In")) {
+                intent.putExtra("checkInType", "drive");
+            } else {
+                intent.putExtra("checkInType", "walk");
             }
-            if(!edtPeopleNo.getText().toString().equals("")){
-                intent.putExtra("peopleNo",edtPeopleNo.getText().toString());
+            if (!edtPeopleNo.getText().toString().equals("")) {
+                intent.putExtra("peopleNo", edtPeopleNo.getText().toString());
             }
-            intent.putExtra("phoneNo",edtPhoneNo.getText().toString());
-            intent.putExtra("checkInMode","SMS");
+            intent.putExtra("phoneNo", edtPhoneNo.getText().toString());
+            intent.putExtra("checkInMode", "SMS");
 
             startActivity(intent);
         }
@@ -505,9 +545,9 @@ public class SmsCheckInActivity extends AppCompatActivity {
             Toast.makeText(this, "Success! Visitor Checked In", Toast.LENGTH_SHORT).show();
 //            parseResult();
 
-            if(preferences.canPrint()){
+            if (preferences.canPrint()) {
                 parseResult();
-            }else{
+            } else {
                 startActivity(new Intent(this, Dashboard.class));
             }
 
@@ -639,7 +679,6 @@ public class SmsCheckInActivity extends AppCompatActivity {
         }
 
     }
-
 
 
 }

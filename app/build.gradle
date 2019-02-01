@@ -20,10 +20,10 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "miles.identigate.soja"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 18
-        versionName "11.8"
+        versionName "11.81"
         vectorDrawables.useSupportLibrary = true
 
     }
@@ -65,7 +65,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
-    //compile 'com.android.support:support-v4:24.0.+'
+    implementation 'com.github.mirrajabi:search-dialog:1.2.3'
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.8@aar') {
@@ -80,13 +80,11 @@ dependencies {
     implementation files('libs/PosUtil.jar')
     implementation files('libs/fingerprintControl.jar')
     implementation 'com.android.volley:volley:1.1.1'
-
-    implementation group: 'commons-codec', name: 'commons-codec', version: '1.11'
+    implementation 'commons-codec:commons-codec:1.11'
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
     implementation 'org.apache.httpcomponents:httpcore:4.3.3'
     implementation('org.apache.httpcomponents:httpmime:4.3.6') {
         exclude module: 'httpclient'
     }
-
 
 }

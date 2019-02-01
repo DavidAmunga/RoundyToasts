@@ -1,9 +1,11 @@
 package miles.identigate.soja.Models;
 
+import ir.mirrajabi.searchdialog.core.Searchable;
+
 /**
  * Created by myles on 2/5/16.
  */
-public class TypeObject {
+public class TypeObject implements Searchable {
     public TypeObject(){
 
     }
@@ -39,4 +41,9 @@ public class TypeObject {
     }
 
     String name;
+
+    @Override
+    public String getTitle() {
+        return getName();
+    }
 }

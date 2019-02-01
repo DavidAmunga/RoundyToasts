@@ -6,7 +6,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -21,6 +24,9 @@ public class SplashScreen extends Activity {
 
 
 	TextView edtVersion;
+	ImageView imgLogo;
+	Animation scale_up,slide_up,fade_in;
+	TextView soja_name,soja_slogan;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +35,19 @@ public class SplashScreen extends Activity {
 		setContentView(R.layout.activity_splash);
 
 
+
 		edtVersion=findViewById(R.id.version_number);
+		imgLogo=findViewById(R.id.imgLogo);
+		soja_name=findViewById(R.id.soja_name);
+		soja_slogan=findViewById(R.id.soja_slogan);
+
+		scale_up= AnimationUtils.loadAnimation(this,R.anim.scale_up);
+		slide_up=AnimationUtils.loadAnimation(this,R.anim.slide_up);
+		fade_in=AnimationUtils.loadAnimation(this,R.anim.fade_in);
+
+		imgLogo.setAnimation(scale_up);
+		soja_name.setAnimation(slide_up);
+		soja_slogan.setAnimation(fade_in);
 
 //        Get Version Name
 		PackageInfo pinfo = null;
@@ -43,6 +61,7 @@ public class SplashScreen extends Activity {
 		} catch (PackageManager.NameNotFoundException e) {
 			e.printStackTrace();
 		}
+		edtVersion.setAnimation(fade_in);
 
 
 		new Handler().postDelayed(new Runnable() {

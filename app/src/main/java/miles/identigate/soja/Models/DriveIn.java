@@ -43,6 +43,7 @@ public class DriveIn {
     }
 
     String idType;
+
     public String getName() {
         return name;
     }

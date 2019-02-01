@@ -57,14 +57,21 @@
                 android:text="DESTINATION"
                 android:textSize="16sp" />
 
-            <Spinner
+            <miles.identigate.soja.Font.OpenSansBold
                 android:id="@+id/spinnerDestination"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/border">
-
-            </Spinner>
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_grey"
+                android:ems="10"
+                android:hint="Select Destination"
+                android:inputType="text"
+                android:padding="15dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null" />
         </LinearLayout>
 
         <LinearLayout
@@ -82,14 +89,20 @@
                 android:text="HOST"
                 android:textSize="16sp" />
 
-            <Spinner
+            <miles.identigate.soja.Font.OpenSansBold
                 android:id="@+id/spinnerHost"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/border">
-
-            </Spinner>
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_grey"
+                android:ems="10"
+                android:hint="Select Premise Host"
+                android:inputType="text"
+                android:padding="15dp"
+                android:singleLine="false"
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null" />
         </LinearLayout>
 
         <LinearLayout
