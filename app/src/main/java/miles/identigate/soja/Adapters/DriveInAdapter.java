@@ -139,40 +139,51 @@ public class DriveInAdapter extends BaseAdapter {
         TextView name = view.findViewById(R.id.name);
         TextView id = view.findViewById(R.id.idNumber);
         TextView car = view.findViewById(R.id.car);
-        TextView entry = view.findViewById(R.id.entry);
+        TextView entry_date = view.findViewById(R.id.entry_date);
+        TextView entry_time = view.findViewById(R.id.entry_time);
         if (type.equals("DRIVE")) {
             Log.d(TAG, "Name: " + driveIns.get(position).getName());
 
             name.setText(!driveIns.get(position).getName().equals(" ") ? driveIns.get(position).getName() : "SMS Login");
             id.setText(driveIns.get(position).getCarNumber());
-            entry.setText(formatDate(driveIns.get(position).getEntryTime()));
+            entry_date.setText(formatDate(driveIns.get(position).getEntryTime(), "date"));
+            entry_time.setText(formatDate(driveIns.get(position).getEntryTime(),"time"));
 
 
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         } else if (type.equals("WALK")) {
+            Log.d(TAG, "getView: "+walkIns.get(position).getName());
             name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : "SMS Login");
             id.setText("ID: " + walkIns.get(position).getNationalId());
-            entry.setText(formatDate(walkIns.get(position).getEntryTime()));
+            entry_date.setText(formatDate(walkIns.get(position).getEntryTime(), "date"));
+            entry_time.setText(formatDate(walkIns.get(position).getEntryTime(), "time"));
 
         } else if (type.equals("PROVIDER")) {
             name.setText(serviceProviderModels.get(position).getCompanyName());
             id.setText("ID: " + serviceProviderModels.get(position).getNationalId());
-            entry.setText("ENTRY: " + serviceProviderModels.get(position).getEntryTime());
+            entry_date.setText("ENTRY: " + formatDate(serviceProviderModels.get(position).getEntryTime(),"date"));
+            entry_time.setText("ENTRY: " + formatDate(serviceProviderModels.get(position).getEntryTime(),"time"));
         } else if (type.equals("RESIDENT")) {
             name.setText(residents.get(position).getName());
             id.setText("ID: " + residents.get(position).getNationalId());
-            entry.setVisibility(View.GONE);
+            entry_date.setVisibility(View.GONE);
+            entry_time.setVisibility(View.GONE);
         }
         return view;
     }
 
-    public String formatDate(String date) {
+    public String formatDate(String date, String type) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         try {
             Date oldDate = format.parse(date);
+            String newDate;
+            if (type.equals("date")) {
+                newDate = new SimpleDateFormat("dd MMMM yyyy").format(oldDate);
+            } else {
+                newDate = new SimpleDateFormat("h:mm a").format(oldDate);
 
-            String newDate = new SimpleDateFormat("h:mm a dd MMMM yyyy").format(oldDate);
+            }
             return newDate;
         } catch (ParseException e) {
             e.printStackTrace();

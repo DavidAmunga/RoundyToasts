@@ -68,7 +68,7 @@ public class Visitors extends AppCompatActivity {
     private static final String TAG = "Visitors";
     ImageView ic_filter;
     TextView info_message;
-    String[] filterItems = {"Entry Time", "SMS Login"};
+    String[] filterItems = {"Entry Time", "SMS Login", "Alphabetically"};
 
 
     static {
@@ -146,6 +146,10 @@ public class Visitors extends AppCompatActivity {
                                 break;
                             case "SMS Login":
                                 sortVisitorsBySMS();
+                                break;
+                            case "Alphabetically":
+                                sortVisitorsAlphabetically();
+                                break;
                             default:
                                 break;
 
@@ -433,6 +437,37 @@ public class Visitors extends AppCompatActivity {
             adapter.reloadData();
         }
 
+    }
+
+    private void sortVisitorsAlphabetically() {
+        ArrayList<DriveIn> alphaFilterList = new ArrayList<>();
+
+        if (driveIns.size() > 0) {
+            Collections.sort(driveIns, new Comparator<DriveIn>() {
+                @Override
+                public int compare(DriveIn s1, DriveIn s2) {
+                    return s1.getName().compareToIgnoreCase(s2.getName());
+                }
+            });
+            Log.d(TAG, "sortVisitorsAlphabetically: DriveIns"+driveIns.toString());
+            adapter = new DriveInAdapter(Visitors.this, driveIns, 1);
+            lv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            adapter.reloadData();
+
+        } else if (walkIns.size() > 0) {
+            Collections.sort(walkIns, new Comparator<DriveIn>() {
+                @Override
+                public int compare(DriveIn s1, DriveIn s2) {
+                    return s1.getName().compareToIgnoreCase(s2.getName());
+                }
+            });
+            Log.d(TAG, "sortVisitorsAlphabetically: WalkIns"+walkIns.toString());
+            adapter = new DriveInAdapter(Visitors.this, walkIns, 1);
+            lv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            adapter.reloadData();
+        }
     }
 
 }

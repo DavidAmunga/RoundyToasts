@@ -50,6 +50,7 @@ public class RecordResident extends SojaActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Record Resident");
         host = findViewById(R.id.host);
         record = findViewById(R.id.record);
         handler=new DatabaseHandler(this);

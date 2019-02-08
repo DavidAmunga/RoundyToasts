@@ -191,9 +191,9 @@ public class SlipActivity extends SojaActivity {
             msg += "\n";
             msg += "------------------------------";
             msg += "\n\n";
-            msg += "CHECK IN TYPE: " + checkInType;
+            msg += "CHECK IN TYPE: " + checkInType.toUpperCase();
             msg += "\n";
-            msg += "CHECK IN MODE: " + checkInMode;
+            msg += "CHECK IN MODE: " + checkInMode.toUpperCase();
             msg += "\n";
             if (!checkInMode.equals("SMS")){
                 msg += "VISITOR NAME: " + firstName;

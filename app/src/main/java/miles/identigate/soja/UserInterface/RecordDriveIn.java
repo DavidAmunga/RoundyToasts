@@ -1,4 +1,5 @@
 package miles.identigate.soja.UserInterface;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.regula.documentreader.api.enums.eVisualFieldType;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -83,13 +85,14 @@ public class RecordDriveIn extends SojaActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Constants.RECORDED_VISITOR)){
+            if (action.equals(Constants.RECORDED_VISITOR)) {
                 finish();
-            }else if(action.equals(Constants.LOGOUT_BROADCAST)){
+            } else if (action.equals(Constants.LOGOUT_BROADCAST)) {
                 finish();
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,10 +108,10 @@ public class RecordDriveIn extends SojaActivity {
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
         receiveFilter.addAction(Constants.RECORDED_VISITOR);
 
-        handler=new DatabaseHandler(this);
-        preferences=new Preferences(this);
+        handler = new DatabaseHandler(this);
+        preferences = new Preferences(this);
         vehicleRegNo = findViewById(R.id.car_number);
-        vehicleRegNo.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        vehicleRegNo.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         visitor_type = findViewById(R.id.visitor_type);
         record = findViewById(R.id.record);
         spinnerDestination = findViewById(R.id.spinnerDestination);
@@ -120,24 +123,23 @@ public class RecordDriveIn extends SojaActivity {
         hostLayout = findViewById(R.id.hostLayout);
         companyNameEdittext = findViewById(R.id.companyNameEdittext);
 
-        phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled()?View.VISIBLE:View.GONE);
-        companyNameLayout.setVisibility(preferences.isCompanyNameEnabled()?View.VISIBLE:View.GONE);
-
+        phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled() ? View.VISIBLE : View.GONE);
+        companyNameLayout.setVisibility(preferences.isCompanyNameEnabled() ? View.VISIBLE : View.GONE);
 
 
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(CheckConnection.check(RecordDriveIn.this)){
-                    if(vehicleRegNo.getText().toString().equals(null)||vehicleRegNo.getText().toString().equals("")||numberOfPeople.getText().toString().equals(null)|| numberOfPeople.getText().toString().equals("")) {
-                        Snackbar.make(v,"All fields are required.",Snackbar.LENGTH_SHORT).show();
-                    }else {
+                if (CheckConnection.check(RecordDriveIn.this)) {
+                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("") || numberOfPeople.getText().toString().equals(null) || numberOfPeople.getText().toString().equals("")) {
+                        Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).show();
+                    } else {
                         recordInternt();
                     }
-                }else {
-                    if(vehicleRegNo.getText().toString().equals(null)||vehicleRegNo.getText().toString().equals("")||numberOfPeople.getText().toString().equals(null)|| numberOfPeople.getText().toString().equals("")) {
-                        Snackbar.make(v,"All fields are required.",Snackbar.LENGTH_SHORT).show();
-                    }else {
+                } else {
+                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("") || numberOfPeople.getText().toString().equals(null) || numberOfPeople.getText().toString().equals("")) {
+                        Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).show();
+                    } else {
                         recordOffline();
                     }
                 }
@@ -147,7 +149,7 @@ public class RecordDriveIn extends SojaActivity {
 
 //        VISITOR TYPES
         visitorTypes = handler.getTypes("visitors", null);
-        TypeAdapter adapter =new TypeAdapter(RecordDriveIn.this,R.layout.tv,visitorTypes);
+        TypeAdapter adapter = new TypeAdapter(RecordDriveIn.this, R.layout.tv, visitorTypes);
         visitor_type.setAdapter(adapter);
         visitor_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -208,10 +210,9 @@ public class RecordDriveIn extends SojaActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Clicked");
-                if(selectedDestination==null){
+                if (selectedDestination == null) {
                     Toast.makeText(RecordDriveIn.this, "Select Destination First", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     new SimpleSearchDialogCompat(RecordDriveIn.this,
                             "Search for Host...", "Who is the visitor seeing in " + selectedDestination.getName(), null, hosts, new SearchResultListener<TypeObject>() {
                         @Override
@@ -230,63 +231,84 @@ public class RecordDriveIn extends SojaActivity {
             }
         });
     }
+
     @Override
     protected void onResume() {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
         super.onResume();
     }
+
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
         super.onPause();
     }
+
     public void recordInternt() {
         //Insert to local and online database.
 
         String urlParameters = null;
         try {
-            String idN="000000000";
+            String idN = "000000000";
             String scan_id_type = "ID";
-            String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
-            if(classCode.equals("ID")){
+            String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
+            if (classCode.equals("ID")) {
                 scan_id_type = "ID";
-                idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
-                idNumber = idN.substring(2, idN.length()-1);
-                Log.d(TAG, "ID Number: "+idNumber);
-            }else if (classCode.equals("P")){
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                idNumber = idN.substring(2, idN.length() - 1);
+                Log.d(TAG, "ID Number: " + idNumber);
+            } else if (classCode.equals("P")) {
                 scan_id_type = "P";
-                idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                 idNumber = idN;
+            } else if (classCode.equals("PA")) {
+                Log.d(TAG, "recordInternet: Passport");
+
+                scan_id_type = "P";
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                idNumber = idN;
+            } else if (classCode.equals("AC")) {
+                Log.d(TAG, "Class Code : " + classCode);
+//                TODO: Standardize Alien ID
+                Log.d(TAG, "recordInternet: Alien Id");
+                scan_id_type = "AID";
+
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA).replace("^", "\n");
+                idNumber = idN.substring(2, idN.length() - 1);
+                Log.d(TAG, "recordInternet: ID" + idNumber);
+
+
             }
+
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
 
-            String gender=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M")?"0":"1";
-            String mrzLines =  Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
+            String gender = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M") ? "0" : "1";
+            String mrzLines = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
             urlParameters =
-                    "mrz=" + URLEncoder.encode(mrzLines, "UTF-8")+
-                    "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8")+
-                            (preferences.isCompanyNameEnabled() && companyNameEdittext.getText().toString().equals("")?
-                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")):"") +
-                    "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
-                    "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
-                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                    "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
-                    "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8")+
+                    "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
+                            "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
+                            (preferences.isCompanyNameEnabled() && companyNameEdittext.getText().toString().equals("") ?
+                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
+                            "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
+                            "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
+                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                            "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                            "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
                             "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                             (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
 
                             "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
-                    "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8")+
-                    "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8")+
-                    "&genderID=" + URLEncoder.encode(gender, "UTF-8")+
-                    "&firstName=" + URLEncoder.encode(firstName, "UTF-8")+
-                    "&lastName=" + URLEncoder.encode(lastName, "UTF-8")+
-                    "&idType=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"), "UTF-8")+
-                    "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8")+
-                    "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8")+
-                    "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
-            Log.d(TAG, "URL Param: "+urlParameters);
+                            "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8") +
+                            "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8") +
+                            "&genderID=" + URLEncoder.encode(gender, "UTF-8") +
+                            "&firstName=" + URLEncoder.encode(firstName, "UTF-8") +
+                            "&lastName=" + URLEncoder.encode(lastName, "UTF-8") +
+                            "&idType=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"), "UTF-8") +
+                            "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
+                            "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8") +
+                            "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
+            Log.d(TAG, "URL Param: " + urlParameters);
             new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace(
@@ -295,17 +317,17 @@ public class RecordDriveIn extends SojaActivity {
         }
     }
 
-    public void recordOffline(){
+    public void recordOffline() {
         //Insert to local database
-        String idN="000000000";
-        String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
-        if(classCode.equals("ID")){
-            idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
-        }else if (classCode.equals("P")){
-            idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+        String idN = "000000000";
+        String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
+        if (classCode.equals("ID")) {
+            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+        } else if (classCode.equals("P")) {
+            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
         }
-        DriveIn driveIn=new DriveIn();
-        vehicleNo=vehicleRegNo.getText().toString();
+        DriveIn driveIn = new DriveIn();
+        vehicleNo = vehicleRegNo.getText().toString();
         driveIn.setVisitorType(selectedType.getId());
         driveIn.setCarNumber(vehicleRegNo.getText().toString());
         driveIn.setImage("NULL");
@@ -320,14 +342,14 @@ public class RecordDriveIn extends SojaActivity {
         driveIn.setName(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
         driveIn.setOtherNames(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
         driveIn.setIdType(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
-        if(CheckConnection.check(this)){
+        if (CheckConnection.check(this)) {
             driveIn.setSynced(true);
             handler.insertDriveIn(driveIn);
             return;
-        }else {
+        } else {
             driveIn.setSynced(false);
             handler.insertDriveIn(driveIn);
-            MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+            MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                     dialog.dismiss();
@@ -335,29 +357,32 @@ public class RecordDriveIn extends SojaActivity {
                     finish();
                 }
             };
-            dialog = Constants.showDialog(this, "SUCCESS","Visitor recorded successfully.","OK" ,singleButtonCallback);
+            dialog = Constants.showDialog(this, "SUCCESS", "Visitor recorded successfully.", "OK", singleButtonCallback);
             dialog.show();
         }
     }
+
     private class DriveinAsync extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = Constants.showProgressDialog(RecordDriveIn.this,"Drive in", "Recording...");
+            progressDialog = Constants.showProgressDialog(RecordDriveIn.this, "Drive in", "Recording...");
             progressDialog.show();
         }
-        protected String  doInBackground(String... params) {
-            return new NetworkHandler().executePost(params[0],params[1]);
+
+        protected String doInBackground(String... params) {
+            return new NetworkHandler().executePost(params[0], params[1]);
         }
+
         protected void onPostExecute(String result) {
             progressDialog.dismiss();
-            if(result !=null){
+            if (result != null) {
                 try {
-                    Object json=new JSONTokener(result).nextValue();
-                    if (json instanceof JSONObject){
+                    Object json = new JSONTokener(result).nextValue();
+                    if (json instanceof JSONObject) {
                         resultHandler(result);
-                    }else {
+                    } else {
                         recordOffline();
                         parseResult();
 
@@ -366,14 +391,15 @@ public class RecordDriveIn extends SojaActivity {
                     e.printStackTrace();
                 }
 
-            }else{
+            } else {
                 recordOffline();
             }
 
         }
     }
-    private void parseResult(){
-        if (preferences.canPrint()){
+
+    private void parseResult() {
+        if (preferences.canPrint()) {
             Intent intent = new Intent(getApplicationContext(), SlipActivity.class);
             intent.putExtra("title", "RECORD DRIVE IN");
             intent.putExtra("house", selectedDestination.getName());
@@ -383,17 +409,16 @@ public class RecordDriveIn extends SojaActivity {
             intent.putExtra("result_slip", result_slip);
             intent.putExtra("visit_id", visit_id);
             intent.putExtra("vehicleNo", vehicleRegNo.getText().toString());
-            intent.putExtra("checkInType","drive");
-            intent.putExtra("checkInMode","ID No");
-            intent.putExtra("peopleNo",numberOfPeople.getText().toString());
-            if(preferences.isSelectHostsEnabled() && selectedHost!=null){
-                intent.putExtra("host",selectedHost.getName());
+            intent.putExtra("checkInType", "drive");
+            intent.putExtra("checkInMode", "ID No");
+            intent.putExtra("peopleNo", numberOfPeople.getText().toString());
+            if (preferences.isSelectHostsEnabled() && selectedHost != null) {
+                intent.putExtra("host", selectedHost.getName());
             }
 
 
-
             startActivity(intent);
-        }else{
+        } else {
             new MaterialDialog.Builder(RecordDriveIn.this)
                     .title("SUCCESS")
                     .content("Visitor recorded successfully.")
@@ -409,121 +434,125 @@ public class RecordDriveIn extends SojaActivity {
                     .show();
         }
     }
+
     private void resultHandler(String result) throws JSONException {
-        JSONObject obj=new JSONObject(result);
-        int resultCode=obj.getInt("result_code");
-        String resultText=obj.getString("result_text");
-        String resultContent=obj.getString("result_content");
-        if(resultText.equals("OK")&&resultContent.equals("success")){
+        JSONObject obj = new JSONObject(result);
+        int resultCode = obj.getInt("result_code");
+        String resultText = obj.getString("result_text");
+        String resultContent = obj.getString("result_content");
+        if (resultText.equals("OK") && resultContent.equals("success")) {
             result_slip = obj.getString("result_slip");
             visit_id = obj.getInt("visit_id");
             recordOffline();
             parseResult();
-        }else {
-            if(resultText.contains("still in")){
-                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+        } else {
+            if (resultText.contains("still in")) {
+                MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
-                        String urlParameters =null;
-                        String idN="000000000";
-                        String idNumber="";
+                        String urlParameters = null;
+                        String idN = "000000000";
+                        String idNumber = "";
 
-                        String classCode=Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
-                        if(classCode.equals("ID")){
-                            idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
-                            idNumber=idN.substring(2,idN.length()-1);
-                        }else if (classCode.equals("P")){
-                            idN= Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
-                            idNumber=idN;
+                        String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
+                        if (classCode.equals("ID")) {
+                            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                            idNumber = idN.substring(2, idN.length() - 1);
+                        } else if (classCode.equals("P")) {
+                            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                            idNumber = idN;
                         }
                         try {
-                            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
-                                    "&idNumber="+ URLEncoder.encode(idNumber,"UTF-8") +
+                            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                                    "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
                                     "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
 
 
-                            Log.d(TAG, "URL Param : "+urlParameters);
+                            Log.d(TAG, "URL Param : " + urlParameters);
 
-                            new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
+                            new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
 
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
                 };
-                dialog = Constants.showDialog(this, "Soja", resultText,"Check out", singleButtonCallback);
+                dialog = Constants.showDialog(this, "Soja", resultText, "Check out", singleButtonCallback);
                 dialog.show();
-            }else {
-                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+            } else {
+                MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                     }
                 };
-                dialog = Constants.showDialog(this, "Soja", resultText,"OK", singleButtonCallback);
+                dialog = Constants.showDialog(this, "Soja", resultText, "OK", singleButtonCallback);
                 dialog.show();
             }
         }
     }
+
     private class ExitAsync extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = Constants.showProgressDialog(RecordDriveIn.this,"Exit", "Removing visitor...");
+            progressDialog = Constants.showProgressDialog(RecordDriveIn.this, "Exit", "Removing visitor...");
             progressDialog.show();
         }
-        protected String  doInBackground(String... params) {
+
+        protected String doInBackground(String... params) {
             return new NetworkHandler().executePost(params[0], params[1]);
         }
+
         protected void onPostExecute(String result) {
             progressDialog.dismiss();
 
-            if(result !=null){
+            if (result != null) {
 
                 try {
-                    if(result.contains("result_code")) {
+                    if (result.contains("result_code")) {
                         JSONObject obj = new JSONObject(result);
                         int resultCode = obj.getInt("result_code");
                         String resultText = obj.getString("result_text");
                         String resultContent = obj.getString("result_content");
-                        Log.d(TAG, "onPostExecute: "+result);
+                        Log.d(TAG, "onPostExecute: " + result);
 
                         if (resultText.equals("OK") && resultContent.equals("success")) {
                             recordInternt();
                         } else {
-                            MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                            MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     dialog.dismiss();
                                 }
                             };
-                            dialog = Constants.showDialog(RecordDriveIn.this, "ERROR", resultText,"OK", singleButtonCallback);
+                            dialog = Constants.showDialog(RecordDriveIn.this, "ERROR", resultText, "OK", singleButtonCallback);
                             dialog.show();
                         }
-                    }else {
-                        MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+                    } else {
+                        MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 dialog.dismiss();
                             }
                         };
-                        dialog = Constants.showDialog(RecordDriveIn.this, "Result", "Poor internet connection","OK", singleButtonCallback);
+                        dialog = Constants.showDialog(RecordDriveIn.this, "Result", "Poor internet connection", "OK", singleButtonCallback);
                         dialog.show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-            }else{
-                MaterialDialog.SingleButtonCallback singleButtonCallback=new MaterialDialog.SingleButtonCallback() {
+            } else {
+                MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                     }
                 };
-                dialog = Constants.showDialog(RecordDriveIn.this, "Result", "Poor internet connection","OK", singleButtonCallback);
+                dialog = Constants.showDialog(RecordDriveIn.this, "Result", "Poor internet connection", "OK", singleButtonCallback);
                 dialog.show();
             }
         }

@@ -1,15 +1,20 @@
 package miles.identigate.soja;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.regula.documentreader.api.enums.eVisualFieldType;
+import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
 
 import java.util.List;
@@ -21,6 +26,7 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
 		super(context, resource, objects);
 	}
 
+	private static final String TAG = "SimpleMrzDataAdapter";
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -38,15 +44,19 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
             TextView name = v.findViewById(R.id.nameTv);
             TextView textValue = v.findViewById(R.id.valueTv);
             LinearLayout layout = v.findViewById(R.id.simpleItemLayout);
-
-
+			ImageView imgUser=v.findViewById(R.id.imgUser);
 
 			textValue.setTypeface(Typeface.MONOSPACE);
+
 
 			/*if (p.values.size() > 0)
 			    name.setText(p.values.get(0).value);*/
             String value = Constants.documentReaderResults.getTextFieldValueByType(p.fieldType, p.lcid);
 			textValue.setText(value);
+
+//            Log.d(TAG, "Number: "+p.fieldType);
+//            Log.d(TAG, "getView: "+Constants.documentReaderResults.getTextFieldValueByType(p.fieldType,p.lcid));
+
 
             textValue.setTextColor(Color.rgb(3, 140, 7));
 

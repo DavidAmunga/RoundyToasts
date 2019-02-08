@@ -40,7 +40,7 @@ public class RecordExit extends SojaActivity {
     Button record;
     Spinner mode;
     String[] Mode={
-            "Drive out","Foot","Other(Specify)"
+            "Foot","Drive out","Other(Specify)"
     };
     TextView name;
     TextView idNumber;

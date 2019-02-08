@@ -6,58 +6,65 @@
     android:background="@color/white"
     android:orientation="vertical"
     tools:context="miles.identigate.soja.Fragments.EntryTypeFragment">
+
     <miles.identigate.soja.Font.OpenSansBold
+        android:id="@+id/record_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:textStyle="bold"
-        android:text="RECORD WALK IN"
-        android:id="@+id/record_type"
         android:gravity="center_horizontal"
-        android:textSize="18dp"/>
+        android:text="RECORD WALK IN"
+        android:textSize="28dp"
+        android:textStyle="bold" />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="30dp"
+        android:background="?android:attr/selectableItemBackground">
+
         <ImageView
+            android:id="@+id/scan_icon"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/scan_icon"
-            android:background="?android:selectableItemBackground"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_search_black_48dp"/>
+            android:layout_marginBottom="10dp"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_scan_id" />
+
         <miles.identigate.soja.Font.OpenSansBold
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/scan_icon"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:text="@string/scan_id"
-            android:layout_centerHorizontal="true"
-            android:textStyle="bold"
-            android:layout_height="wrap_content" />
+            android:textStyle="bold" />
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:visibility="gone"
         android:background="?android:attr/selectableItemBackground"
-        android:layout_height="wrap_content">
+        android:visibility="gone">
+
         <ImageView
+            android:id="@+id/manual_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/manual_icon"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_manual"/>
+            android:src="@drawable/ic_manual" />
+
         <miles.identigate.soja.Font.OpenSansBold
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/manual_icon"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
             android:text="@string/manual_entry"
-            android:layout_centerHorizontal="true"
-            android:textStyle="bold"
-            android:layout_height="wrap_content" />
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </LinearLayout>
