@@ -73,7 +73,7 @@ public class CheckOut extends ListFragment {
         Object[] c  = checkoutDrawables.toArray();
         drawables = Arrays.copyOf(c, c.length, Integer[].class);
 
-        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables);
+        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables,"checkout");
         setListAdapter(checkInAdapter);
 
     }

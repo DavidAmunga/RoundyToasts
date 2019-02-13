@@ -462,6 +462,21 @@ public class RecordDriveIn extends SojaActivity {
                         } else if (classCode.equals("P")) {
                             idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                             idNumber = idN;
+                        }else if (classCode.equals("PA")) {
+                            Log.d(TAG, "recordInternet: Passport");
+
+                            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                            idNumber = idN;
+                        } else if (classCode.equals("AC")) {
+                            Log.d(TAG, "Class Code : " + classCode);
+
+                            Log.d(TAG, "recordInternet: Alien Id");
+
+                            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA).replace("^", "\n");
+                            idNumber = idN.substring(2, idN.length() - 1);
+                            Log.d(TAG, "recordInternet: ID" + idNumber);
+
+
                         }
                         try {
                             urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +

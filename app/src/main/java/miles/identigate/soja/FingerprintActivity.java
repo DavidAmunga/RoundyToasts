@@ -88,9 +88,10 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     TextView place_finger;
     Button ok_button;
     Button submit_button;
-    LinearLayout info;
+    LinearLayout info,hint_layout;
     TextView name;
     TextView idNUmber;
+
 
     boolean isCheckout = false;
 
@@ -281,6 +282,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         info = findViewById(R.id.info);
         name = findViewById(R.id.name);
         idNUmber = findViewById(R.id.idNUmber);
+        hint_layout=findViewById(R.id.hint_layout);
 
 
         if (isCheckout) {
@@ -309,6 +311,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             @Override
             public void onClick(View v) {
 
+                hint_layout.setVisibility(View.VISIBLE);
+
                 isCheckout = false;
 
                 scannedFingerprint = null;
@@ -328,6 +332,9 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         fingerprint_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                hint_layout.setVisibility(View.VISIBLE);
+
 
                 isCheckout = true;
 
@@ -569,6 +576,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                                             }
                                         })
                                         .show();
+                                Toast.makeText(FingerprintActivity.this, result, Toast.LENGTH_SHORT).show();
+
                             }
                         } else {
                             // Failed
@@ -786,6 +795,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                                         }
                                     })
                                     .show();
+                            Toast.makeText(FingerprintActivity.this, result, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         new MaterialDialog.Builder(FingerprintActivity.this)

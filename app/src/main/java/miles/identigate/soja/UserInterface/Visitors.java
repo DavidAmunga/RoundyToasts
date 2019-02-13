@@ -247,6 +247,7 @@ public class Visitors extends AppCompatActivity {
                 // TODO Auto-generated method stub
             }
         });
+
     }
 
     @Override
@@ -327,6 +328,47 @@ public class Visitors extends AppCompatActivity {
                                     }
                                 }
                             }
+                            if(walkIns.size()>0){
+                            Collections.sort(walkIns, new Comparator<DriveIn>() {
+                                public int compare(DriveIn o1, DriveIn o2) {
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    try {
+                                        Date entryTimeOne = format.parse(o1.getEntryTime());
+                                        Date entryTimeTwo = format.parse(o2.getEntryTime());
+
+                                        if (entryTimeOne == null || entryTimeTwo == null)
+                                            return 0;
+                                        return o2.getEntryTime().compareTo(o1.getEntryTime());
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    return 0;
+
+                                }
+
+                                ;
+                            });}
+                            if(driveIns.size()>0){
+                                Collections.sort(driveIns, new Comparator<DriveIn>() {
+                                    public int compare(DriveIn o1, DriveIn o2) {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        try {
+                                            Date entryTimeOne = format.parse(o1.getEntryTime());
+                                            Date entryTimeTwo = format.parse(o2.getEntryTime());
+
+                                            if (entryTimeOne == null || entryTimeTwo == null)
+                                                return 0;
+                                            return o2.getEntryTime().compareTo(o1.getEntryTime());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return 0;
+
+                                    }
+
+                                    ;
+                                });}
+
                             loading.setVisibility(View.GONE);
                             lv.setVisibility(View.VISIBLE);
                             adapter.notifyDataSetChanged();

@@ -131,7 +131,7 @@ public class CheckIn extends Fragment {
 
 
 
-        CheckInAdapter checkInAdapter = new CheckInAdapter(getActivity(), titles, descriptions, drawables);
+        CheckInAdapter checkInAdapter = new CheckInAdapter(getActivity(), titles, descriptions, drawables,"checkin");
         lv.setAdapter(checkInAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

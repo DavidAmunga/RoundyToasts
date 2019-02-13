@@ -14,8 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:padding="10dp"
+        android:visibility="gone"
         android:background="@color/colorPrimary"
         android:elevation="5dp"
+        android:id="@+id/hint_layout"
         android:orientation="horizontal">
 
         <miles.identigate.soja.Font.OpenSansBold
@@ -39,15 +41,7 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
-        <miles.identigate.soja.Font.OpenSansBold
-            android:id="@+id/record_type_in"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:text="BIOMETRIC CHECKIN"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+
 
         <ImageView
             android:id="@+id/fingerprint_in"
@@ -60,6 +54,16 @@
             app:srcCompat="@drawable/ic_fingerprint" />
 
 
+        <miles.identigate.soja.Font.OpenSansBold
+            android:id="@+id/record_type_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="Tap above to Check In"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -69,15 +73,7 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
-        <miles.identigate.soja.Font.OpenSansBold
-            android:id="@+id/record_type_out"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:text="BIOMETRIC CHECKOUT"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+
 
         <ImageView
             android:id="@+id/fingerprint_out"
@@ -89,6 +85,15 @@
             android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_fingerprint" />
 
+        <miles.identigate.soja.Font.OpenSansBold
+            android:id="@+id/record_type_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="Tap above to Check Out"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

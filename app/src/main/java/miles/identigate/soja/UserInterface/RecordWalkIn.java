@@ -464,6 +464,21 @@ public class RecordWalkIn extends SojaActivity {
                                     idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                                     Log.d(TAG, "onNegative: " + idN);
                                     idNumber = idN;
+                                }else if (classCode.equals("PA")) {
+                                    Log.d(TAG, "recordInternet: Passport");
+
+                                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                                    idNumber = idN;
+                                } else if (classCode.equals("AC")) {
+                                    Log.d(TAG, "Class Code : " + classCode);
+
+                                    Log.d(TAG, "recordInternet: Alien Id");
+
+                                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA).replace("^", "\n");
+                                    idNumber = idN.substring(2, idN.length() - 1);
+                                    Log.d(TAG, "recordInternet: ID" + idNumber);
+
+
                                 }
                                 String urlParameters = null;
                                 try {
@@ -537,6 +552,7 @@ public class RecordWalkIn extends SojaActivity {
                                         }
                                     })
                                     .show();
+                            Log.d(TAG, "Error: "+result);
                         }
                     } else {
                         new MaterialDialog.Builder(RecordWalkIn.this)

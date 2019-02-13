@@ -44,7 +44,7 @@ public class Logs extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables);
+        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables,"logs");
         setListAdapter(checkInAdapter);
     }
     @Override

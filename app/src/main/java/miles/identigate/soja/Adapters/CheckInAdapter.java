@@ -1,6 +1,7 @@
 package miles.identigate.soja.Adapters;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -18,12 +19,15 @@ public class CheckInAdapter extends BaseAdapter{
     String[] descriptions;
     Integer[] drawables;
     Activity activity;
-    public CheckInAdapter(Activity activity, String[] titles, String[] descriptions, Integer[] drawables){
+    String type;
+    public CheckInAdapter(Activity activity, String[] titles, String[] descriptions, Integer[] drawables,String type){
         this.activity=activity;
         this.titles=titles;
         this.descriptions=descriptions;
         this.drawables=drawables;
+        this.type=type;
     }
+
 
     @Override
     public int getCount() {
@@ -46,6 +50,11 @@ public class CheckInAdapter extends BaseAdapter{
         TextView title = view.findViewById(R.id.title);
         TextView description = view.findViewById(R.id.description);
         ImageView image = view.findViewById(R.id.image);
+        if(type.equals("checkout")){
+                image.setScaleX(-1);
+                image.setPadding(0,0,10,0);
+
+        }
         title.setText(titles[position]);
         description.setText(descriptions[position]);
         image.setImageResource(drawables[position]);
