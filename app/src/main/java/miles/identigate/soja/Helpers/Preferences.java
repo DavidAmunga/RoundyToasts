@@ -144,4 +144,14 @@ public class Preferences {
         editor.commit();
     }
 
+    public boolean isScanPicture() {
+        return settings.getBoolean("scan_photo", false);
+    }
+
+    public void setScanPicture(boolean isEnabled) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("scan_photo", isEnabled);
+        editor.commit();
+    }
+
 }

@@ -140,6 +140,8 @@ public class Dashboard extends SojaActivity {
         SharedPreferences getPrefs = PreferenceManager
                         .getDefaultSharedPreferences(getBaseContext());
         boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+
         if (isFirstStart&&preferences.isLoggedin()) {
             if (new CheckConnection().check(this)) {
                 new FetchDetails().execute();
@@ -152,7 +154,7 @@ public class Dashboard extends SojaActivity {
                         .titleGravity(GravityEnum.CENTER)
                         .titleColor(getResources().getColor(R.color.ColorPrimary))
                         .content("It seems you have a poor internet connection.Please try again later.")
-                        .cancelable(true)
+                         .cancelable(false)
                         .positiveText("EXIT")
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
@@ -284,6 +286,35 @@ public class Dashboard extends SojaActivity {
         }else if(id == R.id.settings){
             startActivity(new Intent(getApplicationContext(), AdminSettingsActivity.class));
             return  true;
+        } else if (id == R.id.refresh) {
+            if (new CheckConnection().check(this)) {
+                new FetchDetails().execute();
+            } else {
+                dialog = new MaterialDialog.Builder(Dashboard.this)
+                        .title("Soja")
+                        .titleGravity(GravityEnum.CENTER)
+                        .titleColor(getResources().getColor(R.color.ColorPrimary))
+                        .content("It seems you have a poor internet connection.Please try again later.")
+                        .cancelable(true)
+                        .positiveText("EXIT")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                super.onPositive(dialog);
+                                preferences.setIsLoggedin(false);
+                                SharedPreferences getPrefs = PreferenceManager
+                                        .getDefaultSharedPreferences(getBaseContext());
+                                SharedPreferences.Editor e = getPrefs.edit();
+                                e.putBoolean("firstStart", true);
+                                e.apply();
+                                dialog.dismiss();
+                                finish();
+                            }
+                        })
+                        .widgetColorRes(R.color.colorPrimary)
+                        .build();
+                dialog.show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -339,7 +370,7 @@ public class Dashboard extends SojaActivity {
                 .titleColor(getResources().getColor(R.color.ColorPrimary))
                 .content("Please wait while we initialize the application.\nThis might take time depending on your internet.")
                 .progress(true, 0)
-                .cancelable(true)
+                .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
         @Override

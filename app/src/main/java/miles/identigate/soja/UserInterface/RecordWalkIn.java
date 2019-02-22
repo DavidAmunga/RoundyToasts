@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -120,12 +121,16 @@ public class RecordWalkIn extends SojaActivity {
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (CheckConnection.check(RecordWalkIn.this)) {
-                    recordInternet();
+                if (selectedDestination == null) {
+                    Toast.makeText(RecordWalkIn.this, "Select A Destination", Toast.LENGTH_SHORT).show();
                 } else {
-                    recordOffline();
+                    if (CheckConnection.check(RecordWalkIn.this)) {
+                        recordInternet();
+                    } else {
+                        recordOffline();
+                    }
                 }
+
             }
         });
         TypeAdapter adapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, visitorTypes);
@@ -383,6 +388,7 @@ public class RecordWalkIn extends SojaActivity {
                         e.printStackTrace();
                     }
                 } else {
+                    Log.d(TAG, "onPostExecute: Record Offline" + result);
                     recordOffline();
                 }
 
@@ -424,6 +430,11 @@ public class RecordWalkIn extends SojaActivity {
                         }
                     })
                     .show();
+            // Get instance of Vibrator from current Context
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+// Vibrate for 400 milliseconds
+            v.vibrate(400);
         }
     }
 

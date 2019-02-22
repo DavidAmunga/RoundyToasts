@@ -198,6 +198,9 @@ public class RecordExit extends SojaActivity {
                                         @Override
                                         public void onPositive(MaterialDialog dialog) {
                                             dialog.dismiss();
+                                            Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                                             finish();
                                         }

@@ -34,6 +34,7 @@ import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +42,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import devs.mulham.horizontalcalendar.HorizontalCalendar;
+import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import miles.identigate.soja.Adapters.DriveInAdapter;
 import miles.identigate.soja.Helpers.CheckConnection;
 import miles.identigate.soja.Helpers.Constants;
@@ -61,6 +64,7 @@ public class Visitors extends AppCompatActivity {
     ArrayList<DriveIn> walkIns;
     ArrayList<ServiceProviderModel> serviceProviderModels;
     ArrayList<Resident> residents;
+
     String str;
     private ContentLoadingProgressBar loading;
     private Preferences preferences;
@@ -70,10 +74,24 @@ public class Visitors extends AppCompatActivity {
     TextView info_message;
     String[] filterItems = {"Entry Time", "SMS Login", "Alphabetically"};
 
+    Date selectedDate = new Date();
+
+
+    /**
+     * end after 1 day from now
+     */
+    Calendar endDate = Calendar.getInstance();
+
+    /**
+     * start before  day from now
+     */
+    Calendar startDate = Calendar.getInstance();
+
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +114,29 @@ public class Visitors extends AppCompatActivity {
         handler = new DatabaseHandler(this);
         ic_filter = findViewById(R.id.ic_filter);
         info_message = findViewById(R.id.info_message);
+
+
+        endDate.add(Calendar.DAY_OF_MONTH, 1);
+        startDate.add(Calendar.DAY_OF_MONTH, -3);
+
+
+        HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(this, R.id.calendarView)
+                .startDate(startDate.getTime())
+                .endDate(endDate.getTime())
+                .defaultSelectedDate(Calendar.getInstance().getTime())
+                .build();
+
+
+        horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
+            @Override
+            public void onDateSelected(Date date, int position) {
+                selectedDate = date;
+                sortVisitorsByEntryTime();
+
+//                Toast.makeText(Visitors.this, date.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         if (getIntent() != null) {
             str = getIntent().getStringExtra("TYPE");
@@ -248,6 +289,7 @@ public class Visitors extends AppCompatActivity {
             }
         });
 
+
     }
 
     @Override
@@ -299,6 +341,8 @@ public class Visitors extends AppCompatActivity {
                                     driveIn.setName(name);
                                     driveIn.setNationalId(id);
                                     driveIn.setEntryTime(entry);
+
+
                                     if (!item.isNull("registration")) {
                                         driveIn.setCarNumber(item.getString("registration"));
                                         driveIns.add(driveIn);
@@ -308,7 +352,12 @@ public class Visitors extends AppCompatActivity {
                                     driveIn.setName(name);
                                     driveIn.setNationalId(id);
                                     driveIn.setEntryTime(entry);
+
+
+//                                    Log.d(TAG, "onPostExecute: Select Day "+selectCal.get(Calendar.DAY_OF_YEAR)+" Entry Day"+entryCal.get(Calendar.DAY_OF_YEAR));
+
                                     if (item.isNull("registration")) {
+
                                         walkIns.add(driveIn);
                                     }
                                 } else if (str.equals("PROVIDER")) {
@@ -323,32 +372,35 @@ public class Visitors extends AppCompatActivity {
                                     resident.setEntryTime(entry);
                                     resident.setNationalId(id);
                                     resident.setHouse(house);
+
+
                                     if (!item.isNull("registration")) {
                                         residents.add(resident);
                                     }
                                 }
                             }
-                            if(walkIns.size()>0){
-                            Collections.sort(walkIns, new Comparator<DriveIn>() {
-                                public int compare(DriveIn o1, DriveIn o2) {
-                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                    try {
-                                        Date entryTimeOne = format.parse(o1.getEntryTime());
-                                        Date entryTimeTwo = format.parse(o2.getEntryTime());
+                            if (walkIns.size() > 0) {
+                                Collections.sort(walkIns, new Comparator<DriveIn>() {
+                                    public int compare(DriveIn o1, DriveIn o2) {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        try {
+                                            Date entryTimeOne = format.parse(o1.getEntryTime());
+                                            Date entryTimeTwo = format.parse(o2.getEntryTime());
 
-                                        if (entryTimeOne == null || entryTimeTwo == null)
-                                            return 0;
-                                        return o2.getEntryTime().compareTo(o1.getEntryTime());
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
+                                            if (entryTimeOne == null || entryTimeTwo == null)
+                                                return 0;
+                                            return o2.getEntryTime().compareTo(o1.getEntryTime());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return 0;
+
                                     }
-                                    return 0;
 
-                                }
-
-                                ;
-                            });}
-                            if(driveIns.size()>0){
+                                    ;
+                                });
+                            }
+                            if (driveIns.size() > 0) {
                                 Collections.sort(driveIns, new Comparator<DriveIn>() {
                                     public int compare(DriveIn o1, DriveIn o2) {
                                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -367,12 +419,40 @@ public class Visitors extends AppCompatActivity {
                                     }
 
                                     ;
-                                });}
+                                });
+                            }
+                            if (residents.size() > 0) {
+                                Collections.sort(residents, new Comparator<Resident>() {
+                                    public int compare(Resident o1, Resident o2) {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        try {
+                                            Date entryTimeOne = format.parse(o1.getEntryTime());
+                                            Date entryTimeTwo = format.parse(o2.getEntryTime());
+
+                                            if (entryTimeOne == null || entryTimeTwo == null)
+                                                return 0;
+                                            return o2.getEntryTime().compareTo(o1.getEntryTime());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return 0;
+
+                                    }
+
+                                    ;
+                                });
+                            }
+
 
                             loading.setVisibility(View.GONE);
                             lv.setVisibility(View.VISIBLE);
                             adapter.notifyDataSetChanged();
                             adapter.reloadData();
+
+
+                            sortVisitorsByEntryTime();
+
+
                         } else {
                             loading.setVisibility(View.GONE);
                             findViewById(R.id.empty).setVisibility(View.VISIBLE);
@@ -415,7 +495,30 @@ public class Visitors extends AppCompatActivity {
                 ;
             });
 
-            adapter = new DriveInAdapter(Visitors.this, driveIns, 1);
+            ArrayList<DriveIn> newdriveIns = new ArrayList<DriveIn>();
+
+            for (DriveIn d : driveIns) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(d.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+                Log.d(TAG, "onPostExecute: Select Day " + selectCal.get(Calendar.DAY_OF_YEAR) + " Entry Day" + entryCal.get(Calendar.DAY_OF_YEAR));
+
+                if (isSameDay(selectCal, entryCal)) {
+                    Log.d(TAG, "onPostExecute: " + d.getName());
+
+                    newdriveIns.add(d);
+                }
+            }
+
+            adapter = new DriveInAdapter(Visitors.this, newdriveIns, 1);
             Log.d(TAG, "Items Desc" + driveIns.get(0).getEntryTime().toString());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -443,11 +546,85 @@ public class Visitors extends AppCompatActivity {
                 ;
             });
 
-            adapter = new DriveInAdapter(Visitors.this, walkIns, 1);
+            ArrayList<DriveIn> newWalkIns = new ArrayList<DriveIn>();
+
+            for (DriveIn d : walkIns) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(d.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+                Log.d(TAG, "onPostExecute: Select Day " + selectCal.get(Calendar.DAY_OF_YEAR) + " Entry Day" + entryCal.get(Calendar.DAY_OF_YEAR));
+
+                if (isSameDay(selectCal, entryCal)) {
+                    Log.d(TAG, "onPostExecute: " + d.getName());
+
+                    newWalkIns.add(d);
+                }
+            }
+
+            adapter = new DriveInAdapter(Visitors.this, newWalkIns, 1);
             Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime().toString());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();
+        } else if (residents.size() > 0) {
+            Collections.sort(residents, new Comparator<Resident>() {
+                public int compare(Resident o1, Resident o2) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    try {
+                        Date entryTimeOne = format.parse(o1.getEntryTime());
+                        Date entryTimeTwo = format.parse(o2.getEntryTime());
+
+                        if (entryTimeOne == null || entryTimeTwo == null)
+                            return 0;
+                        return o2.getEntryTime().compareTo(o1.getEntryTime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return 0;
+
+                }
+
+                ;
+            });
+
+            ArrayList<Resident> newresidentsList = new ArrayList<Resident>();
+
+            for (Resident resident : residents) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(resident.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+                Log.d(TAG, "onPostExecute: Select Day " + selectCal.get(Calendar.DAY_OF_YEAR) + " Entry Day" + entryCal.get(Calendar.DAY_OF_YEAR));
+
+                if (isSameDay(selectCal, entryCal)) {
+                    Log.d(TAG, "onPostExecute: " + resident.getName());
+
+                    newresidentsList.add(resident);
+                }
+            }
+
+            adapter = new DriveInAdapter(Visitors.this, newresidentsList);
+            Log.d(TAG, "Items Desc" + residents.get(0).getEntryTime().toString());
+            lv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            adapter.reloadData();
+
+
         }
 
     }
@@ -457,10 +634,25 @@ public class Visitors extends AppCompatActivity {
         ArrayList<DriveIn> smsFilterList = new ArrayList<>();
         if (driveIns.size() > 0) {
             for (DriveIn driveIn : driveIns) {
-                if (driveIn.getName().equals(" ")) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(driveIn.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+
+                if (driveIn.getName().equals(" ") && isSameDay(selectCal, entryCal)) {
+
                     smsFilterList.add(driveIn);
                 }
             }
+
+
             adapter = new DriveInAdapter(Visitors.this, smsFilterList, 1);
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -468,7 +660,19 @@ public class Visitors extends AppCompatActivity {
         } else if (walkIns.size() > 0) {
 
             for (DriveIn driveIn : walkIns) {
-                if (driveIn.getName().equals(" ")) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(driveIn.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+
+                if (driveIn.getName().equals(" ") && isSameDay(selectCal, entryCal)) {
                     smsFilterList.add(driveIn);
                 }
             }
@@ -491,8 +695,31 @@ public class Visitors extends AppCompatActivity {
                     return s1.getName().compareToIgnoreCase(s2.getName());
                 }
             });
-            Log.d(TAG, "sortVisitorsAlphabetically: DriveIns"+driveIns.toString());
-            adapter = new DriveInAdapter(Visitors.this, driveIns, 1);
+
+            ArrayList<DriveIn> alphaFilterListA = new ArrayList<>();
+
+
+            for (DriveIn d : driveIns) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(d.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+
+                if (isSameDay(entryCal, selectCal)) {
+                    alphaFilterListA.add(d);
+                }
+            }
+
+
+            Log.d(TAG, "sortVisitorsAlphabetically: DriveIns" + driveIns.toString());
+            adapter = new DriveInAdapter(Visitors.this, alphaFilterListA, 1);
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();
@@ -504,12 +731,44 @@ public class Visitors extends AppCompatActivity {
                     return s1.getName().compareToIgnoreCase(s2.getName());
                 }
             });
-            Log.d(TAG, "sortVisitorsAlphabetically: WalkIns"+walkIns.toString());
-            adapter = new DriveInAdapter(Visitors.this, walkIns, 1);
+
+            ArrayList<DriveIn> alphaFilterListA = new ArrayList<>();
+
+
+            for (DriveIn d : driveIns) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(d.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+
+                if (isSameDay(entryCal, selectCal)) {
+                    alphaFilterListA.add(d);
+                }
+            }
+
+
+            Log.d(TAG, "sortVisitorsAlphabetically: WalkIns" + alphaFilterListA.toString());
+            adapter = new DriveInAdapter(Visitors.this, alphaFilterListA, 1);
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();
         }
+    }
+
+    public static boolean isSameDay(Calendar cal1, Calendar cal2) {
+        if (cal1 == null || cal2 == null) {
+            throw new IllegalArgumentException("The dates must not be null");
+        }
+        return (cal1.get(Calendar.ERA) == cal2.get(Calendar.ERA) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
 
 }

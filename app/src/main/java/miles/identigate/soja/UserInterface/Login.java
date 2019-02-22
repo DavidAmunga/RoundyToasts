@@ -181,7 +181,7 @@ public class Login extends AppCompatActivity {
     }
     private void logUser() {
         // You can call any combination of these three methods
-         Crashlytics.setUserIdentifier(preferences.getId());
+        Crashlytics.setUserIdentifier(preferences.getId());
          Crashlytics.setUserEmail(preferences.getDeviceId());
          Crashlytics.setUserName(preferences.getName());
     }

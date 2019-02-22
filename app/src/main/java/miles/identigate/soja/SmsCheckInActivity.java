@@ -444,10 +444,18 @@ public class SmsCheckInActivity extends AppCompatActivity {
                             confirmResultHandler(result);
                             Log.d(TAG, "onPostExecute: " + result);
                         } else {
-                            Toast.makeText(SmsCheckInActivity.this, "Error" + result, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SmsCheckInActivity.this, "Ooops! Please try again!", Toast.LENGTH_SHORT).show();
+
+                            btnRecord.setEnabled(true);
+                            btnRecord.setText("RECORD");
+                            btnConfirm.setEnabled(true);
+                            btnConfirm.setText("SEND VERIFICATION CODE");
+
+//                            Toast.makeText(SmsCheckInActivity.this, resultText, Toast.LENGTH_SHORT).show();
                             //TODO remove this.Temporary workaround
 //                            recordOffline();
 //                            parseResult();
+
                             Log.d(TAG, "onPostExecute: " + result);
 
                         }
@@ -644,6 +652,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                         }
                                     })
                                     .show();
+                            Toast.makeText(SmsCheckInActivity.this, result, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         new MaterialDialog.Builder(SmsCheckInActivity.this)

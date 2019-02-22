@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,151 +7,169 @@
     tools:context="miles.identigate.soja.AdminSettingsActivity">
 
     <include layout="@layout/toolbar" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="vertical"
+            android:layout_height="match_parent"
             android:animateLayoutChanges="true"
-            android:padding="20dp"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Select Server"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
+
             <RadioGroup
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <RadioButton android:id="@+id/main"
+
+                <RadioButton
+                    android:id="@+id/main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:checked="true"
-                    android:text="Main Server: soja.co.ke"
-                    android:onClick="onRadioButtonClicked"/>
+                    android:onClick="onRadioButtonClicked"
+                    android:text="Main Server: soja.co.ke" />
+
                 <RadioButton
                     android:id="@+id/custom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Custom Server"
                     android:layout_margin="5dp"
-                    android:onClick="onRadioButtonClicked"/>
+                    android:onClick="onRadioButtonClicked"
+                    android:text="Custom Server" />
+
                 <android.support.v7.widget.AppCompatEditText
-                    android:layout_width="match_parent"
                     android:id="@+id/custom_ip"
-                    android:maxLines="1"
-                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:maxLines="1"
                     android:text="http://"
-                    android:layout_height="wrap_content" />
+                    android:visibility="visible" />
             </RadioGroup>
+
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Other Settings"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
                 <Switch
                     android:id="@+id/printer"
-                    android:checked="true"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Print Visitors Slips"
-                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="true"
                     android:gravity="left"
-                    />
+                    android:padding="10dp"
+                    android:text="Print Visitors Slips" />
+
                 <Switch
                     android:id="@+id/phone"
-                    android:checked="true"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Record Phone Number"
-                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="true"
                     android:gravity="left"
-                    />
+                    android:padding="10dp"
+                    android:text="Record Phone Number" />
+
                 <Switch
                     android:id="@+id/company"
-                    android:checked="false"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Record Company Name"
-                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="false"
                     android:gravity="left"
-                    />
+                    android:padding="10dp"
+                    android:text="Record Company Name" />
+
+                <Switch
+                    android:id="@+id/scan_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="false"
+                    android:gravity="left"
+                    android:visibility="gone"
+                    android:padding="10dp"
+                    android:text="Record ID Photo" />
+
                 <Switch
                     android:id="@+id/host"
-                    android:checked="true"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Select host from list"
-                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="true"
                     android:gravity="left"
-                    />
+                    android:padding="10dp"
+                    android:text="Select host from list" />
+
                 <Switch
                     android:id="@+id/fingerprints"
-                    android:checked="false"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Scan &amp; read Fingerprints"
-                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="false"
                     android:gravity="left"
-                    />
+                    android:padding="10dp"
+                    android:text="Scan &amp; read Fingerprints" />
+
                 <Switch
                     android:id="@+id/sms"
-                    android:checked="false"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Check In using SMS"
-                    android:padding="10dp"
+                    android:layout_gravity="center_horizontal"
+                    android:checked="false"
                     android:gravity="left"
-                    />
+                    android:padding="10dp"
+                    android:text="Check In using SMS" />
 
 
             </LinearLayout>
+
             <Button
-                android:layout_gravity="center"
+                android:id="@+id/set"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_margin="30dp"
-                android:textSize="20sp"
+                android:background="@color/colorPrimary"
                 android:text="SET"
                 android:textColor="@color/primary_text"
-                android:background="@color/colorPrimary"
-                android:id="@+id/set"
-                />
+                android:textSize="20sp" />
+
             <miles.identigate.soja.Font.OpenSansBold
+                android:id="@+id/version_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:id="@+id/version_number"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5.0dip"
-                android:text="Version Code"/>
-
+                android:text="Version Code"
+                android:textSize="16sp" />
 
 
         </LinearLayout>
     </ScrollView>
-
-
 
 
 </RelativeLayout>

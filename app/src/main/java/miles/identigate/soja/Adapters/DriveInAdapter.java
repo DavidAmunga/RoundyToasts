@@ -144,15 +144,15 @@ public class DriveInAdapter extends BaseAdapter {
         if (type.equals("DRIVE")) {
             Log.d(TAG, "Name: " + driveIns.get(position).getName());
 
-            name.setText(!driveIns.get(position).getName().equals(" ") ? driveIns.get(position).getName() : "SMS Login");
+            name.setText(!driveIns.get(position).getName().equals(" ")
+                    && !driveIns.get(position).getName().equals("null") ? driveIns.get(position).getName() : "SMS Login");
             id.setText(driveIns.get(position).getCarNumber());
             entry_date.setText(formatDate(driveIns.get(position).getEntryTime(), "date"));
-            entry_time.setText(formatDate(driveIns.get(position).getEntryTime(),"time"));
+            entry_time.setText(formatDate(driveIns.get(position).getEntryTime(), "time"));
 
 
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         } else if (type.equals("WALK")) {
-            Log.d(TAG, "getView: "+walkIns.get(position).getName());
             name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : "SMS Login");
             id.setText("ID: " + walkIns.get(position).getNationalId());
             entry_date.setText(formatDate(walkIns.get(position).getEntryTime(), "date"));
@@ -161,13 +161,13 @@ public class DriveInAdapter extends BaseAdapter {
         } else if (type.equals("PROVIDER")) {
             name.setText(serviceProviderModels.get(position).getCompanyName());
             id.setText("ID: " + serviceProviderModels.get(position).getNationalId());
-            entry_date.setText("ENTRY: " + formatDate(serviceProviderModels.get(position).getEntryTime(),"date"));
-            entry_time.setText("ENTRY: " + formatDate(serviceProviderModels.get(position).getEntryTime(),"time"));
+            entry_date.setText("ENTRY: " + formatDate(serviceProviderModels.get(position).getEntryTime(), "date"));
+            entry_time.setText("ENTRY: " + formatDate(serviceProviderModels.get(position).getEntryTime(), "time"));
         } else if (type.equals("RESIDENT")) {
             name.setText(residents.get(position).getName());
             id.setText("ID: " + residents.get(position).getNationalId());
-            entry_date.setVisibility(View.GONE);
-            entry_time.setVisibility(View.GONE);
+            entry_time.setText(formatDate(residents.get(position).getEntryTime(), "time"));
+
         }
         return view;
     }

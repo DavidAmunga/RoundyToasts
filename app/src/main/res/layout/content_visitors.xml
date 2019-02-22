@@ -11,49 +11,68 @@
 
 
     <LinearLayout
+        android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:elevation="5dp"
-        android:orientation="horizontal"
-        android:id="@+id/search_layout"
-        android:weightSum="1"
-        >
-        <EditText
-            android:id="@+id/searchbox"
-            android:layout_width="0dp"
-            android:layout_weight="0.9"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <EditText
+                android:id="@+id/searchbox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:background="@color/colorPrimary"
+                android:drawableLeft="@drawable/ic_search_dark"
+                android:drawablePadding="20dp"
+                android:hint="Search Visitors"
+                android:inputType="text"
+                android:paddingLeft="25dp"
+                android:paddingTop="15dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="15dp"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="#E1E1E1"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/ic_filter"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.1"
+                app:srcCompat="@drawable/ic_filter_list" />
+
+        </LinearLayout>
+
+        <devs.mulham.horizontalcalendar.HorizontalCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:drawableLeft="@drawable/ic_search_dark"
-            android:drawablePadding="20dp"
-            android:hint="Search Visitors"
-            android:inputType="text"
-            android:paddingLeft="25dp"
-            android:paddingTop="15dp"
-            android:paddingRight="15dp"
-            android:paddingBottom="15dp"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textColorHint="#E1E1E1"
-            android:textSize="16sp" />
+            app:selectorColor="@color/white"
+            app:textColorNormal="#f5f5f5"
+            app:textColorSelected="#FFFF"
+            app:textSizeDayName="12sp"
+            app:textSizeDayNumber="14sp"
+            app:textSizeMonthName="12sp" />
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_weight="0.1"
-            android:id="@+id/ic_filter"
-            android:src="@drawable/ic_filter_list"
-            android:layout_height="50dp" />
 
     </LinearLayout>
-
 
 
     <ListView
         android:id="@+id/visitors"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/search_layout"
+        android:layout_below="@id/search_layout"
         android:fastScrollAlwaysVisible="true"
         android:fastScrollEnabled="true"
         android:visibility="gone" />
@@ -82,9 +101,9 @@
             app:srcCompat="@drawable/ic_ghost" />
 
         <miles.identigate.soja.Font.OpenSansLight
+            android:id="@+id/info_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/info_message"
             android:layout_marginTop="15dp"
             android:text="There are currently no logs available."
             android:textSize="20sp" />

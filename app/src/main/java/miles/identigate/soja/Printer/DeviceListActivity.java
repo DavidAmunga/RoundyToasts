@@ -216,6 +216,7 @@ public class DeviceListActivity extends Activity {
                 {
                     return;
                 }
+                Log.d(TAG, "Bluetooth Address: " + toothAddress);
                 thread = new Thread(new Runnable() {
 
                     @Override

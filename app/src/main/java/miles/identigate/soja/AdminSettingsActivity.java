@@ -23,6 +23,7 @@ import android.widget.Toast;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
+import miles.identigate.soja.UserInterface.Login;
 
 public class AdminSettingsActivity extends SojaActivity {
     static {
@@ -43,6 +44,9 @@ public class AdminSettingsActivity extends SojaActivity {
     Switch host;
     Switch fingerprints;
     Switch sms;
+    Switch scan_photo;
+
+    boolean refresh = false;
 
 
     TextView versionCode;
@@ -69,6 +73,7 @@ public class AdminSettingsActivity extends SojaActivity {
 
         printerSwitch = findViewById(R.id.printer);
         phoneSwitch = findViewById(R.id.phone);
+        scan_photo = findViewById(R.id.scan_photo);
         companySwitch = findViewById(R.id.company);
         host = findViewById(R.id.host);
         fingerprints = findViewById(R.id.fingerprints);
@@ -81,21 +86,20 @@ public class AdminSettingsActivity extends SojaActivity {
         host.setChecked(preferences.isSelectHostsEnabled());
         fingerprints.setChecked(preferences.isFingerprintsEnabled());
         sms.setChecked(preferences.isSMSCheckInEnabled());
-
+        scan_photo.setChecked(preferences.isScanPicture());
 
         fingerprints.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    if(getDeviceName().contains("Ruggbo")){
-                    }else{
+                if (isChecked) {
+                    if (getDeviceName().contains("Ruggbo")) {
+                    } else {
                         Toast.makeText(AdminSettingsActivity.this, "Not a Fingerprint Device", Toast.LENGTH_SHORT).show();
                         fingerprints.setChecked(false);
                     }
                 }
             }
         });
-
 
 
 //        Get Version Name
@@ -131,6 +135,7 @@ public class AdminSettingsActivity extends SojaActivity {
                 preferences.setSelectHostsEnabled(host.isChecked());
                 preferences.setFingerprintsEnabled(fingerprints.isChecked());
                 preferences.setSMSCheckInEnabled(sms.isChecked());
+                preferences.setScanPicture(scan_photo.isChecked());
                 if (customServer) {
                     String ip = custom_ip.getText().toString().trim();
                     if (ip.isEmpty()) {
@@ -151,8 +156,14 @@ public class AdminSettingsActivity extends SojaActivity {
                     preferences.setBaseURL("https://soja.co.ke/soja-rest/index.php/api/visits/");
                 }
                 Toast.makeText(getApplicationContext(), "Settings updated", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(AdminSettingsActivity.this, Dashboard.class));
-                finish();
+                if (!refresh) {
+                    startActivity(new Intent(AdminSettingsActivity.this, Dashboard.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(AdminSettingsActivity.this, Login.class));
+                    finish();
+                }
+
             }
         });
 
@@ -164,12 +175,14 @@ public class AdminSettingsActivity extends SojaActivity {
             case R.id.main:
                 if (checked)
                     customServer = false;
+                refresh = true;
                 break;
             case R.id.custom:
                 if (checked) {
                     customServer = true;
                     if (custom_ip.getVisibility() != View.VISIBLE)
                         custom_ip.setVisibility(View.VISIBLE);
+                    refresh = true;
                 }
 
                 break;
@@ -187,9 +200,9 @@ public class AdminSettingsActivity extends SojaActivity {
     }
 
 
-
-
-    /** Returns the consumer friendly device name */
+    /**
+     * Returns the consumer friendly device name
+     */
     public static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;

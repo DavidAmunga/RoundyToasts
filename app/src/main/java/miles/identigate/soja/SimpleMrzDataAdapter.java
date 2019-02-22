@@ -57,6 +57,11 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
 //            Log.d(TAG, "Number: "+p.fieldType);
 //            Log.d(TAG, "getView: "+Constants.documentReaderResults.getTextFieldValueByType(p.fieldType,p.lcid));
 
+            Bitmap portrait = Constants.documentReaderResults.getGraphicFieldImageByType(eGraphicFieldType.GF_PORTRAIT);
+
+            if (portrait != null) {
+                Log.d(TAG, "getView: Available");
+            }
 
             textValue.setTextColor(Color.rgb(3, 140, 7));
 

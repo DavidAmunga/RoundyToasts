@@ -1,12 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" tools:context="miles.identigate.soja.Dashboard">
-    <item android:id="@+id/logout"
-        android:title="Log out"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="miles.identigate.soja.Dashboard">
+    <item
+        android:id="@+id/refresh"
         android:orderInCategory="100"
-        app:showAsAction="never" />
-    <item android:id="@+id/settings"
-        android:title="Settings"
+        android:title="Refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/settings"
         android:orderInCategory="200"
+        android:title="Settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/logout"
+        android:orderInCategory="300"
+        android:title="Log out"
+        app:showAsAction="never" />
+
 </menu>

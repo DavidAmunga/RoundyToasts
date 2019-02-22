@@ -55,12 +55,13 @@
             <miles.identigate.soja.Font.OpenSansBold
                 android:id="@+id/entry_time"
                 android:layout_width="match_parent"
-                android:textSize="18sp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="1:48 PM"
                 android:textColor="@color/white"
+                android:textSize="18sp"
                 android:textStyle="bold" />
+
             <miles.identigate.soja.Font.OpenSansRegular
                 android:id="@+id/entry_date"
                 android:layout_width="match_parent"
@@ -68,7 +69,8 @@
                 android:layout_gravity="center"
                 android:text="04 October 2018"
                 android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
 
