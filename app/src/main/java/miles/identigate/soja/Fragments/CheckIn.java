@@ -126,7 +126,7 @@ public class CheckIn extends Fragment {
         View view = inflater.inflate(R.layout.fragment_check_in, container, false);
 
 
-        ListView lv = (ListView) view.findViewById(R.id.options);
+        ListView lv = view.findViewById(R.id.options);
 
 
 

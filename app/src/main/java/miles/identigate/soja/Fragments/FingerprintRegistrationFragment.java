@@ -303,7 +303,7 @@ public class FingerprintRegistrationFragment extends DialogFragment {
             DatabaseHandler handler = new DatabaseHandler(getContext());
 
             SQLiteDatabase db = handler.getWritableDatabase();
-            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_PREMISE_RESIDENTS);
+            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
 
             db.execSQL(handler.CREATE_PREMISE_RESIDENTS_TABLE);
 

@@ -96,18 +96,18 @@ public class Dashboard extends SojaActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         handler=new DatabaseHandler(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         preferences=new Preferences(this);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         final Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/OpenSans-Semibold.ttf");
 
 
-        SmartTabLayout tabLayout = (SmartTabLayout) findViewById(R.id.tabs);
+        SmartTabLayout tabLayout = findViewById(R.id.tabs);
 //        Custom Font Tab
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -261,11 +261,11 @@ public class Dashboard extends SojaActivity {
 
 
                             SQLiteDatabase db = handler.getWritableDatabase();
-                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
-                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
-                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
-                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
-                            db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_PREMISE_RESIDENTS);
+                            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
+                            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_INCIDENT_TYPES);
+                            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_SERVICE_PROVIDERS_TYPES);
+                            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOUSES);
+                            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
 
                             SharedPreferences getPrefs = PreferenceManager
                                     .getDefaultSharedPreferences(getBaseContext());
@@ -406,11 +406,11 @@ public class Dashboard extends SojaActivity {
                 JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_VISITOR_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_INCIDENT_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_SERVICE_PROVIDERS_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_HOUSES);
-                db.execSQL("DROP TABLE IF EXISTS " + handler.TABLE_PREMISE_RESIDENTS);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_INCIDENT_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_SERVICE_PROVIDERS_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOUSES);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
 
                 db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
                 db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);

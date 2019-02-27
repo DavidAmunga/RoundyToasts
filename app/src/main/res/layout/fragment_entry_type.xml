@@ -34,7 +34,7 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="10dp"
             android:background="?android:selectableItemBackground"
-            app:srcCompat="@drawable/ic_scan_id" />
+            android:src="@drawable/ic_scan_id" />
 
         <miles.identigate.soja.Font.OpenSansBold
             android:layout_width="wrap_content"

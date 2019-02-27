@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="ID: 33166582"
+                android:visibility="gone"
                 android:textStyle="bold" />
         </LinearLayout>
 

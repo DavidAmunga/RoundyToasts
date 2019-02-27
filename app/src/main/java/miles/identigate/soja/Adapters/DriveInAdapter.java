@@ -145,7 +145,7 @@ public class DriveInAdapter extends BaseAdapter {
             Log.d(TAG, "Name: " + driveIns.get(position).getName());
 
             name.setText(!driveIns.get(position).getName().equals(" ")
-                    && !driveIns.get(position).getName().equals("null") ? driveIns.get(position).getName() : "SMS Login");
+                    && !driveIns.get(position).getName().equals("null") ? driveIns.get(position).getName() : driveIns.get(position).getNationalId());
             id.setText(driveIns.get(position).getCarNumber());
             entry_date.setText(formatDate(driveIns.get(position).getEntryTime(), "date"));
             entry_time.setText(formatDate(driveIns.get(position).getEntryTime(), "time"));
@@ -153,7 +153,7 @@ public class DriveInAdapter extends BaseAdapter {
 
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         } else if (type.equals("WALK")) {
-            name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : "SMS Login");
+            name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : walkIns.get(position).getNationalId());
             id.setText("ID: " + walkIns.get(position).getNationalId());
             entry_date.setText(formatDate(walkIns.get(position).getEntryTime(), "date"));
             entry_time.setText(formatDate(walkIns.get(position).getEntryTime(), "time"));

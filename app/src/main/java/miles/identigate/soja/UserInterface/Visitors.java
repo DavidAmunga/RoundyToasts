@@ -397,7 +397,6 @@ public class Visitors extends AppCompatActivity {
 
                                     }
 
-                                    ;
                                 });
                             }
                             if (driveIns.size() > 0) {
@@ -418,7 +417,6 @@ public class Visitors extends AppCompatActivity {
 
                                     }
 
-                                    ;
                                 });
                             }
                             if (residents.size() > 0) {
@@ -439,7 +437,6 @@ public class Visitors extends AppCompatActivity {
 
                                     }
 
-                                    ;
                                 });
                             }
 
@@ -492,7 +489,6 @@ public class Visitors extends AppCompatActivity {
 
                 }
 
-                ;
             });
 
             ArrayList<DriveIn> newdriveIns = new ArrayList<DriveIn>();
@@ -519,7 +515,7 @@ public class Visitors extends AppCompatActivity {
             }
 
             adapter = new DriveInAdapter(Visitors.this, newdriveIns, 1);
-            Log.d(TAG, "Items Desc" + driveIns.get(0).getEntryTime().toString());
+            Log.d(TAG, "Items Desc" + driveIns.get(0).getEntryTime());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();
@@ -543,7 +539,6 @@ public class Visitors extends AppCompatActivity {
 
                 }
 
-                ;
             });
 
             ArrayList<DriveIn> newWalkIns = new ArrayList<DriveIn>();
@@ -570,7 +565,7 @@ public class Visitors extends AppCompatActivity {
             }
 
             adapter = new DriveInAdapter(Visitors.this, newWalkIns, 1);
-            Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime().toString());
+            Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();
@@ -592,7 +587,6 @@ public class Visitors extends AppCompatActivity {
 
                 }
 
-                ;
             });
 
             ArrayList<Resident> newresidentsList = new ArrayList<Resident>();
@@ -619,7 +613,7 @@ public class Visitors extends AppCompatActivity {
             }
 
             adapter = new DriveInAdapter(Visitors.this, newresidentsList);
-            Log.d(TAG, "Items Desc" + residents.get(0).getEntryTime().toString());
+            Log.d(TAG, "Items Desc" + residents.get(0).getEntryTime());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();
@@ -677,7 +671,7 @@ public class Visitors extends AppCompatActivity {
                 }
             }
             adapter = new DriveInAdapter(Visitors.this, smsFilterList, 1);
-            Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime().toString());
+            Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             adapter.reloadData();

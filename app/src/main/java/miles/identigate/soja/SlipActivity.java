@@ -142,20 +142,7 @@ public class SlipActivity extends SojaActivity {
 
                 strIsConnected=data.getExtras().getString("is_connected");
                 if (strIsConnected.equals("NO")) {
-                    if (dialog.isShowing()) {
-                        try {
-                            HPRTPrinterHelper.PortOpen(data.getExtras().getString("BTAddress"));
-
-                            String PrinterName = "MPT-II";
-                            HPRTPrinter = new HPRTPrinterHelper(SlipActivity.this, PrinterName);
-                            CapturePrinterFunction();
-                            GetPrinterProperty();
-                            PrintSlip();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    if (dialog.isShowing())
                         dialog.dismiss();
                     new MaterialDialog.Builder(SlipActivity.this)
                             .title("Bluetooth Disabled")
@@ -180,6 +167,7 @@ public class SlipActivity extends SojaActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
+
     private void setupBT(){
         if (ContextCompat.checkSelfPermission(SlipActivity.this,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION)
