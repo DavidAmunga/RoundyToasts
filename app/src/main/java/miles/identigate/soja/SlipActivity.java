@@ -268,8 +268,8 @@ public class SlipActivity extends SojaActivity {
             PAct.AfterPrintAction();
             if (dialog.isShowing())
                 dialog.dismiss();
-            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-            finish();
+//            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+//            finish();
             showSuccess();
         } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> PrintSampleReceipt ")).append(e.getMessage()).toString());
