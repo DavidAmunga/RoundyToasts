@@ -37,30 +37,64 @@ public class CheckOut extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences= new Preferences(getActivity());
+        preferences = new Preferences(getActivity());
 
         ArrayList<String> checkoutTitles = new ArrayList<>();
-        checkoutTitles.add("Express Checkout");
-        checkoutTitles.add("Drive Out");
+
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutTitles.add("Express Checkout");
+        }
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutTitles.add("Drive Out");
+        }
+
         checkoutTitles.add("Walk Out");
-        checkoutTitles.add("Residents");
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutTitles.add("Residents");
+        }
+
         if (preferences.isFingerprintsEnabled())
             checkoutTitles.add("Biometric Checkout");
 
 
-        ArrayList<String> checkoutDescriptions =  new ArrayList<>();
-        checkoutDescriptions.add("Scan QR to check out visitor");
-        checkoutDescriptions.add("Check out a driving visitor");
-        checkoutDescriptions.add("Check out a visitor on foot");
+        ArrayList<String> checkoutDescriptions = new ArrayList<>();
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutDescriptions.add("Scan QR to check out visitor");
+        }
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutDescriptions.add("Check out a driving visitor");
+        }
+        if (preferences.getBaseURL().contains("casuals")) {
+            checkoutDescriptions.add("Check out a supervisor on foot");
+        } else {
+            checkoutDescriptions.add("Check out a visitor on foot");
+
+        }
         checkoutDescriptions.add("Check out a resident");
         if (preferences.isFingerprintsEnabled())
             checkoutDescriptions.add("Check out using biometrics");
 
         ArrayList<Integer> checkoutDrawables = new ArrayList<>();
-        checkoutDrawables.add(R.drawable.ic_qr_code);
-        checkoutDrawables.add(R.drawable.ic_car);
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutDrawables.add(R.drawable.ic_qr_code);
+        }
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutDrawables.add(R.drawable.ic_car);
+        }
+
         checkoutDrawables.add(R.drawable.ic_walk);
-        checkoutDrawables.add(R.drawable.ic_resident);
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkoutDrawables.add(R.drawable.ic_resident);
+        }
+
         if (preferences.isFingerprintsEnabled())
             checkoutDrawables.add(R.drawable.fingerprint);
 
@@ -70,36 +104,40 @@ public class CheckOut extends ListFragment {
         Object[] b = checkoutDescriptions.toArray();
         descriptions = Arrays.copyOf(b, b.length, String[].class);
 
-        Object[] c  = checkoutDrawables.toArray();
+        Object[] c = checkoutDrawables.toArray();
         drawables = Arrays.copyOf(c, c.length, Integer[].class);
 
-        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables,"checkout");
+        CheckInAdapter checkInAdapter = new CheckInAdapter(getActivity(), titles, descriptions, drawables, "checkout");
         setListAdapter(checkInAdapter);
 
     }
+
     @Override
-    public void onListItemClick (ListView l, View v, int position, long id){
-        switch (position){
-            case 0:
+    public void onListItemClick(ListView l, View v, int position, long id) {
+
+        String item = l.getItemAtPosition(position).toString();
+
+        switch (item) {
+            case "Express Checkout":
                 startActivity(new Intent(getActivity().getApplicationContext(), ExpressCheckoutActivity.class));
                 break;
-            case 1:
-                Intent driveOut=new Intent(getActivity().getApplicationContext(), Visitors.class);
+            case "Drive Out":
+                Intent driveOut = new Intent(getActivity().getApplicationContext(), Visitors.class);
                 driveOut.putExtra("TYPE", "DRIVE");
                 startActivity(driveOut);
                 break;
-            case 2:
-                Intent walkOut=new Intent(getActivity().getApplicationContext(), Visitors.class);
-                walkOut.putExtra("TYPE","WALK");
+            case "Walk Out":
+                Intent walkOut = new Intent(getActivity().getApplicationContext(), Visitors.class);
+                walkOut.putExtra("TYPE", "WALK");
                 startActivity(walkOut);
                 break;
-            case 3:
-                Intent resident=new Intent(getActivity().getApplicationContext(), Visitors.class);
-                resident.putExtra("TYPE","RESIDENTS");
+            case "Residents":
+                Intent resident = new Intent(getActivity().getApplicationContext(), Visitors.class);
+                resident.putExtra("TYPE", "RESIDENTS");
                 startActivity(resident);
                 break;
-            case 4:
-                if (preferences.isFingerprintsEnabled()){
+            case "Biometric Checkout":
+                if (preferences.isFingerprintsEnabled()) {
                     Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
                     fingerPrint.putExtra("CHECKOUT", true);
                     startActivity(fingerPrint);

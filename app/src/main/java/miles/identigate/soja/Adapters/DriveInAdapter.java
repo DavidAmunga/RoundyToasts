@@ -154,7 +154,8 @@ public class DriveInAdapter extends BaseAdapter {
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         } else if (type.equals("WALK")) {
             name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : walkIns.get(position).getNationalId());
-            id.setText("ID: " + walkIns.get(position).getNationalId());
+            id.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getNationalId() : "SMS Login");
+
             entry_date.setText(formatDate(walkIns.get(position).getEntryTime(), "date"));
             entry_time.setText(formatDate(walkIns.get(position).getEntryTime(), "time"));
 
@@ -204,6 +205,7 @@ public class DriveInAdapter extends BaseAdapter {
     }
 
     private void search(String charText) {
+        Log.d(TAG, "search: " + type);
         if (type.equals("DRIVE")) {
             for (DriveIn wp : driveInsSearch) {
                 if (wp.getCarNumber().toLowerCase(Locale.getDefault()).contains(charText) ||

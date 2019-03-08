@@ -289,7 +289,7 @@ public class RecordDriveIn extends SojaActivity {
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
                             "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
-                            (preferences.isCompanyNameEnabled() && companyNameEdittext.getText().toString().equals("") ?
+                            (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
                                     ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
                             "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
                             "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +

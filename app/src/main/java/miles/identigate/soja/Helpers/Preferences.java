@@ -25,6 +25,19 @@ public class Preferences {
         editor.putString("base_url", url);
         editor.commit();
     }
+
+    public String getResidentsURL() {
+        String residents_url = settings.getString("residents_url", "http://test.soja.co.ke/soja-rest/index.php/api/residents/");
+        Constants.URL = residents_url;
+        return residents_url;
+    }
+
+    public void setResidentsURL(String url) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("residents_url", url);
+        editor.commit();
+    }
+
     public String getToken() {
         return settings.getString("token", "");
     }
@@ -60,6 +73,17 @@ public class Preferences {
         editor.putString("id", id);
         editor.commit();
     }
+
+    public String getSentryType() {
+        return settings.getString("sojaType", "");
+    }
+
+    public void setSentryType(String type) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("sojaType", type);
+        editor.commit();
+    }
+
     public String getPremise() {
         return settings.getString("premise", "");
     }

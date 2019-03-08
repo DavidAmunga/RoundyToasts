@@ -10,9 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -23,8 +21,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,25 +31,20 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.journeyapps.barcodescanner.Util;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import miles.identigate.soja.Fragments.CheckIn;
 import miles.identigate.soja.Fragments.CheckOut;
 import miles.identigate.soja.Fragments.Logs;
 import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Models.PremiseResident;
 import miles.identigate.soja.Services.SyncService;
 import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
@@ -260,6 +251,7 @@ public class Dashboard extends SojaActivity {
                             preferences.setFingerprintsEnabled(false);
 
 
+
                             SQLiteDatabase db = handler.getWritableDatabase();
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_INCIDENT_TYPES);
@@ -383,7 +375,15 @@ public class Dashboard extends SojaActivity {
             visitorResult=NetworkHandler.GET(preferences.getBaseURL()+"visitor-types");
             providerResult=NetworkHandler.GET(preferences.getBaseURL()+"service-providers");
             incidentsResult=NetworkHandler.GET(preferences.getBaseURL()+"incident-types");
-            houseResult=NetworkHandler.GET(preferences.getBaseURL()+"houses-blocks/zone/"+preferences.getPremiseZoneId());
+
+
+//            TODO : Change Endpoint
+            if (preferences.getBaseURL().contains("casuals")) {
+                houseResult = NetworkHandler.GET(preferences.getBaseURL() + "active_events");
+            } else {
+                houseResult = NetworkHandler.GET(preferences.getBaseURL() + "houses-blocks/zone/" + preferences.getPremiseZoneId());
+            }
+
             premiseResidentResult =  NetworkHandler.GET(preferences.getBaseURL() + "houses-residents/?premise=" + preferences.getPremise());
             return "success";
         }

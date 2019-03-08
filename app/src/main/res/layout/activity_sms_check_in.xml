@@ -173,6 +173,29 @@
 
                 </LinearLayout>
 
+
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Enter Company Name"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/companyNameEdittext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/border"
+                    android:ems="10"
+                    android:hint="Enter company name"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null" />
+
                 <EditText
                     android:id="@+id/edtHost"
                     android:layout_width="fill_parent"
@@ -295,6 +318,7 @@
 
 
                 </LinearLayout>
+
             </LinearLayout>
 
             <Button

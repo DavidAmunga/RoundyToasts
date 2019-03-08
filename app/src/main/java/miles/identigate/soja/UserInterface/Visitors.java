@@ -22,8 +22,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.CollectionUtils;
-import com.google.android.gms.common.util.Predicate;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -564,7 +562,7 @@ public class Visitors extends AppCompatActivity {
                 }
             }
 
-            adapter = new DriveInAdapter(Visitors.this, newWalkIns, 1);
+            adapter = new DriveInAdapter(Visitors.this, newWalkIns, "type");
             Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime());
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();

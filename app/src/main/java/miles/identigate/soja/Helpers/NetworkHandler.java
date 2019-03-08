@@ -1,6 +1,8 @@
 package miles.identigate.soja.Helpers;
 
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -13,6 +15,8 @@ import java.net.URL;
  * Created by myles on 9/26/15.
  */
 public class NetworkHandler {
+
+    private static final String TAG = "NetworkHandler";
 
 
     public static String executePost(String targetURL, String urlParameters) {
@@ -60,6 +64,7 @@ public class NetworkHandler {
                 response.append('\r');
             }
             rd.close();
+            Log.d(TAG, "executePost: " + response.toString());
             return response.toString();
 
         } catch (Exception e) {

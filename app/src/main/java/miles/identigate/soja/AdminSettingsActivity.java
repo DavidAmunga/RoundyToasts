@@ -88,6 +88,11 @@ public class AdminSettingsActivity extends SojaActivity {
         sms.setChecked(preferences.isSMSCheckInEnabled());
         scan_photo.setChecked(preferences.isScanPicture());
 
+
+        if (preferences.getBaseURL().contains("casuals")) {
+            sms.setVisibility(View.GONE);
+        }
+
         fingerprints.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

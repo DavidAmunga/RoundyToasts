@@ -35,11 +35,11 @@
                 android:padding="10dp">
 
                 <LinearLayout
+                    android:id="@+id/lin_nm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:id="@+id/lin_nm"
                     android:weightSum="1">
 
                     <miles.identigate.soja.Font.OpenSansRegular
@@ -61,18 +61,18 @@
 
 
                 <LinearLayout
+                    android:id="@+id/lin_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:id="@+id/lin_id"
                     android:weightSum="1">
 
                     <miles.identigate.soja.Font.OpenSansRegular
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_weight=".5"
+                        android:layout_weight=".3"
                         android:text="ID Number"
                         android:textStyle="bold" />
 
@@ -80,9 +80,9 @@
                         android:id="@+id/idNumber"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight=".5"
+                        android:layout_weight=".7"
                         android:text="ID: 33166582"
+                        android:textAlignment="textEnd"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -97,7 +97,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_weight=".5"
+                        android:layout_weight=".3"
                         android:text="Entry Time"
                         android:textStyle="bold" />
 
@@ -105,9 +105,9 @@
                         android:id="@+id/entry"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight=".5"
+                        android:layout_weight=".7"
                         android:text="08: 50 AM"
+                        android:textAlignment="textEnd"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -122,7 +122,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_weight=".5"
+                        android:layout_weight=".3"
                         android:text="Car"
                         android:textStyle="bold" />
 
@@ -130,8 +130,8 @@
                         android:id="@+id/car"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight=".5"
+                        android:textAlignment="textEnd"
+                        android:layout_weight=".7"
                         android:text="ID: 33166582"
                         android:textStyle="bold" />
                 </LinearLayout>

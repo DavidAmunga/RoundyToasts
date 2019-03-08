@@ -1,11 +1,9 @@
 package miles.identigate.soja;
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
+import android.bluetooth.BluetoothAdapter;;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -54,22 +52,21 @@ public class SlipActivity extends SojaActivity {
     int visit_id = 0;
     private String ConnectType = "Bluetooth";
 
-    Preferences preferences;
 
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
         setContentView(R.layout.activity_slip);
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Print Slip");
 
-        ok = findViewById(R.id.ok);
-        cancel = findViewById(R.id.cancel);
-        slip = findViewById(R.id.title);
+        ok = (ImageView) findViewById(R.id.ok);
+        cancel = (ImageView) findViewById(R.id.cancel);
+        slip = (TextView) findViewById(R.id.title);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -91,6 +88,7 @@ public class SlipActivity extends SojaActivity {
             if (!title.isEmpty()) {
                 slip.setText(title);
             }
+
         }
 
 
@@ -104,8 +102,6 @@ public class SlipActivity extends SojaActivity {
             public void onClick(View view) {
                 dialog.show();
                 //TODO: Print
-//
-
                 doPrint();
             }
         });
@@ -120,27 +116,26 @@ public class SlipActivity extends SojaActivity {
 
     }
 
-    private void doPrint(){
+    private void doPrint() {
         setupBT();
         if (!dialog.isShowing())
             dialog.show();
-        String PrinterName="MPT-II";
-        HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
+        String PrinterName = "MPT-II";
+        HPRTPrinter = new HPRTPrinterHelper(SlipActivity.this, PrinterName);
         CapturePrinterFunction();
         GetPrinterProperty();
         PrintSlip();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String strIsConnected;
         if (data == null || data.getExtras() == null)
             return;
-        switch (requestCode){
+        switch (requestCode) {
             case HPRTPrinterHelper.ACTIVITY_CONNECT_BT:
 
-                strIsConnected=data.getExtras().getString("is_connected");
+                strIsConnected = data.getExtras().getString("is_connected");
                 if (strIsConnected.equals("NO")) {
                     if (dialog.isShowing())
                         dialog.dismiss();
@@ -152,8 +147,8 @@ public class SlipActivity extends SojaActivity {
                 } else {
                     if (!dialog.isShowing())
                         dialog.show();
-                    String PrinterName="MPT-II";
-                    HPRTPrinter=new HPRTPrinterHelper(SlipActivity.this,PrinterName);
+                    String PrinterName = "MPT-II";
+                    HPRTPrinter = new HPRTPrinterHelper(SlipActivity.this, PrinterName);
                     CapturePrinterFunction();
                     GetPrinterProperty();
                     PrintSlip();
@@ -168,7 +163,7 @@ public class SlipActivity extends SojaActivity {
 
     }
 
-    private void setupBT(){
+    private void setupBT() {
         if (ContextCompat.checkSelfPermission(SlipActivity.this,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -177,12 +172,11 @@ public class SlipActivity extends SojaActivity {
                     new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_ENABLE_LOCATION);
         } else {
-            Intent serverIntent = new Intent(SlipActivity.this,DeviceListActivity.class);
+            Intent serverIntent = new Intent(SlipActivity.this, DeviceListActivity.class);
             startActivityForResult(serverIntent, HPRTPrinterHelper.ACTIVITY_CONNECT_BT);
             return;
         }
     }
-
 
     private void PrintSlip() {
         Log.d(TAG, "PrintSlip: Start");
@@ -268,14 +262,15 @@ public class SlipActivity extends SojaActivity {
             PAct.AfterPrintAction();
             if (dialog.isShowing())
                 dialog.dismiss();
-//            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-//            finish();
             showSuccess();
+            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+            finish();
         } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> PrintSampleReceipt ")).append(e.getMessage()).toString());
         }
     }
-    void showSuccess(){
+
+    void showSuccess() {
         dialog.dismiss();
         LocalBroadcastManager.getInstance(SlipActivity.this).sendBroadcast(new Intent(Constants.RECORDED_VISITOR));
         dialog = new MaterialDialog.Builder(this)
@@ -291,135 +286,125 @@ public class SlipActivity extends SojaActivity {
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
                         dialog.dismiss();
-                        startActivity(new Intent(getApplicationContext(),Dashboard.class));
+                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
                         finish();
                     }
+
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         super.onPositive(dialog);
                         dialog.dismiss();
-                        startActivity(new Intent(getApplicationContext(),Dashboard.class));
+                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
                         finish();
                     }
                 })
                 .build();
-        View view=dialog.getCustomView();
-        TextView messageText = view.findViewById(R.id.message);
+        View view = dialog.getCustomView();
+        TextView messageText = (TextView) view.findViewById(R.id.message);
         messageText.setText("Visitor has been successfully recorded.");
         dialog.show();
     }
-    private void CapturePrinterFunction()
-    {
-        try
-        {
-            int[] propType=new int[1];
-            byte[] Value=new byte[500];
-            int[] DataLen=new int[1];
-            String strValue="";
-            boolean isCheck=false;
 
-            int iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value,DataLen);
-            if(iRtn!=0)
-                return;
-            PrinterProperty.Buzzer = (Value[0] != 0);
+    private void CapturePrinterFunction() {
+        try {
+            int[] propType = new int[1];
+            byte[] Value = new byte[500];
+            int[] DataLen = new int[1];
+            String strValue = "";
+            boolean isCheck = false;
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT, propType, Value,DataLen);
-            if(iRtn!=0)
+            int iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Cut = (Value[0] != 0);
+            PrinterProperty.Buzzer = (Value[0] == 0 ? false : true);
+
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT, propType, Value, DataLen);
+            if (iRtn != 0)
+                return;
+            PrinterProperty.Cut = (Value[0] == 0 ? false : true);
             //btnCut.setVisibility((PrinterProperty.Cut?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_DRAWER, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_DRAWER, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Cashdrawer = (Value[0] != 0);
+            PrinterProperty.Cashdrawer = (Value[0] == 0 ? false : true);
             //btnOpenCashDrawer.setVisibility((PrinterProperty.Cashdrawer?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BARCODE, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BARCODE, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Barcode=new String(Value);
-            isCheck=PrinterProperty.Barcode.replace("QRCODE", "").replace("PDF417", "").replace(",,", ",").replace(",,", ",").length()>0;
+            PrinterProperty.Barcode = new String(Value);
+            isCheck = PrinterProperty.Barcode.replace("QRCODE", "").replace("PDF417", "").replace(",,", ",").replace(",,", ",").length() > 0;
             //btn1DBarcodes.setVisibility((isCheck?View.VISIBLE:View.GONE));
             isCheck = PrinterProperty.Barcode.contains("QRCODE");
             //btnQRCode.setVisibility((isCheck?View.VISIBLE:View.GONE));
             //btnPDF417.setVisibility((isCheck?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Pagemode = (Value[0] != 0);
+            PrinterProperty.Pagemode = (Value[0] == 0 ? false : true);
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_GET_REMAINING_POWER, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_GET_REMAINING_POWER, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.GetRemainingPower = (Value[0] != 0);
+            PrinterProperty.GetRemainingPower = (Value[0] == 0 ? false : true);
             //btnGetRemainingPower.setVisibility((PrinterProperty.GetRemainingPower?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_CONNECT_TYPE, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_CONNECT_TYPE, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.ConnectType=(Value[1]<<8)+Value[0];
+            PrinterProperty.ConnectType = (Value[1] << 8) + Value[0];
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PRINT_RECEIPT, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PRINT_RECEIPT, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.SampleReceipt = (Value[0] != 0);
+            PrinterProperty.SampleReceipt = (Value[0] == 0 ? false : true);
             //btnSampleReceipt.setVisibility((PrinterProperty.SampleReceipt?View.VISIBLE:View.GONE));
-        }
-        catch(Exception e)
-        {
-            Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
-        }
-    }
-    private void GetPrinterProperty()
-    {
-        try
-        {
-            int[] propType=new int[1];
-            byte[] Value=new byte[500];
-            int[] DataLen=new int[1];
-            String strValue="";
-            int iRtn=0;
-
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_STATUS_MODEL, propType, Value,DataLen);
-            if(iRtn!=0)
-                return;
-            PrinterProperty.StatusMode=Value[0];
-
-            if(PrinterProperty.Cut)
-            {
-                iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT_SPACING, propType, Value,DataLen);
-                if(iRtn!=0)
-                    return;
-                PrinterProperty.CutSpacing=Value[0];
-            }
-            else
-            {
-                iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_TEAR_SPACING, propType, Value,DataLen);
-                if(iRtn!=0)
-                    return;
-                PrinterProperty.TearSpacing=Value[0];
-            }
-
-            if(PrinterProperty.Pagemode)
-            {
-                iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE_AREA, propType, Value,DataLen);
-                if(iRtn!=0)
-                    return;
-                PrinterProperty.PagemodeArea=new String(Value).trim();
-            }
-            Value=new byte[500];
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_WIDTH, propType, Value,DataLen);
-            if(iRtn!=0)
-                return;
-            PrinterProperty.PrintableWidth = Value[0] & 0xFF | ((Value[1] & 0xFF) << 8);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
         }
     }
 
+    private void GetPrinterProperty() {
+        try {
+            int[] propType = new int[1];
+            byte[] Value = new byte[500];
+            int[] DataLen = new int[1];
+            String strValue = "";
+            int iRtn = 0;
+
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_STATUS_MODEL, propType, Value, DataLen);
+            if (iRtn != 0)
+                return;
+            PrinterProperty.StatusMode = Value[0];
+
+            if (PrinterProperty.Cut) {
+                iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT_SPACING, propType, Value, DataLen);
+                if (iRtn != 0)
+                    return;
+                PrinterProperty.CutSpacing = Value[0];
+            } else {
+                iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_TEAR_SPACING, propType, Value, DataLen);
+                if (iRtn != 0)
+                    return;
+                PrinterProperty.TearSpacing = Value[0];
+            }
+
+            if (PrinterProperty.Pagemode) {
+                iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE_AREA, propType, Value, DataLen);
+                if (iRtn != 0)
+                    return;
+                PrinterProperty.PagemodeArea = new String(Value).trim();
+            }
+            Value = new byte[500];
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_WIDTH, propType, Value, DataLen);
+            if (iRtn != 0)
+                return;
+            PrinterProperty.PrintableWidth = (int) (Value[0] & 0xFF | ((Value[1] & 0xFF) << 8));
+        } catch (Exception e) {
+            Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
+        }
+    }
 
 }

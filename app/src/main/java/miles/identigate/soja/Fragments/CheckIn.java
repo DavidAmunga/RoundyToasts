@@ -57,6 +57,7 @@ public class CheckIn extends Fragment {
 
 
 
+
     public static CheckIn newInstance(String param1, String param2) {
         CheckIn fragment = new CheckIn();
         Bundle args = new Bundle();
@@ -73,9 +74,19 @@ public class CheckIn extends Fragment {
         super.onCreate(savedInstanceState);
         preferences = new Preferences(getActivity());
 
-        checkinTitles.add("Drive In");
+
+//        CASUALS
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkinTitles.add("Drive In");
+        }
+
+
         checkinTitles.add("Walk In");
-        checkinTitles.add("Residents");
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkinTitles.add("Residents");
+        }
+
         if (preferences.isFingerprintsEnabled())
             checkinTitles.add("Biometric Checkin");
         if (preferences.isSMSCheckInEnabled())
@@ -84,9 +95,21 @@ public class CheckIn extends Fragment {
 
 
         ArrayList<String> checkinDescriptions = new ArrayList<>();
-        checkinDescriptions.add("Record driving visitor");
-        checkinDescriptions.add("Record walking visitor");
-        checkinDescriptions.add("Check in a resident");
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkinDescriptions.add("Record driving visitor");
+        }
+
+        if (preferences.getBaseURL().contains("casuals")) {
+            checkinDescriptions.add("Record walking supervisor");
+        } else {
+            checkinDescriptions.add("Record walking visitor");
+        }
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkinDescriptions.add("Check in a resident");
+        }
+
         if (preferences.isFingerprintsEnabled())
             checkinDescriptions.add("Check in using biometrics");
         if (preferences.isSMSCheckInEnabled())
@@ -94,9 +117,18 @@ public class CheckIn extends Fragment {
 //        checkinDescriptions.add("Report an incident");
 
         ArrayList<Integer> checkinDrawables = new ArrayList<>();
-        checkinDrawables.add(R.drawable.ic_car);
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkinDrawables.add(R.drawable.ic_car);
+        }
+
+
         checkinDrawables.add(R.drawable.ic_walk);
-        checkinDrawables.add(R.drawable.ic_resident);
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            checkinDrawables.add(R.drawable.ic_resident);
+        }
+
         if (preferences.isFingerprintsEnabled())
             checkinDrawables.add(R.drawable.fingerprint);
         if (preferences.isSMSCheckInEnabled())

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.TypeObject;
 
 public class RecordResidentVehicleActivity extends SojaActivity {
+    private static final String TAG = "RecordResidentVehicleAc";
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -176,6 +178,8 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                     if (json instanceof JSONObject) {
                         JSONObject object = new JSONObject(result);
                         int result_code = object.getInt("result_code");
+                        String resultText = object.getString("result_text");
+                        Log.d(TAG, "onPostExecute: " + resultText);
                         if (result_code == 0) {
                             new MaterialDialog.Builder(RecordResidentVehicleActivity.this)
                                     .title("SUCCESS")

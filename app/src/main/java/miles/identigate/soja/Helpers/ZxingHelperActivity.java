@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,12 +22,25 @@ public class ZxingHelperActivity extends AppCompatActivity implements
     private CompoundBarcodeView barcodeScannerView;
     private Button switchFlashlightButton;
 
+    private boolean flashLightOn = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zxing_helper);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setTitle("Express QR Checkout");
+
+
+        if (getIntent().getExtras() != null) {
+            String mode = getIntent().getExtras().getString("mode");
+
+            getSupportActionBar().setTitle("Express QR " + mode);
+
+        } else {
+
+            getSupportActionBar().setTitle("Express QR Checkout");
+        }
+
 
         barcodeScannerView = findViewById(R.id.zxing_barcode_scanner);
         barcodeScannerView.setTorchListener(this);
@@ -41,6 +56,30 @@ public class ZxingHelperActivity extends AppCompatActivity implements
         capture = new CaptureManager(this, barcodeScannerView);
         capture.initializeFromIntent(getIntent(), savedInstanceState);
         capture.decode();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_scan, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_flash) {
+            flashLightOn = !flashLightOn;
+            if (flashLightOn) {
+                item.setIcon(R.drawable.ic_flash_on);
+                barcodeScannerView.setTorchOn();
+            } else {
+                item.setIcon(R.drawable.ic_flash_off);
+                barcodeScannerView.setTorchOff();
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -74,6 +113,7 @@ public class ZxingHelperActivity extends AppCompatActivity implements
 
     /**
      * Check if the device's camera has a Flashlight.
+     *
      * @return true if there is Flashlight, otherwise false.
      */
     private boolean hasFlash() {
@@ -81,13 +121,6 @@ public class ZxingHelperActivity extends AppCompatActivity implements
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
 
-    public void switchFlashlight(View view) {
-        if (getString(R.string.turn_on_flashlight).equals(switchFlashlightButton.getText())) {
-            barcodeScannerView.setTorchOn();
-        } else {
-            barcodeScannerView.setTorchOff();
-        }
-    }
 
     @Override
     public void onTorchOn() {

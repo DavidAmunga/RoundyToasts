@@ -8,6 +8,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,7 +53,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
     Button btnRecord, btnConfirm;
     LinearLayout lin_walk_confirm, lin_drive_confirm, lin_checkin, lin_spinner, lin_host;
-    EditText edtPhoneNo, edtHost, edtCode, edtPeopleNo, edtCarNo;
+    EditText edtPhoneNo, edtHost, edtCode, edtPeopleNo, edtCarNo, companyNameEditTexxt;
     Preferences preferences;
     Spinner spinnerTypeOfVisit, spinnerVisitType;
     ArrayList<String> visitTypes = new ArrayList<>();
@@ -84,6 +85,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
         lin_spinner = findViewById(R.id.lin_spinner);
         lin_host = findViewById(R.id.lin_host);
         edtPhoneNo = findViewById(R.id.edtPhoneNo);
+        companyNameEditTexxt = findViewById(R.id.companyNameEdittext);
         edtHost = findViewById(R.id.edtHost);
         edtCode = findViewById(R.id.edtCode);
         edtPeopleNo = findViewById(R.id.edtPeopleNo);
@@ -126,17 +128,22 @@ public class SmsCheckInActivity extends AppCompatActivity {
         btnRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: Start Record");
-                if (spinnerTypeOfVisit.getSelectedItem().toString().equals("Walk In")) {
-                    Log.d(TAG, "onClick: Walk");
+                if (selectedDestination != null) {
+                    Log.d(TAG, "onClick: Start Record");
+                    if (spinnerTypeOfVisit.getSelectedItem().toString().equals("Walk In")) {
+                        Log.d(TAG, "onClick: Walk");
 
-                    recordSMSCheckInWalk();
-                }
-                if (spinnerTypeOfVisit.getSelectedItem().toString().equals("Drive In")) {
-                    Log.d(TAG, "onClick: Drive");
+                        recordSMSCheckInWalk();
+                    }
+                    if (spinnerTypeOfVisit.getSelectedItem().toString().equals("Drive In")) {
+                        Log.d(TAG, "onClick: Drive");
 
-                    recordSMSCheckInDrive();
+                        recordSMSCheckInDrive();
+                    }
+                } else if (selectedHost != null) {
+                    Toast.makeText(SmsCheckInActivity.this, "Please enter destination", Toast.LENGTH_SHORT).show();
                 }
+
 
 
             }
@@ -282,7 +289,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
                         "scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
                                 "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
-                                "&company=" + URLEncoder.encode("PHONE", "UTF-8") +
+                                (preferences.isCompanyNameEnabled() && !companyNameEditTexxt.getText().toString().equals("") ?
+                                        ("&company=" + URLEncoder.encode(companyNameEditTexxt.getText().toString(), "UTF-8")) : "") +
                                 "&scan_id_type=" + URLEncoder.encode("PHONE", "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                 "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
@@ -316,6 +324,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                 "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                 "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                                (preferences.isCompanyNameEnabled() && !companyNameEditTexxt.getText().toString().equals("") ?
+                                        ("&company=" + URLEncoder.encode(companyNameEditTexxt.getText().toString(), "UTF-8")) : "") +
                                 (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
                                 "&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8") +
                                 "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +

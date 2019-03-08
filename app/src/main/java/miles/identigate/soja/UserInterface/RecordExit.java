@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.R;
 
 public class RecordExit extends SojaActivity {
+    private static final String TAG = "RecordExit";
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -52,6 +54,12 @@ public class RecordExit extends SojaActivity {
     String type;
     static String ID;
     Preferences preferences;
+
+    String entity_name = "destination";
+    String entity_owner = "visitor";
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +81,14 @@ public class RecordExit extends SojaActivity {
         preferences=new Preferences(this);
 
 
+        if (preferences.getBaseURL().contains("casuals")) {
+            String entity_name = "event";
+            String entity_owner = "supervisor";
 
-        if(getIntent() !=null){
+        }
+
+
+        if (getIntent() != null) {
            type=getIntent().getStringExtra("TYPE");
             if(!getIntent().getStringExtra("NAME").equals("null")){
                 lin_nm.setVisibility(View.GONE);
@@ -85,6 +99,8 @@ public class RecordExit extends SojaActivity {
                 idNumber.setText(getIntent().getStringExtra("ID"));
             }
             ID=getIntent().getStringExtra("ID");
+
+            Log.d(TAG, "onCreate: " + getIntent().getStringExtra("ENTRY"));
 
             entry.setText(convertDateFormat(getIntent().getStringExtra("ENTRY")));
             if(type.equals("DRIVE")){
@@ -128,9 +144,9 @@ public class RecordExit extends SojaActivity {
 
 
         String newDate="";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-        SimpleDateFormat newDateFormat = new SimpleDateFormat("EEE, MMM d yyyy hh:mm aaa");
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("EEE dd, MMM YYYY hh:mm:aa");
 
         Date convertedDate=new Date();
         try{
@@ -165,7 +181,7 @@ public class RecordExit extends SojaActivity {
     private class ExitAsync extends AsyncTask<String, Void, String> {
         MaterialDialog builder=new MaterialDialog.Builder(RecordExit.this)
                 .title("Exit")
-                .content("Removing visitor...")
+                .content("Removing " + entity_owner + "...")
                 .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)

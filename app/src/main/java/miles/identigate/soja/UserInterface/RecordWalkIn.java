@@ -64,9 +64,14 @@ public class RecordWalkIn extends SojaActivity {
     LinearLayout phoneNumberLayout, companyNameLayout, hostLayout;
     EditText phoneNumberEdittext, companyNameEdittext;
 
-    TextView spinnerDestination, spinnerHost;
+    TextView spinnerDestination, spinnerHost, hostLabel, visitorLabel;
 
     String firstName, lastName, idNumber;
+
+    String entity_name = "destination";
+    String entity_owner = "visitor";
+
+
     String result_slip = "";
     int visit_id = 0;
     private IntentFilter receiveFilter;
@@ -110,10 +115,17 @@ public class RecordWalkIn extends SojaActivity {
         companyNameEdittext = findViewById(R.id.companyNameEdittext);
         hostLayout = findViewById(R.id.hostLayout);
         spinnerHost = findViewById(R.id.spinnerHost);
+        hostLabel = findViewById(R.id.hostLabel);
+        visitorLabel = findViewById(R.id.typeLabel);
 
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled() ? View.VISIBLE : View.GONE);
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled() ? View.VISIBLE : View.GONE);
         hostLayout.setVisibility(preferences.isSelectHostsEnabled() ? View.VISIBLE : View.GONE);
+
+        hostLabel.setText(entity_name.toUpperCase());
+        visitorLabel.setText(entity_owner.toUpperCase());
+
+        spinnerDestination.setText("Select " + entity_name);
 
         houses = handler.getTypes("houses", null);
         Log.d(TAG, "Houses: " + houses);
@@ -134,6 +146,8 @@ public class RecordWalkIn extends SojaActivity {
             }
         });
         TypeAdapter adapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, visitorTypes);
+
+
         visitor_type.setAdapter(adapter);
         visitor_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -146,13 +160,29 @@ public class RecordWalkIn extends SojaActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        if (preferences.getBaseURL().contains("casuals")) {
+            visitor_type.setSelection(4);
+            visitor_type.setSelected(true);
+            visitor_type.setEnabled(false);
+        }
+
+        if (preferences.getBaseURL().contains("casuals")) {
+            entity_name = "event";
+            entity_owner = "supervisor";
+
+            hostLabel.setText(entity_name.toUpperCase());
+            spinnerDestination.setText("Select " + entity_name);
+            visitorLabel.setText(entity_owner.toUpperCase());
+
+        }
+
 //        DESTINATION
         spinnerDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Clicked");
                 new SimpleSearchDialogCompat(RecordWalkIn.this,
-                        "Search for Destination...", "What destination is the visitor heading...?", null, houses, new SearchResultListener<TypeObject>() {
+                        "Search for " + entity_name, "What " + entity_name + " is the " + entity_owner + " heading...?", null, houses, new SearchResultListener<TypeObject>() {
                     @Override
                     public void onSelected(BaseSearchDialogCompat baseSearchDialogCompat, TypeObject o, int i) {
 
@@ -275,7 +305,7 @@ public class RecordWalkIn extends SojaActivity {
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
                             "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
-                            (preferences.isCompanyNameEnabled() && companyNameEdittext.getText().toString().equals("") ?
+                            (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
                                     ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
                             "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
                             "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
@@ -283,7 +313,6 @@ public class RecordWalkIn extends SojaActivity {
                             "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                             "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
                             (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
-
                             "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                             "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                             "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8") +
@@ -295,6 +324,7 @@ public class RecordWalkIn extends SojaActivity {
                             "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8") +
                             "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
 
+            Log.d(TAG, "recordInternet: " + preferences.getBaseURL() + "record-visit/" + urlParameters);
             new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
