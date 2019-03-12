@@ -8,6 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:background="?attr/backgroundColor"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="miles.identigate.soja.UserInterface.RecordResident"
     tools:showIn="@layout/activity_record_resident">
@@ -28,6 +29,7 @@
                 android:id="@+id/hostLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/textColor"
                 android:layout_marginBottom="5.0dip"
                 android:text="HOUSE"
                 android:textSize="16sp" />

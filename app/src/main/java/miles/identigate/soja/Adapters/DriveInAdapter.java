@@ -153,8 +153,13 @@ public class DriveInAdapter extends BaseAdapter {
 
             //entry.setText("ENTRY: "+driveIns.get(position).getEntryTime());
         } else if (type.equals("WALK")) {
-            name.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : walkIns.get(position).getNationalId());
-            id.setText(!walkIns.get(position).getName().equals("null") ? walkIns.get(position).getNationalId() : "SMS Login");
+            Log.d(TAG, "getView: " + walkIns.get(position).getName());
+            name.setText(!walkIns.get(position).getName().equals(" ")
+                    && !walkIns.get(position).getName().equals("null") ? walkIns.get(position).getName() : walkIns.get(position).getNationalId());
+
+            id.setText(!walkIns.get(position).getName().equals(" ")
+                    && !walkIns.get(position).getName().equals("null") ? walkIns.get(position).getNationalId() : "SMS Login");
+
 
             entry_date.setText(formatDate(walkIns.get(position).getEntryTime(), "date"));
             entry_time.setText(formatDate(walkIns.get(position).getEntryTime(), "time"));

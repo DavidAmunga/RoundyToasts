@@ -1,0 +1,352 @@
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/backgroundColor"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="miles.identigate.soja.UserInterface.RecordWalkIn"
+    tools:showIn="@layout/activity_sms_check_in"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--SEND VERIFICATION CODE-->
+        <LinearLayout
+            android:id="@+id/lin_checkin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerTypeOfVisit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border"
+                android:tooltipText="Please Select Visit Type" />
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:id="@+id/typeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:inputType="number"
+                android:text="Enter Phone No"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/edtPhoneNo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:inputType="text"
+                android:maxLength="10"
+                android:padding="10dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textCursorDrawable="@null" />
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorPrimary"
+                android:text="SEND VERIFICATION CODE"
+                android:textColor="@android:color/white"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <!--SPINNER CONFIRM-->
+        <LinearLayout
+            android:id="@+id/lin_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:id="@+id/typeLabel2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:text="Enter Verification Code"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/edtCode"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:hint=""
+                android:inputType="text"
+                android:padding="10dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textCursorDrawable="@null" />
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:text="Visitor Type"
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/spinnerVisitType"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border" />
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:text="Destination"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:id="@+id/spinnerDestination"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_grey"
+                android:ems="10"
+                android:hint="Select Destination"
+                android:inputType="text"
+                android:padding="15dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textCursorDrawable="@null" />
+
+
+            <!--HOST-->
+            <LinearLayout
+                android:id="@+id/lin_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Host"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:id="@+id/spinnerHost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:background="@drawable/border_grey"
+                    android:ems="10"
+                    android:hint="Select Premise Host"
+                    android:inputType="text"
+                    android:padding="15dp"
+                    android:singleLine="false"
+                    android:textColor="?attr/textColor"
+                    android:textCursorDrawable="@null" />
+
+
+            </LinearLayout>
+
+
+            <miles.identigate.soja.Font.OpenSansBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:text="Enter Company Name"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/companyNameEdittext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:hint="Enter company name"
+                android:inputType="text"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textCursorDrawable="@null" />
+
+            <EditText
+                android:id="@+id/edtHost"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/border"
+                android:ems="10"
+                android:hint=""
+                android:inputType="text"
+                android:padding="10dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textCursorDrawable="@null"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+
+
+        <!--WALK CONFIRM-->
+        <LinearLayout
+            android:id="@+id/lin_walk_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/brand"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
+            <!--<miles.identigate.soja.Font.OpenSansBold-->
+            <!--android:id="@+id/typeLabel3"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="5.0dip"-->
+            <!--android:text="Enter Host"-->
+            <!--android:textSize="16sp" />-->
+
+
+        </LinearLayout>
+        <!--DRIVE CONFIRM-->
+        <LinearLayout
+            android:id="@+id/lin_drive_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/brand"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/car_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iprn_profile"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/brand"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:paddingBottom="10dp">
+
+                    <miles.identigate.soja.Font.OpenSansBold
+                        android:id="@+id/carLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10.0dip"
+                        android:text="ENTER CAR NUMBER"
+                        android:textColor="?attr/textColor"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/edtCarNo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/border"
+                        android:ems="10"
+                        android:hint="CAR NUMBER"
+                        android:inputType="textCapCharacters"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textColorHint="?attr/textColorHint"
+                        android:textCursorDrawable="@null" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <miles.identigate.soja.Font.OpenSansBold
+                        android:id="@+id/numberOfPeopleLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5.0dip"
+                        android:text="Number of People in car"
+                        android:textColor="?attr/textColor"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/edtPeopleNo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/border"
+                        android:ems="10"
+                        android:hint="Enter a number"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="?attr/textColor"
+                        android:textColorHint="?attr/textColorHint"
+                        android:textCursorDrawable="@null" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRecord"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:text="Check In"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+</ScrollView>

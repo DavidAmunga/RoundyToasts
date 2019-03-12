@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/white"
+    android:background="?attr/backgroundColor"
     android:paddingLeft="5dp"
     android:paddingTop="5dp"
     android:weightSum="10"

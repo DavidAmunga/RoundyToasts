@@ -43,6 +43,12 @@ public class RecordResident extends SojaActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_resident);
         if (Constants.documentReaderResults == null)
@@ -54,7 +60,6 @@ public class RecordResident extends SojaActivity {
         host = findViewById(R.id.host);
         record = findViewById(R.id.record);
         handler=new DatabaseHandler(this);
-        preferences=new Preferences(this);
         houses = handler.getTypes("houses", null);
        record.setOnClickListener(new View.OnClickListener() {
            @Override

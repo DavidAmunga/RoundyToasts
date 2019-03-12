@@ -23,23 +23,31 @@ public class ZxingHelperActivity extends AppCompatActivity implements
     private Button switchFlashlightButton;
 
     private boolean flashLightOn = false;
+    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_zxing_helper);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-
-        if (getIntent().getExtras() != null) {
-            String mode = getIntent().getExtras().getString("mode");
-
-            getSupportActionBar().setTitle("Express QR " + mode);
-
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
         } else {
-
-            getSupportActionBar().setTitle("Express QR Checkout");
+            setTheme(R.style.AppTheme);
         }
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_zxing_helper);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+
+//        if (getIntent().getExtras() != null) {
+//            String mode = getIntent().getExtras().getString("mode");
+//
+//            getSupportActionBar().setTitle("Express QR " + mode);
+//
+//        } else {
+//
+//            getSupportActionBar().setTitle("Express QR Checkout");
+//        }
 
 
         barcodeScannerView = findViewById(R.id.zxing_barcode_scanner);

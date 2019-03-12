@@ -4,50 +4,33 @@
 
     <item android:state_pressed="true" android:state_focused="true">
         <shape>
-            <solid android:color="#fff"/>
-            <stroke
-                android:width="1dp"
-                android:color="#616161" />
-            <corners
-                android:radius="0dp" />
+
+            <stroke android:width="2.3dp" android:color="@color/colorPrimary" />
+            <corners android:radius="5dp" />
         </shape>
     </item>
 
     <item android:state_pressed="true" android:state_focused="false">
         <shape>
-            <solid android:color="#fff"/>
-            <stroke
-                android:width="1dp"
-                android:color="#616161" />
-            <corners
-                android:radius="0dp" />
+
+            <stroke android:width="2.3dp" android:color="@color/colorPrimary" />
+            <corners android:radius="5dp" />
         </shape>
     </item>
 
     <item android:state_pressed="false" android:state_focused="true">
         <shape>
-            <solid android:color="#fff"/>
-            <stroke
-                android:width="1dp"
-                android:color="#616161" />
-            <corners
-                android:radius="0dp" />
+            <stroke android:width="2.3dp" android:color="@color/colorPrimary" />
+            <corners android:radius="5dp" />
         </shape>
     </item>
 
     <item android:state_pressed="false" android:state_focused="false">
         <shape>
-            <gradient
-                android:startColor="#fff"
-                android:centerColor="#fff"
-                android:endColor="#fff"
-                android:angle="270"
+            <gradient android:startColor="?attr/editTextBg" android:endColor="?attr/editTextBg"
                 />
-            <stroke
-                android:width="1dp"
-                android:color="#616161" />
-            <corners
-                android:radius="0dp" />
+            <stroke android:width="0.7dp" android:color="@color/grey" />
+            <corners android:radius="5dp" />
         </shape>
     </item>
 

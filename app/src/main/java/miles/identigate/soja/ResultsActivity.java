@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.UserInterface.RecordDriveIn;
 import miles.identigate.soja.UserInterface.RecordResident;
@@ -37,6 +38,7 @@ public class ResultsActivity extends AppCompatActivity {
     private List<DocumentReaderTextField> mResultItems;
     private Button cancel;
     private Button next;
+    Preferences preferences;
 
     private IntentFilter receiveFilter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -53,6 +55,13 @@ public class ResultsActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_results);
 		if (Constants.documentReaderResults == null)

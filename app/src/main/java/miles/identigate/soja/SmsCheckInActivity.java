@@ -8,6 +8,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -65,12 +66,19 @@ public class SmsCheckInActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sms_check_in);
-        getSupportActionBar().setTitle("SMS Check In");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("SMS CheckIn");
 
-        preferences = new Preferences(this);
         handler = new DatabaseHandler(this);
 
 

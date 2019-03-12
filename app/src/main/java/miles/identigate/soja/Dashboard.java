@@ -84,12 +84,19 @@ public class Dashboard extends SojaActivity {
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         handler=new DatabaseHandler(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        preferences=new Preferences(this);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

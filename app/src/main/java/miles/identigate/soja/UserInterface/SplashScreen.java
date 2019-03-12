@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import miles.identigate.soja.Dashboard;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
 
 public class SplashScreen extends Activity {
@@ -27,9 +28,16 @@ public class SplashScreen extends Activity {
 	ImageView imgLogo;
 	Animation scale_up,slide_up,fade_in;
 	TextView soja_name,soja_slogan;
+    Preferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
 		super.onCreate(savedInstanceState);
 		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.activity_splash);

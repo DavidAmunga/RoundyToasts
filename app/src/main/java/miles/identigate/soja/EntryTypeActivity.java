@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 
 
 import miles.identigate.soja.Fragments.EntryTypeFragment;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.app.Common;
 
@@ -13,9 +14,18 @@ public class EntryTypeActivity extends SojaActivity implements EntryTypeFragment
 
     private static boolean sIsLicenseOk;
 
+    Preferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         setContentView(R.layout.activity_entry_type);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

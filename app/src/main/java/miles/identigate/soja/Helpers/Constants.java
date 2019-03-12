@@ -66,4 +66,38 @@ public class Constants {
     public static String timeStamp(){
        return new Date().toString();
     }
+
+    public static String sentenceCaseForText(String text) {
+
+        if (text == null) return "";
+
+        int pos = 0;
+        boolean capitalize = true;
+        StringBuilder sb = new StringBuilder(text);
+
+        while (pos < sb.length()) {
+
+            if (capitalize && !Character.isWhitespace(sb.charAt(pos))) {
+
+                sb.setCharAt(pos, Character.toUpperCase(sb.charAt(pos)));
+            } else if (!capitalize && !Character.isWhitespace(sb.charAt(pos))) {
+
+                sb.setCharAt(pos, Character.toLowerCase(sb.charAt(pos)));
+            }
+
+            if (sb.charAt(pos) == '.' || (capitalize && Character.isWhitespace(sb.charAt(pos)))) {
+
+                capitalize = true;
+            } else {
+
+                capitalize = false;
+            }
+
+            pos++;
+        }
+
+        return sb.toString();
+    }
+
+
 }

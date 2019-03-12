@@ -89,6 +89,8 @@ public class CheckIn extends Fragment {
 
         if (preferences.isFingerprintsEnabled())
             checkinTitles.add("Biometric Checkin");
+
+
         if (preferences.isSMSCheckInEnabled())
             checkinTitles.add("SMS Checkin");
 //        checkinTitles.add("Incident");
@@ -112,6 +114,8 @@ public class CheckIn extends Fragment {
 
         if (preferences.isFingerprintsEnabled())
             checkinDescriptions.add("Check in using biometrics");
+
+
         if (preferences.isSMSCheckInEnabled())
             checkinDescriptions.add("Check in a Visitor without an ID");
 //        checkinDescriptions.add("Report an incident");

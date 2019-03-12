@@ -68,33 +68,26 @@ public class ScanQRActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
+        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_scan_qr);
         ButterKnife.bind(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        getSupportActionBar().setTitle("Residents");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//
+//        getSupportActionBar().setTitle("Residents");
 
         handler = new DatabaseHandler(this);
 
 
-        dialog = new Dialog(this);
+        dialog = Constants.showProgressDialog(this, "QR Check In", "Checking In...");
 
-        View view = this.getLayoutInflater().inflate(R.layout.dialog_checking_qr, null);
-
-        dialog.setContentView(view);
-        dialog.create();
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-
-//        dialog = new MaterialDialog.Builder(ScanQRActivity.this)
-//                .title("QR")
-//                .content("Checking QR...")
-//                .progress(true, 0)
-//                .cancelable(false)
-//                .widgetColorRes(R.color.colorPrimary)
-//                .build();
 
 
         driveInLayout.setOnClickListener(new View.OnClickListener() {
@@ -133,11 +126,14 @@ public class ScanQRActivity extends AppCompatActivity {
             } else {
                 Log.v("QR", result.getContents());
                 token = result.getContents();
+
+//                Log.d(TAG, "onActivityResult: Token"+token);
                 qr_contents = result.getContents();
                 try {
-                    String urlParameters = "device_id=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                    String urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                             "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                             "&qr=" + result.getContents();
+
 
                     if (selectedMode.equals("walkIn")) {
                         Log.d(TAG, "onActivityResult: " + preferences.getResidentsURL() + "qr_checkin?" + urlParameters);
@@ -161,8 +157,9 @@ public class ScanQRActivity extends AppCompatActivity {
     private class RecordQRCheckInWalk extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            if (dialog != null && !dialog.isShowing())
+            if (dialog != null && !dialog.isShowing()) {
                 dialog.show();
+            }
         }
 
         protected String doInBackground(String... params) {
@@ -175,6 +172,7 @@ public class ScanQRActivity extends AppCompatActivity {
             if (result != null) {
                 //Log.e("QR",result);
                 //Log.e("SCAN",result);
+                Log.d(TAG, "onPostExecute: " + result);
                 Object json = null;
                 try {
                     json = new JSONTokener(result).nextValue();
@@ -188,6 +186,7 @@ public class ScanQRActivity extends AppCompatActivity {
                         Log.d(TAG, "onPostExecute: " + resultText);
 
                         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
+                            Log.d(TAG, "onPostExecute: Success");
 
                             MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                                 @Override
@@ -203,7 +202,7 @@ public class ScanQRActivity extends AppCompatActivity {
                             if (resultText.contains("still in")) {
                                 new MaterialDialog.Builder(ScanQRActivity.this)
                                         .title("Soja")
-                                        .content(resultText)
+                                        .content(Constants.sentenceCaseForText(resultText))
                                         .positiveText("OK")
                                         .negativeText("Check out")
                                         .callback(new MaterialDialog.ButtonCallback() {
@@ -220,7 +219,10 @@ public class ScanQRActivity extends AppCompatActivity {
                                                 try {
                                                     urlParameters = "qr=" + qr_contents +
                                                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                                                            "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                                                             "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+
+
                                                     Log.d(TAG, "onNegative: " + preferences.getResidentsURL() + "qr_checkout?" + urlParameters);
                                                     new RecordQRCheckOut().execute(preferences.getResidentsURL() + "qr_checkout", urlParameters);
                                                 } catch (UnsupportedEncodingException e) {
@@ -287,9 +289,9 @@ public class ScanQRActivity extends AppCompatActivity {
                         String resultContent = obj.getString("result_content");
                         if (resultText.equals("OK") && resultContent.equals("success")) {
 //                            CheckIn Again QR
-
                             try {
-                                String urlParameters = "device_id=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+
+                                String urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                         "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                                         "&qr=" + qr_contents;
                                 Log.d(TAG, "onActivityResult: " + preferences.getResidentsURL() + "qr_checkin?" + urlParameters);

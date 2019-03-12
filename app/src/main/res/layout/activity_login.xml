@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".6"
-            android:background="@color/white" />
+            android:background="?attr/backgroundColor" />
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -43,7 +43,7 @@
         android:layout_below="@id/logo_img"
         android:layout_centerHorizontal="true"
         android:layout_margin="30dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="?attr/cardBackground"
         app:cardCornerRadius="6dp"
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true">
@@ -74,7 +74,8 @@
                 android:inputType="number"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
                 android:textCursorDrawable="@null" />
 
 
@@ -97,7 +98,8 @@
                 android:inputType="textPassword"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:textColor="@android:color/black"
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
                 android:textCursorDrawable="@null" />
 
             <Button

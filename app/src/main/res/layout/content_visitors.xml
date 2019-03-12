@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFEFEF"
+    android:background="?attr/backgroundColor"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="miles.identigate.soja.UserInterface.Visitors"
     tools:showIn="@layout/activity_visitors">
@@ -14,7 +14,7 @@
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="?attr/elementBgColor"
         android:elevation="5dp"
         android:orientation="vertical">
 
@@ -29,7 +29,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
-                android:background="@color/colorPrimary"
                 android:drawableLeft="@drawable/ic_search_dark"
                 android:drawablePadding="20dp"
                 android:hint="Search Visitors"
@@ -38,9 +37,8 @@
                 android:paddingTop="15dp"
                 android:paddingRight="15dp"
                 android:paddingBottom="15dp"
-                android:singleLine="true"
                 android:textColor="@color/white"
-                android:textColorHint="#E1E1E1"
+                android:textColorHint="@color/white"
                 android:textSize="16sp" />
 
             <ImageView
@@ -48,6 +46,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="0.1"
+                android:tint="@color/white"
                 app:srcCompat="@drawable/ic_filter_list" />
 
         </LinearLayout>
@@ -56,7 +55,6 @@
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
             app:selectorColor="@color/white"
             app:textColorNormal="#f5f5f5"
             app:textColorSelected="#FFFF"
@@ -73,6 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/search_layout"
+        android:layout_marginTop="10dp"
         android:fastScrollAlwaysVisible="true"
         android:fastScrollEnabled="true"
         android:visibility="gone" />
@@ -106,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="There are currently no logs available."
+            android:textColor="?attr/textColor"
             android:textSize="20sp" />
     </LinearLayout>
 </RelativeLayout>

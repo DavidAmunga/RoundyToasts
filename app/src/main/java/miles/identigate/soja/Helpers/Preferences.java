@@ -5,22 +5,24 @@ import android.content.SharedPreferences;
 
 /**
  * Created by miles on 2/2/16.
- *
  */
 public class Preferences {
     private Context _context;
     public static final String PREFS_NAME = "PREFERENCES";
     SharedPreferences settings;
+
     public Preferences(Context context) {
         _context = context;
         settings = context.getSharedPreferences(PREFS_NAME, 0);
     }
-    public String getBaseURL(){
+
+    public String getBaseURL() {
         String baseUrl = settings.getString("base_url", "http://test.soja.co.ke/soja-rest/index.php/api/visits/");
         Constants.URL = baseUrl;
         return baseUrl;
     }
-    public void setBaseURL(String url){
+
+    public void setBaseURL(String url) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("base_url", url);
         editor.commit();
@@ -47,14 +49,17 @@ public class Preferences {
         editor.putString("token", token);
         editor.commit();
     }
-    public boolean isLoggedin(){
+
+    public boolean isLoggedin() {
         return settings.getBoolean("isLoggedin", false);
     }
-    public void setIsLoggedin(boolean status){
+
+    public void setIsLoggedin(boolean status) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("isLoggedin", status);
         editor.commit();
     }
+
     public String getName() {
         return settings.getString("name", "");
     }
@@ -64,6 +69,7 @@ public class Preferences {
         editor.putString("name", name);
         editor.commit();
     }
+
     public String getId() {
         return settings.getString("id", "");
     }
@@ -93,14 +99,17 @@ public class Preferences {
         editor.putString("premise", premise);
         editor.commit();
     }
+
     public String getPremiseZoneId() {
         return settings.getString("premiseZoneId", "");
     }
+
     public void setPremiseZoneId(String premiseId) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("premiseZoneId", premiseId);
         editor.commit();
     }
+
     public String getDeviceId() {
         return settings.getString("device", "");
     }
@@ -110,59 +119,73 @@ public class Preferences {
         editor.putString("device", device);
         editor.commit();
     }
-    public boolean canPrint(){
+
+    public boolean canPrint() {
         return settings.getBoolean("canPrint", false);
     }
-    public void setCanPrint(boolean status){
+
+    public void setCanPrint(boolean status) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("canPrint", status);
         editor.commit();
     }
-    public String getPremiseName(){
+
+    public String getPremiseName() {
 
         return settings.getString("premise_name", "SOJA");
     }
-    public void setPremiseName(String premise_name){
+
+    public void setPremiseName(String premise_name) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("premise_name", premise_name);
         editor.commit();
     }
-    public boolean isPhoneNumberEnabled(){
+
+    public boolean isPhoneNumberEnabled() {
         return settings.getBoolean("record_phone_number", false);
     }
-    public void setPhoneNumberEnabled(boolean isEnabled){
+
+    public void setPhoneNumberEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("record_phone_number", isEnabled);
         editor.commit();
     }
-    public boolean isCompanyNameEnabled(){
+
+    public boolean isCompanyNameEnabled() {
         return settings.getBoolean("record_company_name", false);
     }
-    public void setCompanyNameEnabled(boolean isEnabled){
+
+    public void setCompanyNameEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("record_company_name", isEnabled);
         editor.commit();
     }
-    public boolean isSelectHostsEnabled(){
+
+    public boolean isSelectHostsEnabled() {
         return settings.getBoolean("select_hosts", false);
     }
-    public void setSelectHostsEnabled(boolean isEnabled){
+
+    public void setSelectHostsEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("select_hosts", isEnabled);
         editor.commit();
     }
-    public boolean isFingerprintsEnabled(){
+
+    public boolean isFingerprintsEnabled() {
         return settings.getBoolean("fingerprints", false);
     }
-    public void setFingerprintsEnabled(boolean isEnabled){
+
+    public void setFingerprintsEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("fingerprints", isEnabled);
         editor.commit();
     }
-    public boolean isSMSCheckInEnabled(){
+
+    public boolean isSMSCheckInEnabled() {
         return settings.getBoolean("sms", false);
     }
-    public void setSMSCheckInEnabled(boolean isEnabled){
+
+    public void setSMSCheckInEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("sms", isEnabled);
         editor.commit();
@@ -176,6 +199,16 @@ public class Preferences {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("scan_photo", isEnabled);
         editor.commit();
+    }
+
+    public void setDarkModeOn(boolean darkModeOn) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("darkModeOn", darkModeOn);
+        editor.commit();
+    }
+
+    public boolean isDarkModeOn() {
+        return settings.getBoolean("darkModeOn", false);
     }
 
 }

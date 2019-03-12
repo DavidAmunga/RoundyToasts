@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="55dp"
         android:layout_marginBottom="20dp"
-        android:background="@color/white"
+        android:background="?attr/backgroundColor"
         android:orientation="vertical">
 
         <miles.identigate.soja.Font.OpenSansRegular
@@ -23,7 +23,7 @@
             android:layout_marginBottom="20dp"
             android:text="Checking QR"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="?attr/textColor"
             android:textSize="20sp" />
 
         <ProgressBar

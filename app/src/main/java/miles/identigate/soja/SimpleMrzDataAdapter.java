@@ -20,15 +20,19 @@ import com.regula.documentreader.api.results.DocumentReaderTextField;
 import java.util.List;
 
 import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.Preferences;
 
 public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> {
 	public SimpleMrzDataAdapter(Context context, int resource, List<DocumentReaderTextField> objects) {
 		super(context, resource, objects);
 	}
 
+    Preferences preferences;
+
 	private static final String TAG = "SimpleMrzDataAdapter";
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+        preferences = new Preferences(getContext());
 
 		View v = convertView;
 		if (v == null) {
@@ -63,9 +67,17 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
                 Log.d(TAG, "getView: Available");
             }
 
-            textValue.setTextColor(Color.rgb(3, 140, 7));
 
-			layout.setBackgroundColor(position % 2 > 0 ? Color.rgb(228, 228, 237) : Color.rgb(237, 237, 228));
+            if (preferences.isDarkModeOn()) {
+                textValue.setTextColor(Color.rgb(211, 47, 47));
+
+                layout.setBackgroundColor(position % 2 > 0 ? Color.rgb(40, 40, 40) : Color.rgb(70, 70, 70));
+
+            } else {
+                textValue.setTextColor(Color.rgb(3, 140, 7));
+
+                layout.setBackgroundColor(position % 2 > 0 ? Color.rgb(228, 228, 237) : Color.rgb(237, 237, 228));
+            }
 		}
 
 		return v;

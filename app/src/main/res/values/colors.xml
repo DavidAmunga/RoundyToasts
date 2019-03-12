@@ -16,4 +16,9 @@
     <color name="black_overlay">#66000000</color>
     <color name="colorGreen">#16BF37</color>
     <color name="black">#000</color>
+    <color name="grey">#BDBDBD</color>
+    <color name="colorGreyLight3">#E5E5E5</color>
+
+    <!--<color name="searchDialogResultColor">?attr/backgroundColor</color>-->
+    <!--<color name="searchDialogResultHighlightColor">?attr/textColor</color>-->
 </resources>

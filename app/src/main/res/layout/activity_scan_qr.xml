@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:background="@color/white"
+    android:background="?attr/backgroundColor"
     android:orientation="vertical"
     tools:context="miles.identigate.soja.Fragments.EntryTypeFragment">
 
@@ -26,6 +26,7 @@
                 android:id="@+id/scan_icon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:tint="?attr/iconColor"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="10dp"
                 android:background="?android:selectableItemBackground"
@@ -39,6 +40,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:text="Drive In"
+                android:textColor="?attr/textColor"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </RelativeLayout>
@@ -55,6 +57,7 @@
                 android:id="@+id/scan_icon_2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:tint="?attr/iconColor"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="10dp"
                 android:background="?android:selectableItemBackground"
@@ -68,6 +71,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:text="Walk In"
+                android:textColor="?attr/textColor"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </RelativeLayout>

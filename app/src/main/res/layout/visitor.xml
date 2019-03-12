@@ -20,6 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".6"
+            android:background="?attr/backgroundColor"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -29,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="OBADIAH OBARE"
-                android:textColor="@color/black"
+                android:textColor="?attr/textColor"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -39,6 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="ID: 33166582"
+                android:textColor="?attr/textColor"
                 android:textStyle="bold" />
         </LinearLayout>
 

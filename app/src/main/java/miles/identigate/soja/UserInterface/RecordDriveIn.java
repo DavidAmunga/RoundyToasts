@@ -96,6 +96,12 @@ public class RecordDriveIn extends SojaActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_drive_in);
         if (Constants.documentReaderResults == null)
@@ -110,7 +116,6 @@ public class RecordDriveIn extends SojaActivity {
         receiveFilter.addAction(Constants.RECORDED_VISITOR);
 
         handler = new DatabaseHandler(this);
-        preferences = new Preferences(this);
         vehicleRegNo = findViewById(R.id.car_number);
         vehicleRegNo.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         visitor_type = findViewById(R.id.visitor_type);

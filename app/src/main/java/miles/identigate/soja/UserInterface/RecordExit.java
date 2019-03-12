@@ -23,8 +23,10 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
+import miles.identigate.soja.Adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.Helpers.CheckConnection;
 import miles.identigate.soja.Helpers.Constants;
@@ -32,6 +34,7 @@ import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
+import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
 
 public class RecordExit extends SojaActivity {
@@ -41,9 +44,8 @@ public class RecordExit extends SojaActivity {
     }
     Button record;
     Spinner mode;
-    String[] Mode={
-            "Foot","Drive out","Other(Specify)"
-    };
+    ArrayList<TypeObject> modes = new ArrayList<>();
+
     TextView name;
     TextView idNumber;
     TextView car;
@@ -62,6 +64,13 @@ public class RecordExit extends SojaActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_exit);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -78,7 +87,6 @@ public class RecordExit extends SojaActivity {
         lin_id=findViewById(R.id.lin_id);
         lin_nm=findViewById(R.id.lin_nm);
         //comment=(EditText)findViewById(R.id.comment);
-        preferences=new Preferences(this);
 
 
         if (preferences.getBaseURL().contains("casuals")) {
@@ -115,8 +123,12 @@ public class RecordExit extends SojaActivity {
         }else{
             finish();
         }
-        ArrayAdapter<CharSequence> modeData = new ArrayAdapter(this,android.R.layout.simple_spinner_item,Mode);
-        modeData.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        modes.add(new TypeObject("1", "Foot"));
+        modes.add(new TypeObject("2", "Drive"));
+
+        TypeAdapter modeData = new TypeAdapter(this, R.layout.tv, modes);
+
         mode.setAdapter(modeData);
         record.setOnClickListener(new View.OnClickListener() {
             @Override

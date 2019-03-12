@@ -11,7 +11,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/toolbar"
+        android:background="?attr/backgroundColor">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,132 +20,282 @@
             android:animateLayoutChanges="true"
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/lin_server"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Select Server"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:padding="15dp">
 
-            <RadioGroup
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:checked="true"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Main Server: soja.co.ke" />
-
-                <RadioButton
-                    android:id="@+id/custom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Custom Server" />
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/custom_ip"
+                <miles.identigate.soja.Font.OpenSansRegular
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:maxLines="1"
-                    android:text="http://"
-                    android:visibility="visible" />
-            </RadioGroup>
+                    android:text="Select Server"
+                    android:textColor="?attr/textColor"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-            <android.support.v7.widget.AppCompatTextView
+                <miles.identigate.soja.Font.OpenSansBold
+                    android:id="@+id/serverName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Main Server"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Other Settings"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_height="1dp"
+                android:background="@color/grey" />
+
+
+            <!--<android.support.v7.widget.AppCompatTextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Select Server"-->
+            <!--android:textColor="?attr/textColor"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textStyle="bold" />-->
+
+            <!--<RadioGroup-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<RadioButton-->
+            <!--android:id="@+id/main"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:buttonTint="?attr/tintColor"-->
+            <!--android:checked="true"-->
+            <!--android:onClick="onRadioButtonClicked"-->
+            <!--android:text="Main Server: soja.co.ke"-->
+            <!--android:textColor="?attr/textColor" />-->
+
+            <!--<RadioButton-->
+            <!--android:id="@+id/custom"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:buttonTint="?attr/tintColor"-->
+            <!--android:onClick="onRadioButtonClicked"-->
+            <!--android:text="Custom Server"-->
+            <!--android:textColor="?attr/textColor" />-->
+
+            <!--<android.support.v7.widget.AppCompatEditText-->
+            <!--android:id="@+id/custom_ip"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:maxLines="1"-->
+            <!--android:text="http://"-->
+            <!--android:textColor="?attr/textColor"-->
+            <!--android:textColorHint="?attr/textColorHint"-->
+            <!--android:visibility="visible" />-->
+            <!--</RadioGroup>-->
+
+
+            <!--<android.support.v7.widget.AppCompatTextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Other Settings"-->
+            <!--android:textColor="?attr/textColor"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textStyle="bold" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <Switch
-                    android:id="@+id/printer"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="true"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Print Visitors Slips" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <Switch
-                    android:id="@+id/phone"
+                    <Switch
+                        android:id="@+id/printer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="true"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Print Visitors Slips"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="true"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Record Phone Number" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <Switch
-                    android:id="@+id/company"
+                    <Switch
+                        android:id="@+id/phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="true"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Record Phone Number"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="false"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Record Company Name" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <Switch
-                    android:id="@+id/scan_photo"
+                    <Switch
+                        android:id="@+id/company"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Record Company Name"
+                        android:textColor="?attr/textColor" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="false"
-                    android:gravity="left"
-                    android:visibility="gone"
-                    android:padding="10dp"
-                    android:text="Record ID Photo" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <Switch
-                    android:id="@+id/host"
+                    <Switch
+                        android:id="@+id/host"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="true"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Select host from list"
+                        android:textColor="?attr/textColor" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="true"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Select host from list" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <Switch
-                    android:id="@+id/fingerprints"
+                    <Switch
+                        android:id="@+id/fingerprints"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Scan &amp; read Fingerprints"
+                        android:textColor="?attr/textColor" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="false"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Scan &amp; read Fingerprints" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <Switch
-                    android:id="@+id/sms"
+                    <Switch
+                        android:id="@+id/sms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Check In using SMS"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:checked="false"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Check In using SMS" />
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
+                    <Switch
+                        android:id="@+id/darkMode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Enable Dark Mode"
+                        android:textColor="?attr/textColor" />
 
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
             </LinearLayout>
 
             <Button
@@ -153,9 +304,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="30dp"
-                android:background="@color/colorPrimary"
+                android:background="?attr/buttonColor"
                 android:text="SET"
-                android:textColor="@color/primary_text"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <miles.identigate.soja.Font.OpenSansBold
@@ -165,6 +316,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="5.0dip"
                 android:text="Version Code"
+                android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
 

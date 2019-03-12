@@ -38,11 +38,18 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
+
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_express_checkout);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Express Checkout");
+
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle("Express Checkout");
         ImageView scan_icon = findViewById(R.id.scan_icon);
         scan_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +74,8 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
             } else {
                 //Log.v("QR",result.getContents());
                 visit_id = result.getContents();
+
+
                 String urlParameters =null;
                 try {
                     urlParameters = "idNumber=" + URLEncoder.encode(visit_id, "UTF-8") +

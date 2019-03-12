@@ -48,13 +48,20 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        toolbar = findViewById(R.id.app_bar);
+//        toolbar = findViewById(R.id.app_bar);
         login = findViewById(R.id.login);
         username = findViewById(R.id.username);
         pin = findViewById(R.id.pin);
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         preferences = new Preferences(this);
         handler = new DatabaseHandler(this);
         /*String authorizationString = "Basic " + Base64.encodeToString(

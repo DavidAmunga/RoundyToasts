@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import miles.identigate.soja.Fragments.EntryTypeFragment;
 import miles.identigate.soja.Helpers.Constants;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.app.Common;
 
 
@@ -29,8 +30,15 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
     private boolean isLicenseOk = false;
+    Preferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_entry_type);
         Constants.fieldItems.clear();

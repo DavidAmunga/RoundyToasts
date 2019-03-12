@@ -12,11 +12,13 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
 import miles.identigate.soja.Adapters.DriveInAdapter;
 import miles.identigate.soja.Helpers.DatabaseHandler;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.Resident;
@@ -33,12 +35,21 @@ public class AllLogs extends SojaActivity {
     ArrayList<Resident> residents;
     //TextView type;
     ContentLoadingProgressBar progressBar;
+    Preferences preferences;
     private EditText searchbox;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visitors);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -47,10 +58,10 @@ public class AllLogs extends SojaActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        driveIns=new ArrayList<>();
-        walkIns=new ArrayList<>();
-        serviceProviderModels=new ArrayList<>();
-        residents=new ArrayList<>();
+        driveIns = new ArrayList<>();
+        walkIns = new ArrayList<>();
+        serviceProviderModels = new ArrayList<>();
+        residents = new ArrayList<>();
         lv = findViewById(R.id.visitors);
         lv.setVisibility(View.VISIBLE);
         progressBar = findViewById(R.id.loading);
@@ -58,31 +69,31 @@ public class AllLogs extends SojaActivity {
         progressBar.setVisibility(View.GONE);
         lv.setEmptyView(findViewById(R.id.empty));
         //type=(TextView)findViewById(R.id.type);
-        handler=new DatabaseHandler(this);
-        if(getIntent()!=null){
-            String str=getIntent().getStringExtra("TYPE");
-            if(str.equals("DRIVE")){
+        handler = new DatabaseHandler(this);
+        if (getIntent() != null) {
+            String str = getIntent().getStringExtra("TYPE");
+            if (str.equals("DRIVE")) {
                 title.setText("List Of Recent Vehicles");
-                driveIns=handler.getDriveIns(1);
-                adapter=new DriveInAdapter(this,handler.getDriveIns(1),1);
+                driveIns = handler.getDriveIns(1);
+                adapter = new DriveInAdapter(this, handler.getDriveIns(1), 1);
                 adapter.notifyDataSetChanged();
-            }else if(str.equals("WALK")){
+            } else if (str.equals("WALK")) {
                 title.setText("List Of Recent Pedestrians");
-                walkIns=handler.getWalk(1);
-                adapter=new DriveInAdapter(this,handler.getWalk(1),"WALK");
+                walkIns = handler.getWalk(1);
+                adapter = new DriveInAdapter(this, handler.getWalk(1), "WALK");
                 adapter.notifyDataSetChanged();
-            }else if(str.equals("PROVIDER")){
+            } else if (str.equals("PROVIDER")) {
                 title.setText("Service providers");
-                serviceProviderModels=handler.getProviders(1);
-                adapter=new DriveInAdapter(this,"TYPE",handler.getProviders(1));
+                serviceProviderModels = handler.getProviders(1);
+                adapter = new DriveInAdapter(this, "TYPE", handler.getProviders(1));
                 adapter.notifyDataSetChanged();
-            }else if(str.equals("RESIDENTS")){
+            } else if (str.equals("RESIDENTS")) {
                 title.setText("List of Recent Residents");
-                residents=handler.getResidents(1);
-                adapter=new DriveInAdapter(this,handler.getResidents(1));
+                residents = handler.getResidents(1);
+                adapter = new DriveInAdapter(this, handler.getResidents(1));
                 adapter.notifyDataSetChanged();
             }
-        }else{
+        } else {
             finish();
         }
         lv.setAdapter(adapter);
@@ -114,9 +125,10 @@ public class AllLogs extends SojaActivity {
             }
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);

@@ -9,4 +9,19 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="ds">
+        <attr name="backgroundColor" format="color" />
+        <attr name="cardBackground" format="color" />
+        <attr name="editTextBg" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="textColorHint" format="color" />
+        <attr name="tintColor" format="color" />
+        <attr name="buttonColor" format="color" />
+        <attr name="toolbarBg" format="color" />
+        <attr name="toolbarText" format="color" />
+        <attr name="iconColor" format="color" />
+        <attr name="elementBgColor" format="color" />
+        <attr name="dividerColor" format="color" />
+    </declare-styleable>
+
 </resources>

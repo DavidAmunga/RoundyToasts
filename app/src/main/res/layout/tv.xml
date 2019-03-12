@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/type"
-    android:layout_height="wrap_content">
-<miles.identigate.soja.Font.OpenSansRegular
     android:layout_width="match_parent"
-    android:textSize="20sp"
-    android:layout_gravity="center"
-    android:text="Service provider."
-    android:padding="10dp"
-    android:id="@+id/text"
-    android:layout_height="match_parent">
-</miles.identigate.soja.Font.OpenSansRegular>
+    android:layout_height="wrap_content"
+    android:background="?attr/backgroundColor">
+
+    <miles.identigate.soja.Font.OpenSansRegular
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:text="Service provider."
+        android:textColor="?attr/textColor"
+        android:textSize="20sp"></miles.identigate.soja.Font.OpenSansRegular>
 </LinearLayout>

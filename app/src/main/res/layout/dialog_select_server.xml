@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/cardBackground"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:buttonTint="?attr/tintColor"
+            android:checked="true"
+            android:onClick="onRadioButtonClicked"
+            android:text="Main Server"
+            android:textColor="?attr/textColor" />
+
+        <RadioButton
+            android:id="@+id/custom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:buttonTint="?attr/tintColor"
+            android:onClick="onRadioButtonClicked"
+            android:text="Custom Server"
+            android:textColor="?attr/textColor" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/custom_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:maxLines="1"
+            android:text="http://"
+            android:textColor="?attr/textColor"
+            android:textColorHint="?attr/textColorHint"
+            android:visibility="visible" />
+    </RadioGroup>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/ok_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="end"
+            android:padding="10dp"
+            android:text="Ok"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="?attr/iconColor" />
+
+        <TextView
+            android:id="@+id/cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:gravity="end"
+            android:padding="10dp"
+            android:text="Cancel"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="?attr/iconColor" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/backgroundColor"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -31,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5.0dip"
                 android:text="VISITOR TYPE"
+                android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
             <Spinner
@@ -55,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5.0dip"
                 android:text="DESTINATION"
+                android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
             <miles.identigate.soja.Font.OpenSansBold
@@ -70,7 +73,8 @@
                 android:padding="15dp"
                 android:singleLine="false"
                 android:text=""
-                android:textColor="@android:color/black"
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
                 android:textCursorDrawable="@null" />
         </LinearLayout>
 
@@ -125,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10.0dip"
                     android:text="ENTER CAR NUMBER"
+                    android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
                 <EditText
@@ -139,7 +144,8 @@
                     android:padding="10dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
@@ -154,6 +160,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5.0dip"
                     android:text="Number of People in car"
+                    android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
                 <EditText
@@ -168,7 +175,8 @@
                     android:padding="10dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
@@ -184,6 +192,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5.0dip"
                     android:text="Enter the Phone Number"
+                    android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
                 <EditText
@@ -199,7 +208,8 @@
                     android:padding="10dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
@@ -215,6 +225,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5.0dip"
                     android:text="Enter Company Name"
+                    android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
                 <EditText
@@ -229,7 +240,8 @@
                     android:padding="10dp"
                     android:singleLine="true"
                     android:text=""
-                    android:textColor="@android:color/black"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 

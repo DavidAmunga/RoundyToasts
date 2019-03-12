@@ -8,8 +8,54 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:navigationBarColor" tools:targetApi="lollipop">#000</item>
         <item name="android:windowDisablePreview">true</item>
+        <item name="backgroundColor">@color/white</item>
+        <item name="cardBackground">@color/white</item>
+        <item name="editTextBg">@color/white</item>
+        <item name="textColor">#686868</item>
+        <item name="textColorHint">#B5B5B5</item>
+        <item name="tintColor">@color/black</item>
+        <item name="buttonColor">@color/colorPrimary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="iconColor">@color/colorPrimary</item>
+        <item name="elementBgColor">@color/colorPrimary</item>
+        <item name="android:itemBackground">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+
 
     </style>
+
+    <!--Night/Dark Mode Theme-->
+    <style name="darkTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#212121</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundColor">#303030</item>
+        <item name="editTextBg">#424242</item>
+        <item name="cardBackground">#424242</item>
+        <item name="textColorHint">@color/white</item>
+        <item name="textColor">@color/white</item>
+        <item name="tintColor">@color/white</item>
+        <item name="buttonColor">@color/colorPrimary</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="iconColor">@color/white</item>
+        <item name="elementBgColor">#212121</item>
+        <item name="android:itemBackground">#424242</item>
+        <item name="android:textColor">@color/white</item>
+
+
+    </style>
+
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+
+
+    </style>
+
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
@@ -25,7 +71,9 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="FullscreenTheme" parent="AppTheme">
-        <item name="android:actionBarStyle" tools:targetApi="honeycomb">@style/FullscreenActionBarStyle</item>
+        <item name="android:actionBarStyle" tools:targetApi="honeycomb">
+            @style/FullscreenActionBarStyle
+        </item>
         <item name="android:windowActionBarOverlay" tools:targetApi="honeycomb">true</item>
         <item name="android:windowBackground">@null</item>
         <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>

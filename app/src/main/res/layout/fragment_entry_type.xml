@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:background="@color/white"
+    android:background="?attr/backgroundColor"
     android:orientation="vertical"
     tools:context="miles.identigate.soja.Fragments.EntryTypeFragment">
 
@@ -16,6 +16,7 @@
         android:layout_marginTop="80dp"
         android:gravity="center_horizontal"
         android:text="RECORD WALK IN"
+        android:textColor="?attr/textColor"
         android:textSize="28dp"
         android:textStyle="bold" />
 
@@ -33,6 +34,7 @@
             android:layout_height="100dp"
             android:layout_centerInParent="true"
             android:layout_marginBottom="10dp"
+            android:tint="?attr/iconColor"
             android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_scan_id" />
 
@@ -42,6 +44,7 @@
             android:layout_below="@+id/scan_icon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
+            android:textColor="?attr/textColor"
             android:text="@string/scan_id"
             android:textStyle="bold" />
     </RelativeLayout>

@@ -90,10 +90,16 @@ public class RecordWalkIn extends SojaActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         setContentView(R.layout.activity_record_walk_in);
         if (Constants.documentReaderResults == null)
             finish();
-        preferences = new Preferences(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -302,6 +308,8 @@ public class RecordWalkIn extends SojaActivity {
             String mrzLines = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
 
 
+            Log.d(TAG, "recordInternet: " + selectedDestination.getId());
+
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
                             "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
@@ -505,7 +513,7 @@ public class RecordWalkIn extends SojaActivity {
                                     idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                                     Log.d(TAG, "onNegative: " + idN);
                                     idNumber = idN;
-                                }else if (classCode.equals("PA")) {
+                                } else if (classCode.equals("PA")) {
                                     Log.d(TAG, "recordInternet: Passport");
 
                                     idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
@@ -546,6 +554,7 @@ public class RecordWalkIn extends SojaActivity {
                             }
                         })
                         .show();
+                Log.d(TAG, "resultHandler: Error" + result);
             }
         }
     }
@@ -593,7 +602,7 @@ public class RecordWalkIn extends SojaActivity {
                                         }
                                     })
                                     .show();
-                            Log.d(TAG, "Error: "+result);
+                            Log.d(TAG, "Error: " + result);
                         }
                     } else {
                         new MaterialDialog.Builder(RecordWalkIn.this)

@@ -4,9 +4,9 @@
     tools:context="miles.identigate.soja.Dashboard">
     <item
         android:id="@+id/refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
         android:orderInCategory="100"
         android:title="Refresh"
-        android:icon="@drawable/ic_refresh_white_24dp"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/settings"
