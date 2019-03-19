@@ -289,6 +289,8 @@ public class RecordDriveIn extends SojaActivity {
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
 
+            int peopleNo = Integer.parseInt(numberOfPeople.getText().toString());
+
             String gender = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M") ? "0" : "1";
             String mrzLines = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
             urlParameters =
@@ -303,7 +305,7 @@ public class RecordDriveIn extends SojaActivity {
                             "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
                             "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                             (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
-
+                            "&paxinvehicle=" + (peopleNo > 1 ? peopleNo : 0) +
                             "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                             "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8") +
                             "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8") +
@@ -473,7 +475,7 @@ public class RecordDriveIn extends SojaActivity {
                         } else if (classCode.equals("P")) {
                             idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
                             idNumber = idN;
-                        }else if (classCode.equals("PA")) {
+                        } else if (classCode.equals("PA")) {
                             Log.d(TAG, "recordInternet: Passport");
 
                             idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");

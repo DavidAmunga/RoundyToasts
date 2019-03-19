@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -89,7 +91,6 @@ public class ScanQRActivity extends AppCompatActivity {
         dialog = Constants.showProgressDialog(this, "QR Check In", "Checking In...");
 
 
-
         driveInLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +131,7 @@ public class ScanQRActivity extends AppCompatActivity {
 //                Log.d(TAG, "onActivityResult: Token"+token);
                 qr_contents = result.getContents();
                 try {
+                    Log.d(TAG, "Device ID: " + preferences.getDeviceId());
                     String urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                             "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                             "&qr=" + result.getContents();
@@ -188,6 +190,7 @@ public class ScanQRActivity extends AppCompatActivity {
                         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
                             Log.d(TAG, "onPostExecute: Success");
 
+
                             MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -196,8 +199,13 @@ public class ScanQRActivity extends AppCompatActivity {
                                     finish();
                                 }
                             };
+
+                            Log.d(TAG, "onPostExecute: Show Dialog");
+
+
                             dialog = Constants.showDialog(ScanQRActivity.this, "SUCCESS", "Resident recorded successfully.", "OK", singleButtonCallback);
 
+                            dialog.show();
                         } else {
                             if (resultText.contains("still in")) {
                                 new MaterialDialog.Builder(ScanQRActivity.this)
@@ -456,6 +464,7 @@ public class ScanQRActivity extends AppCompatActivity {
                         int result_code = object.getInt("result_code");
                         String resultText = object.getString("result_text");
                         Log.d(TAG, "onPostExecute: " + resultText);
+                        Log.d(TAG, "onPostExecute: " + result_code);
                         if (result_code == 0) {
                             new MaterialDialog.Builder(ScanQRActivity.this)
                                     .title("SUCCESS")

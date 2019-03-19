@@ -105,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="There are currently no logs available."
+            android:textAlignment="center"
             android:textColor="?attr/textColor"
             android:textSize="20sp" />
     </LinearLayout>

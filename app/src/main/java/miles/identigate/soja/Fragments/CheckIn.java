@@ -55,9 +55,6 @@ public class CheckIn extends Fragment {
     DatabaseHandler handler;
 
 
-
-
-
     public static CheckIn newInstance(String param1, String param2) {
         CheckIn fragment = new CheckIn();
         Bundle args = new Bundle();
@@ -127,16 +124,16 @@ public class CheckIn extends Fragment {
         }
 
 
-        checkinDrawables.add(R.drawable.ic_walk);
+        checkinDrawables.add(R.drawable.ic_walk_in_new);
 
         if (!preferences.getBaseURL().contains("casuals")) {
-            checkinDrawables.add(R.drawable.ic_resident);
+            checkinDrawables.add(R.drawable.ic_resident_icon_new);
         }
 
         if (preferences.isFingerprintsEnabled())
             checkinDrawables.add(R.drawable.fingerprint);
         if (preferences.isSMSCheckInEnabled())
-            checkinDrawables.add(R.drawable.ic_sms);
+            checkinDrawables.add(R.drawable.ic_sms_check_in_new);
 //        checkinDrawables.add(R.drawable.ic_siren);
 
 
@@ -148,9 +145,6 @@ public class CheckIn extends Fragment {
 
         Object[] c = checkinDrawables.toArray();
         drawables = Arrays.copyOf(c, c.length, Integer[].class);
-
-
-
 
 
     }
@@ -165,9 +159,7 @@ public class CheckIn extends Fragment {
         ListView lv = view.findViewById(R.id.options);
 
 
-
-
-        CheckInAdapter checkInAdapter = new CheckInAdapter(getActivity(), titles, descriptions, drawables,"checkin");
+        CheckInAdapter checkInAdapter = new CheckInAdapter(getActivity(), titles, descriptions, drawables, "checkin");
         lv.setAdapter(checkInAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -234,10 +226,6 @@ public class CheckIn extends Fragment {
 
         return view;
     }
-
-
-
-
 
 
 }

@@ -82,17 +82,17 @@ public class CheckOut extends ListFragment {
         ArrayList<Integer> checkoutDrawables = new ArrayList<>();
 
         if (!preferences.getBaseURL().contains("casuals")) {
-            checkoutDrawables.add(R.drawable.ic_qr_code);
+            checkoutDrawables.add(R.drawable.ic_qr);
         }
 
         if (!preferences.getBaseURL().contains("casuals")) {
             checkoutDrawables.add(R.drawable.ic_car);
         }
 
-        checkoutDrawables.add(R.drawable.ic_walk);
+        checkoutDrawables.add(R.drawable.ic_walk_in_new);
 
         if (!preferences.getBaseURL().contains("casuals")) {
-            checkoutDrawables.add(R.drawable.ic_resident);
+            checkoutDrawables.add(R.drawable.ic_resident_icon_new);
         }
 
         if (preferences.isFingerprintsEnabled())

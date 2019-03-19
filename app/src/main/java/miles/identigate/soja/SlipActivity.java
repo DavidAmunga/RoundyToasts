@@ -57,8 +57,13 @@ public class SlipActivity extends SojaActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         preferences = new Preferences(this);
+        if (preferences.isDarkModeOn()) {
+            setTheme(R.style.darkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slip);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

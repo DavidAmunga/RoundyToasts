@@ -229,6 +229,7 @@ public class AdminSettingsActivity extends SojaActivity {
                             ip += "soja-rest/index.php/api/visits/";
                             Log.d("IP", ip);
                             preferences.setBaseURL(ip);
+                            preferences.setResidentsURL(ip);
 
 
                             setServerName();
@@ -240,6 +241,7 @@ public class AdminSettingsActivity extends SojaActivity {
                             Log.d(TAG, "onClick: Selected Main");
 
                             preferences.setBaseURL("https://soja.co.ke/soja-rest/index.php/api/visits/");
+                            preferences.setResidentsURL("https://soja.co.ke/soja-rest/index.php/api/residents/");
 
 
                             setServerName();
