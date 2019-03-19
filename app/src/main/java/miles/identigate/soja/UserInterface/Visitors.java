@@ -341,14 +341,16 @@ public class Visitors extends AppCompatActivity {
                                 String id = item.getString("id_number");
                                 String entry = item.getString("entry_time");
                                 String house = item.getString("house");
+                                String visitorType = item.getString("visitor_type");
                                 if (str.equals("DRIVE")) {
                                     DriveIn driveIn = new DriveIn();
                                     driveIn.setName(name);
                                     driveIn.setNationalId(id);
                                     driveIn.setEntryTime(entry);
 
+                                    Log.d(TAG, "onPostExecute: Visitor Type" + visitorType);
 
-                                    if (!item.isNull("registration")) {
+                                    if (!item.isNull("registration") && !visitorType.equals("Resident")) {
                                         driveIn.setCarNumber(item.getString("registration"));
                                         driveIns.add(driveIn);
                                     }
@@ -361,9 +363,10 @@ public class Visitors extends AppCompatActivity {
 
 //                                    Log.d(TAG, "onPostExecute: Select Day "+selectCal.get(Calendar.DAY_OF_YEAR)+" Entry Day"+entryCal.get(Calendar.DAY_OF_YEAR));
 
-                                    if (item.isNull("registration")) {
-
+                                    Log.d(TAG, "onPostExecute: Visitor Type" + visitorType);
+                                    if (item.isNull("registration") && !visitorType.equals("Resident")) {
                                         walkIns.add(driveIn);
+
                                     }
                                 } else if (str.equals("PROVIDER")) {
                                     ServiceProviderModel model = new ServiceProviderModel();
@@ -372,16 +375,19 @@ public class Visitors extends AppCompatActivity {
                                     model.setNationalId(id);
                                     serviceProviderModels.add(model);
                                 } else if (str.equals("RESIDENTS")) {
-                                    Resident resident = new Resident();
-                                    resident.setName(name);
-                                    resident.setEntryTime(entry);
-                                    resident.setNationalId(id);
-                                    resident.setHouse(house);
+                                    if (visitorType.equals("Resident")) {
 
+                                        Resident resident = new Resident();
+                                        resident.setName(name);
+                                        resident.setEntryTime(entry);
+                                        resident.setNationalId(id);
+                                        resident.setHouse(house);
 
-                                    if (!item.isNull("registration")) {
+//                                        if (!item.isNull("registration")) {
                                         residents.add(resident);
+//                                        }
                                     }
+
                                 }
                             }
                             if (walkIns.size() > 0) {
