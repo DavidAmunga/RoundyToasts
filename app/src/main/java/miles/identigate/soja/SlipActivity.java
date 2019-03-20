@@ -249,9 +249,12 @@ public class SlipActivity extends SojaActivity {
 
 
             if (checkInMode.equals("SMS")) {
+                Log.d(TAG, "PrintSlip: SMS");
+
                 HPRTPrinterHelper.PrintQRCode(phoneNo, 7, (3 + 0x30), 1);
 
             } else {
+                Log.d(TAG, "PrintSlip: IDNumber");
                 HPRTPrinterHelper.PrintQRCode(idNumber, 7, (3 + 0x30), 1);
             }
 

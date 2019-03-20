@@ -15,6 +15,14 @@
 
         >
 
+        <miles.identigate.soja.Font.OpenSansBold
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="RECORD RESIDENT"
+            android:textColor="?attr/textColor"
+            android:textSize="25sp" />
+
         <RelativeLayout
             android:id="@+id/driveInLayout"
             android:layout_width="wrap_content"
@@ -26,11 +34,11 @@
                 android:id="@+id/scan_icon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:tint="?attr/iconColor"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="10dp"
                 android:background="?android:selectableItemBackground"
-                android:src="@drawable/ic_qr_car" />
+                android:src="@drawable/ic_residents_car_scan"
+                android:tint="?attr/iconColor" />
 
 
             <miles.identigate.soja.Font.OpenSansBold
@@ -57,11 +65,11 @@
                 android:id="@+id/scan_icon_2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:tint="?attr/iconColor"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="10dp"
                 android:background="?android:selectableItemBackground"
-                android:src="@drawable/ic_qr_person" />
+                android:src="@drawable/ic_residents_id_scan_new"
+                android:tint="?attr/iconColor" />
 
 
             <miles.identigate.soja.Font.OpenSansBold

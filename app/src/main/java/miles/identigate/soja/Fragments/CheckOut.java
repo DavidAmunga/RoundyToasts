@@ -86,7 +86,7 @@ public class CheckOut extends ListFragment {
         }
 
         if (!preferences.getBaseURL().contains("casuals")) {
-            checkoutDrawables.add(R.drawable.ic_car);
+            checkoutDrawables.add(R.drawable.ic_drive_in_new);
         }
 
         checkoutDrawables.add(R.drawable.ic_walk_in_new);

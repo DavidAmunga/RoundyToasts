@@ -120,7 +120,7 @@ public class CheckIn extends Fragment {
         ArrayList<Integer> checkinDrawables = new ArrayList<>();
 
         if (!preferences.getBaseURL().contains("casuals")) {
-            checkinDrawables.add(R.drawable.ic_car);
+            checkinDrawables.add(R.drawable.ic_drive_in_new);
         }
 
 
