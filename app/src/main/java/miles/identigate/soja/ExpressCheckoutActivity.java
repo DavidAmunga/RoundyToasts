@@ -33,9 +33,11 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
     String visit_id;
     MaterialDialog dialog;
     Preferences preferences;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
@@ -58,14 +60,15 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
             }
         });
 //        new IntentIntegrator(ExpressCheckoutActivity.this).setCaptureActivity(ZxingHelperActivity.class).initiateScan();
-        dialog=new MaterialDialog.Builder(ExpressCheckoutActivity.this)
+        dialog = new MaterialDialog.Builder(ExpressCheckoutActivity.this)
                 .title("QR")
                 .content("Checking QR...")
-                .progress(true,0)
+                .progress(true, 0)
                 .cancelable(true)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -76,13 +79,13 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                 visit_id = result.getContents();
 
 
-                String urlParameters =null;
+                String urlParameters = null;
                 try {
                     urlParameters = "idNumber=" + URLEncoder.encode(visit_id, "UTF-8") +
-                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
+                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                             "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
 
-                    new CheckoutService().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
+                    new CheckoutService().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -92,30 +95,33 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     private class CheckoutService extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            if (dialog!= null && !dialog.isShowing())
+            if (dialog != null && !dialog.isShowing())
                 dialog.show();
         }
-        protected String  doInBackground(String... params) {
+
+        protected String doInBackground(String... params) {
             return NetworkHandler.executePost(params[0], params[1]);
         }
+
         protected void onPostExecute(String result) {
-            if (dialog!= null && dialog.isShowing())
+            if (dialog != null && dialog.isShowing())
                 dialog.dismiss();
-            if (result != null){
+            if (result != null) {
                 //Toast.makeText(ExpressCheckoutActivity.this,result, Toast.LENGTH_LONG).show();
-                Object json=null;
-                try{
-                    json=new JSONTokener(result).nextValue();
-                    if (json instanceof JSONObject){
-                        JSONObject object=new JSONObject(result);
-                        int result_code=object.getInt("result_code");
-                        if (result_code == 0){
+                Object json = null;
+                try {
+                    json = new JSONTokener(result).nextValue();
+                    if (json instanceof JSONObject) {
+                        JSONObject object = new JSONObject(result);
+                        int result_code = object.getInt("result_code");
+                        if (result_code == 0) {
                             showSuccess();
 
-                        }else{
+                        } else {
                             MaterialDialog.SingleButtonCallback callback = new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -123,20 +129,23 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                                     finish();
                                 }
                             };
-                            dialog = Constants.showDialog(ExpressCheckoutActivity.this,"Error", object.getString("result_text"), "OK", callback);
+
+
+                            dialog = Constants.showDialog(ExpressCheckoutActivity.this, "Attention", "Visitor Already Checked Out or Unknown Visitor", "OK", callback);
                             dialog.show();
                         }
                     }
-                }catch (JSONException e){
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 Toast.makeText(getApplicationContext(), "No network connection", Toast.LENGTH_LONG).show();
             }
 
         }
     }
-    void showSuccess(){
+
+    void showSuccess() {
         dialog.dismiss();
         dialog = new MaterialDialog.Builder(this)
                 .title("CHECKED OUT")
@@ -153,6 +162,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                         dialog.dismiss();
                         finish();
                     }
+
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         super.onPositive(dialog);
