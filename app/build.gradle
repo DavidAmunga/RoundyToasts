@@ -35,11 +35,21 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
     }
+
+
+
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
     }
     /*sourceSets.main {
         jniLibs.srcDir 'src/main/libs'
@@ -58,6 +68,7 @@ dependencies {
 
     implementation('com.regula.documentreader:api:+@aar') {
         transitive = true
+
     }
     implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
