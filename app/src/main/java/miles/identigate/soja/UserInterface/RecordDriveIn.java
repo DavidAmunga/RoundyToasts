@@ -305,7 +305,7 @@ public class RecordDriveIn extends SojaActivity {
                             "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
                             "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
                             (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
-                            "&paxinvehicle=" + (peopleNo > 1 ? peopleNo : 0) +
+                            "&paxinvehicle=" + (peopleNo >= 1 ? peopleNo : 1) +
                             "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                             "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8") +
                             "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8") +

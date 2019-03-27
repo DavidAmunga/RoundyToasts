@@ -319,6 +319,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
         String urlParameters = null;
         String phoneNo = edtPhoneNo.getText().toString();
         String carNo = edtCarNo.getText().toString();
+        int peopleNo = Integer.parseInt(edtPeopleNo.getText().toString());
+
 
 
         Log.d(TAG, "recordSMSCheckInDrive: Start");
@@ -332,6 +334,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                 "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                                 "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                                "&paxinvehicle=" + (peopleNo >= 1 ? peopleNo : 1) +
                                 (preferences.isCompanyNameEnabled() && !companyNameEditTexxt.getText().toString().equals("") ?
                                         ("&company=" + URLEncoder.encode(companyNameEditTexxt.getText().toString(), "UTF-8")) : "") +
                                 (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
