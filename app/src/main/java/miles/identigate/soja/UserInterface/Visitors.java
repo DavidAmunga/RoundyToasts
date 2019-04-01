@@ -4,54 +4,56 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hudomju.swipe.SwipeToDismissTouchListener;
+import com.hudomju.swipe.adapter.ListViewAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
 import miles.identigate.soja.Adapters.DriveInAdapter;
 import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.Constants;
 import miles.identigate.soja.Helpers.DatabaseHandler;
 import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Models.DriveIn;
 import miles.identigate.soja.Models.Resident;
 import miles.identigate.soja.Models.ServiceProviderModel;
-import miles.identigate.soja.Models.Visitor;
 import miles.identigate.soja.R;
 
 public class Visitors extends AppCompatActivity {
@@ -64,11 +66,11 @@ public class Visitors extends AppCompatActivity {
     ArrayList<Resident> residents;
 
     String str;
+    @BindView(R.id.empty)
+    LinearLayout empty;
     private ContentLoadingProgressBar loading;
     private Preferences preferences;
-    private EditText searchbox;
     private static final String TAG = "Visitors";
-    ImageView ic_filter;
     TextView info_message;
     String[] filterItems = {"Entry Time", "SMS Login", "Alphabetically"};
 
@@ -102,6 +104,7 @@ public class Visitors extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visitors);
+        ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.title);
         title.setText("Check Out");
@@ -115,9 +118,7 @@ public class Visitors extends AppCompatActivity {
         residents = new ArrayList<>();
         lv = findViewById(R.id.visitors);
         loading = findViewById(R.id.loading);
-        searchbox = findViewById(R.id.searchbox);
         handler = new DatabaseHandler(this);
-        ic_filter = findViewById(R.id.ic_filter);
         info_message = findViewById(R.id.info_message);
 
 
@@ -141,6 +142,41 @@ public class Visitors extends AppCompatActivity {
 //                Toast.makeText(Visitors.this, date.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
+
+//        final SwipeToDismissTouchListener<ListViewAdapter> touchListener =
+//                new SwipeToDismissTouchListener<>(
+//                        new ListViewAdapter(lv),
+//                        new SwipeToDismissTouchListener.DismissCallbacks<ListViewAdapter>() {
+//                            @Override
+//                            public boolean canDismiss(int position) {
+//                                return true;
+//                            }
+//
+//                            @Override
+//                            public void onDismiss(ListViewAdapter view, int position) {
+//                                adapter.remove(position);
+//
+//                                Toast.makeText(Visitors.this, "Dismissed", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+
+
+//        lv.setOnTouchListener(touchListener);
+//
+//
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (touchListener.existPendingDismisses()) {
+//                    touchListener.undoPendingDismiss();
+//                } else {
+////                    Toast.makeText(Visitors.this, "Position " + position, LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//        lv.setOnScrollListener((AbsListView.OnScrollListener) touchListener.makeScrollListener());
+
 
 
         if (getIntent() != null) {
@@ -170,52 +206,7 @@ public class Visitors extends AppCompatActivity {
             finish();
         }
 
-        ic_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(Visitors.this);
-                builder.setTitle("Filter Visitors By");
-
-                final int checkedItem = 0; //this will checked the item when user open the dialog
-                builder.setSingleChoiceItems(filterItems, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//                        Toast.makeText(Visitors.this, "Position: " + which + " Value: " + listItems[which], Toast.LENGTH_LONG).show();
-
-//                        String click=listItems[which];
-//                        Log.d(TAG, "onClick: "+click);
-
-                        switch (filterItems[which]) {
-                            case "Entry Time":
-                                sortVisitorsByEntryTime();
-                                break;
-                            case "SMS Login":
-                                sortVisitorsBySMS();
-                                break;
-                            case "Alphabetically":
-                                sortVisitorsAlphabetically();
-                                break;
-                            default:
-                                break;
-
-                        }
-
-
-                    }
-                });
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
 
 
         lv.setAdapter(adapter);
@@ -272,39 +263,98 @@ public class Visitors extends AppCompatActivity {
 
             }
         });
-        searchbox.addTextChangedListener(new TextWatcher() {
 
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_visitors, menu);
+
+        MenuItem mSearch = menu.findItem(R.id.nav_search);
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setIconifiedByDefault(false);
+
+        mSearchView.setQueryHint("Search");
+
+
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void afterTextChanged(Editable arg0) {
-
-                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
-                adapter.filter(text);
+            public boolean onQueryTextSubmit(String query) {
+                return false;
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                // TODO Auto-generated method stub
-            }
+            public boolean onQueryTextChange(String newText) {
 
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                // TODO Auto-generated method stub
+//                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
+                adapter.filter(newText);
+                return true;
             }
         });
 
 
+
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+        } else if (item.getItemId() == R.id.nav_search) {
+            lv.setEmptyView(empty);
+        }else if(item.getItemId()==R.id.nav_filter){
+            showFilterDialog();
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void showFilterDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Visitors.this);
+        builder.setTitle("Filter Visitors By");
+
+        final int checkedItem = 0; //this will checked the item when user open the dialog
+        builder.setSingleChoiceItems(filterItems, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                        Toast.makeText(Visitors.this, "Position: " + which + " Value: " + listItems[which], Toast.LENGTH_LONG).show();
+
+//                        String click=listItems[which];
+//                        Log.d(TAG, "onClick: "+click);
+
+                switch (filterItems[which]) {
+                    case "Entry Time":
+                        sortVisitorsByEntryTime();
+                        break;
+                    case "SMS Login":
+                        sortVisitorsBySMS();
+                        break;
+                    case "Alphabetically":
+                        sortVisitorsAlphabetically();
+                        break;
+                    default:
+                        break;
+
+                }
+
+
+            }
+        });
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     @Override
     protected void onResume() {
         super.onResume();

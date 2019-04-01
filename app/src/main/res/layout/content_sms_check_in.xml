@@ -42,7 +42,7 @@
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
-            <EditText
+            <miles.identigate.soja.Font.EditTextRegular
                 android:id="@+id/edtPhoneNo"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
-            <EditText
+            <miles.identigate.soja.Font.EditTextRegular
                 android:id="@+id/edtCode"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 
-            <EditText
+            <miles.identigate.soja.Font.EditTextRegular
                 android:id="@+id/companyNameEdittext"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -206,7 +206,7 @@
                 android:textColorHint="?attr/textColorHint"
                 android:textCursorDrawable="@null" />
 
-            <EditText
+            <miles.identigate.soja.Font.EditTextRegular
                 android:id="@+id/edtHost"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -283,7 +283,7 @@
                         android:textColor="?attr/textColor"
                         android:textSize="16sp" />
 
-                    <EditText
+                    <miles.identigate.soja.Font.EditTextRegular
                         android:id="@+id/edtCarNo"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -314,7 +314,7 @@
                         android:textColor="?attr/textColor"
                         android:textSize="16sp" />
 
-                    <EditText
+                    <miles.identigate.soja.Font.EditTextRegular
                         android:id="@+id/edtPeopleNo"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"

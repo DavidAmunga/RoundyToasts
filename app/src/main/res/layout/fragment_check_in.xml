@@ -1,7 +1,16 @@
-<ListView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:id="@+id/options"
-    android:background="?attr/backgroundColor"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-</ListView>
+    android:id="@+id/linearLayout"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <ListView
+        android:id="@+id/options"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?attr/backgroundColor" />
+
+
+</LinearLayout>

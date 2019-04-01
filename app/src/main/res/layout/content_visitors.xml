@@ -9,72 +9,83 @@
     tools:context="miles.identigate.soja.UserInterface.Visitors"
     tools:showIn="@layout/activity_visitors">
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!---->
 
-    <LinearLayout
-        android:id="@+id/search_layout"
+    <!--</LinearLayout>-->
+
+    <devs.mulham.horizontalcalendar.HorizontalCalendarView
+        android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/elementBgColor"
-        android:elevation="5dp"
-        android:orientation="vertical">
+        app:selectorColor="@color/white"
+        app:textColorNormal="#f5f5f5"
+        app:textColorSelected="#FFFF"
+        android:background="@color/colorPrimary"
+        app:textSizeDayName="12sp"
+        app:textSizeDayNumber="14sp"
+        app:textSizeMonthName="12sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
+    <!--<LinearLayout-->
+    <!--android:id="@+id/search_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="?attr/elementBgColor"-->
+    <!--android:elevation="5dp"-->
+    <!--android:orientation="vertical">-->
 
-            <EditText
-                android:id="@+id/searchbox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:drawableLeft="@drawable/ic_search_dark"
-                android:drawablePadding="20dp"
-                android:hint="Search Visitors"
-                android:inputType="text"
-                android:paddingLeft="25dp"
-                android:paddingTop="15dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="15dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="16sp" />
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:visibility="gone"-->
+    <!--android:weightSum="1">-->
 
-            <ImageView
-                android:id="@+id/ic_filter"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="0.1"
-                android:tint="@color/white"
-                app:srcCompat="@drawable/ic_filter_list" />
+    <!--<EditText-->
+    <!--android:id="@+id/searchbox"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="0.9"-->
+    <!--android:drawableLeft="@drawable/ic_search_dark"-->
+    <!--android:drawablePadding="20dp"-->
+    <!--android:hint="Search Visitors"-->
+    <!--android:inputType="text"-->
+    <!--android:paddingLeft="25dp"-->
+    <!--android:paddingTop="15dp"-->
+    <!--android:paddingRight="15dp"-->
+    <!--android:paddingBottom="15dp"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:textColorHint="@color/white"-->
+    <!--android:textSize="16sp" />-->
 
-        </LinearLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/ic_filter"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:layout_weight="0.1"-->
+    <!--android:tint="@color/white"-->
+    <!--app:srcCompat="@drawable/ic_filter_list" />-->
 
-        <devs.mulham.horizontalcalendar.HorizontalCalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:selectorColor="@color/white"
-            app:textColorNormal="#f5f5f5"
-            app:textColorSelected="#FFFF"
-            app:textSizeDayName="12sp"
-            app:textSizeDayNumber="14sp"
-            app:textSizeMonthName="12sp" />
+    <!--</LinearLayout>-->
+
+    <!---->
 
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 
     <ListView
         android:id="@+id/visitors"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_layout"
+        android:layout_below="@id/calendarView"
         android:layout_marginTop="10dp"
         android:fastScrollAlwaysVisible="true"
         android:fastScrollEnabled="true"
         android:visibility="gone" />
+
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/loading"

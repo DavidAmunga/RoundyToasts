@@ -211,4 +211,15 @@ public class Preferences {
         return settings.getBoolean("darkModeOn", false);
     }
 
+    public void setOrganizationId(String organizationID) {
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("organizationId", organizationID);
+        editor.commit();
+    }
+
+    public String getOrganizationId() {
+        return settings.getString("organizationId", "SOJA");
+    }
+
 }

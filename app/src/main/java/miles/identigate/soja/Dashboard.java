@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
 import org.json.JSONArray;
@@ -86,6 +87,7 @@ public class Dashboard extends SojaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
 
+
         if (preferences.isDarkModeOn()) {
             setTheme(R.style.darkTheme);
         } else {
@@ -97,6 +99,12 @@ public class Dashboard extends SojaActivity {
         handler=new DatabaseHandler(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+//        Firebase Notifications
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+//        FirebaseMessaging.getInstance().subscribeToTopic("test");
+
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

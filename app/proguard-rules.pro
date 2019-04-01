@@ -19,3 +19,5 @@
 -keep class org.apache.http.** { *; }
 -dontwarn org.apache.http.**
 -dontwarn HPRTAndroidSDK.**
+-keepattributes Signature
+-keepattributes *Annotation*

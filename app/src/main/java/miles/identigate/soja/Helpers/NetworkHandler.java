@@ -80,6 +80,7 @@ public class NetworkHandler {
         }
     }
     public static String GET(String path){
+        Log.d(TAG, "GET: path"+path);
 
         HttpURLConnection httpURLConnection=null;
        /* String authorizationString = "Basic " + Base64.encodeToString(

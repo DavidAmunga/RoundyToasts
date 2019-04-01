@@ -1,9 +1,12 @@
 package miles.identigate.soja.Adapters;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,18 +17,19 @@ import miles.identigate.soja.R;
 /**
  * Created by myles on 10/31/15.
  */
-public class CheckInAdapter extends BaseAdapter{
+public class CheckInAdapter extends BaseAdapter {
     String[] titles;
     String[] descriptions;
     Integer[] drawables;
     Activity activity;
     String type;
-    public CheckInAdapter(Activity activity, String[] titles, String[] descriptions, Integer[] drawables,String type){
-        this.activity=activity;
-        this.titles=titles;
-        this.descriptions=descriptions;
-        this.drawables=drawables;
-        this.type=type;
+
+    public CheckInAdapter(Activity activity, String[] titles, String[] descriptions, Integer[] drawables, String type) {
+        this.activity = activity;
+        this.titles = titles;
+        this.descriptions = descriptions;
+        this.drawables = drawables;
+        this.type = type;
     }
 
 
@@ -46,13 +50,22 @@ public class CheckInAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view=activity.getLayoutInflater().inflate(R.layout.option,null);
+        View view = activity.getLayoutInflater().inflate(R.layout.option, null);
         TextView title = view.findViewById(R.id.title);
         TextView description = view.findViewById(R.id.description);
         ImageView image = view.findViewById(R.id.image);
-        if(type.equals("checkout")){
-                image.setScaleX(-1);
-                image.setPadding(0,0,10,0);
+
+
+//        title.setMinimumHeight(pxHeight);
+
+//        title.setMinimumHeight(minHeight);
+////        description.setMinimumHeight(minHeight);
+////        image.setMinimumHeight(minHeight);
+
+
+        if (type.equals("checkout")) {
+            image.setScaleX(-1);
+            image.setPadding(0, 0, 10, 0);
 
         }
         title.setText(titles[position]);

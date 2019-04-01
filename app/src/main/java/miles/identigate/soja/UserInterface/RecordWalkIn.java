@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -20,9 +22,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.maps.model.LatLng;
 import com.regula.documentreader.api.enums.eVisualFieldType;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -30,6 +36,7 @@ import org.json.JSONTokener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
@@ -47,6 +54,7 @@ import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
 import miles.identigate.soja.SlipActivity;
 import miles.identigate.soja.SmsCheckInActivity;
+import miles.identigate.soja.app.Common;
 
 public class RecordWalkIn extends SojaActivity {
     static {
@@ -133,14 +141,27 @@ public class RecordWalkIn extends SojaActivity {
 
         spinnerDestination.setText("Select " + entity_name);
 
-        houses = handler.getTypes("houses", null);
+        if (!preferences.getBaseURL().contains("casuals")) {
+            houses = handler.getTypes("houses", null);
+        } else {
+            Log.d(TAG, "onCreate: Casuals");
+            try {
+                houses = new FetchHouseDetails().execute().get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         Log.d(TAG, "Houses: " + houses);
         visitorTypes = handler.getTypes("visitors", null);
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (selectedDestination == null) {
-                    Toast.makeText(RecordWalkIn.this, "Select A Destination", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecordWalkIn.this, "Select a "+entity_name, Toast.LENGTH_SHORT).show();
                 } else {
                     if (CheckConnection.check(RecordWalkIn.this)) {
                         recordInternet();
@@ -258,6 +279,93 @@ public class RecordWalkIn extends SojaActivity {
         super.onPause();
     }
 
+
+    //    Record Check In Only
+    public void recordCheckIn() {
+        String urlParameters = null;
+        try {
+            String idN = "000000000";
+            String scan_id_type = "ID";
+            String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
+
+            Log.d(TAG, "recordInternet: " + Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
+
+            if (classCode.equals("ID")) {
+                Log.d(TAG, "recordInternet: ID");
+                scan_id_type = "ID";
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                idNumber = idN.substring(2, idN.length() - 1);
+
+            } else if (classCode.equals("P")) {
+                Log.d(TAG, "recordInternet: Passport");
+
+                scan_id_type = "P";
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                idNumber = idN;
+            } else if (classCode.equals("PA")) {
+                Log.d(TAG, "recordInternet: Passport");
+
+                scan_id_type = "P";
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                idNumber = idN;
+            } else if (classCode.equals("AC")) {
+                Log.d(TAG, "Class Code : " + classCode);
+//                TODO: Standardize Alien ID
+                Log.d(TAG, "recordInternet: Alien Id");
+                scan_id_type = "AID";
+
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA).replace("^", "\n");
+                idNumber = idN.substring(2, idN.length() - 1);
+                Log.d(TAG, "recordInternet: ID" + idNumber);
+
+
+            }
+
+
+            firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
+            lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
+
+            Log.d(TAG, "recordInternet: " + firstName + " " + lastName);
+
+            String gender = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M") ? "0" : "1";
+            String mrzLines = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
+
+
+            Log.d(TAG, "recordInternet: " + selectedDestination.getId());
+
+            urlParameters =
+                    "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
+                            "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
+                            (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
+                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
+                            "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
+                            "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
+                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                            "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                            "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
+                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+                            "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
+                            "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
+                            "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8") +
+                            "&genderID=" + URLEncoder.encode(gender, "UTF-8") +
+                            "&firstName=" + URLEncoder.encode(firstName, "UTF-8") +
+                            "&lastName=" + URLEncoder.encode(lastName, "UTF-8") +
+                            "&idType=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"), "UTF-8") +
+                            "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
+                            "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8") +
+                            "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
+
+            Log.d(TAG, "recordInternet: " + preferences.getBaseURL() + "record-visit/" + urlParameters);
+
+            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //    Record CheckIn with Base URL changes
     public void recordInternet() {
         String urlParameters = null;
         try {
@@ -302,7 +410,7 @@ public class RecordWalkIn extends SojaActivity {
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
 
-//            Log.d(TAG, "recordInternet: "+firstName);
+            Log.d(TAG, "recordInternet: " + firstName + " " + lastName);
 
             String gender = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M") ? "0" : "1";
             String mrzLines = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
@@ -333,10 +441,28 @@ public class RecordWalkIn extends SojaActivity {
                             "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
 
             Log.d(TAG, "recordInternet: " + preferences.getBaseURL() + "record-visit/" + urlParameters);
-            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
+            if (preferences.getBaseURL().contains("casuals")) {
+                checkIfLocationClose(selectedDestination);
+//                new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
+
+            } else {
+                new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void checkIfLocationClose(TypeObject selectedDestination) {
+        String urlParameters = null;
+
+        urlParameters = "houseID=" + selectedDestination.getId();
+
+
+        new CheckLocationAsync().execute(preferences.getBaseURL() + "getHouseLocation", urlParameters);
+
+
     }
 
     public void recordOffline() {
@@ -386,6 +512,98 @@ public class RecordWalkIn extends SojaActivity {
                     })
                     .show();
         }
+    }
+
+    private class CheckLocationAsync extends AsyncTask<String, Void, String> {
+        MaterialDialog builder = new MaterialDialog.Builder(RecordWalkIn.this)
+                .title("Please Wait")
+                .content("Checking In Location...")
+                .progress(true, 0)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+            return NetworkHandler.executePost(params[0], params[1]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            builder.dismiss();
+
+            if (result != null) {
+                if (result.contains("result_code")) {
+                    try {
+                        JSONObject obj = new JSONObject(result);
+                        int resultCode = obj.getInt("result_code");
+                        String resultText = obj.getString("result_text");
+                        JSONObject resultContent = obj.getJSONObject("result_content");
+                        if (resultCode == 0 && resultText.equals("OK")) {
+
+                            Double latitude = resultContent.getDouble("latitude");
+                            Double longitude = resultContent.getDouble("longitude");
+
+                            Log.d(TAG, "onPostExecute: " + latitude + "," + longitude);
+                            Log.d(TAG, "onPostExecute: My Location " + Constants.mLastLocation.getLatitude() + "," + Constants.mLastLocation.getLongitude());
+
+                            if (compareLocations(new LatLng(latitude, longitude))) {
+
+                                recordCheckIn();
+
+                            } else {
+                                builder.dismiss();
+                                MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        dialog.dismiss();
+                                    }
+                                };
+
+                                Constants.showDialog(RecordWalkIn.this, "Failed", " You are not within the specified event location", "OK", singleButtonCallback).show();
+                            }
+
+                        } else {
+                            MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    dialog.dismiss();
+                                }
+                            };
+
+                            Constants.showDialog(RecordWalkIn.this, "Failed", " Sorry, Failed. Please turn on you internet connection", "OK", singleButtonCallback).show();
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.d(TAG, "onPostExecute: Record Offline" + result);
+                    recordOffline();
+                }
+                super.onPostExecute(result);
+
+            }
+        }
+    }
+
+    private boolean compareLocations(LatLng eventLocation) {
+        float[] dist = new float[1];
+
+        Location.distanceBetween(Constants.mLastLocation.getLatitude(), Constants.mLastLocation.getLongitude(), eventLocation.latitude, eventLocation.longitude, dist);
+
+        if (dist[0] / 1000 <= 1) {
+            return true;
+        }
+        return false;
+
     }
 
     private class DriveinAsync extends AsyncTask<String, Void, String> {
@@ -625,6 +843,7 @@ public class RecordWalkIn extends SojaActivity {
         }
     }
 
+
     private class FetchHostsService extends AsyncTask<String, Void, String> {
 
         @Override
@@ -637,4 +856,62 @@ public class RecordWalkIn extends SojaActivity {
 
         }
     }
+
+
+    private class FetchHouseDetails extends AsyncTask<Void, String, ArrayList<TypeObject>> {
+
+        MaterialDialog builder = new MaterialDialog.Builder(RecordWalkIn.this)
+                .title("Soja")
+                .titleGravity(GravityEnum.CENTER)
+                .titleColor(getResources().getColor(R.color.ColorPrimary))
+                .content("Fetching Data")
+                .progress(true, 0)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+
+
+        @Override
+        protected ArrayList<TypeObject> doInBackground(Void... voids) {
+            String houseResult = NetworkHandler.GET(preferences.getBaseURL() + "active_events");
+
+            ArrayList<TypeObject> houses = new ArrayList<>();
+            Log.d(TAG, "getActiveHouses: " + houseResult);
+            if (houseResult != null) {
+                try {
+                    JSONObject housesObject = new JSONObject(houseResult);
+                    if (housesObject.getInt("result_code") == 0 && housesObject.getString("result_text").equals("OK")) {
+                        JSONArray housesArray = housesObject.getJSONArray("result_content");
+                        for (int i = 0; i < housesArray.length(); i++) {
+                            JSONObject house = housesArray.getJSONObject(i);
+                            houses.add(new TypeObject(house.getString("house_id"), house.getString("house_description")));
+//                        handler.insertHouse(house.getString("house_id"), house.getString("house_description"),house.getString("block_description"));
+                        }
+                        return houses;
+                    } else {
+                        Toast.makeText(RecordWalkIn.this, "Couldn't retrieve houses", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return houses;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TypeObject> typeObjects) {
+            super.onPostExecute(typeObjects);
+            builder.dismiss();
+        }
+    }
 }
+
+

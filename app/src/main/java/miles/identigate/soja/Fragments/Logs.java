@@ -6,31 +6,29 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import miles.identigate.soja.Adapters.CheckInAdapter;
+import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Logs.AllLogs;
 import miles.identigate.soja.Logs.Incidents;
 import miles.identigate.soja.R;
 
 public class Logs extends ListFragment {
 
+    Preferences preferences;
 
-    private String[] titles = {
-            "Drive Logs",
-            "Pedestrian Logs"
-//            "Incidents"
-    };
-    private String[] descriptions = {
-            "Summary log of Motor Vehicles ",
-            "Summary log of Walking Visitors"
-//            "List of incidents"
 
-    };
-    private Integer[] drawables = {
-            R.drawable.ic_car,
-            R.drawable.ic_walk
-//            R.drawable.ic_resident
+    private String[] titles;
 
-    };
+
+    private String[] descriptions;
+    private Integer[] drawables;
+
+    ArrayList<String> logsTitles = new ArrayList<>();
+    ArrayList<String> logsDescriptions = new ArrayList<>();
+    ArrayList<Integer> logsDrawables = new ArrayList<>();
 
 
     /**
@@ -44,24 +42,50 @@ public class Logs extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        CheckInAdapter checkInAdapter =new CheckInAdapter(getActivity(),titles,descriptions,drawables,"logs");
+        preferences = new Preferences(getActivity());
+
+
+        if (!preferences.getBaseURL().contains("casuals")) {
+            logsTitles.add("Drive Logs");
+            logsDescriptions.add("Summary log of Motor Vehicles");
+            logsDrawables.add(R.drawable.ic_drive_in_new);
+
+        }
+
+        logsTitles.add("Pedestrian Logs");
+        logsDescriptions.add("Summary log of Walking Visitor");
+        logsDrawables.add(R.drawable.ic_walk_in_new);
+
+
+        Object[] a = logsTitles.toArray();
+        titles = Arrays.copyOf(a, a.length, String[].class);
+
+        Object[] b = logsDescriptions.toArray();
+        descriptions = Arrays.copyOf(b, b.length, String[].class);
+
+        Object[] c = logsDrawables.toArray();
+        drawables = Arrays.copyOf(c, c.length, Integer[].class);
+
+
+        CheckInAdapter checkInAdapter = new CheckInAdapter(getActivity(), titles, descriptions, drawables, "logs");
         setListAdapter(checkInAdapter);
     }
+
     @Override
-    public void onListItemClick (ListView l, View v, int position, long id){
-        switch (position){
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        switch (position) {
             case 0:
-                Intent driveOut=new Intent(getActivity().getApplicationContext(), AllLogs.class);
+                Intent driveOut = new Intent(getActivity().getApplicationContext(), AllLogs.class);
                 driveOut.putExtra("TYPE", "DRIVE");
                 startActivity(driveOut);
                 break;
             case 1:
-                Intent walkOut=new Intent(getActivity().getApplicationContext(), AllLogs.class);
-                walkOut.putExtra("TYPE","WALK");
+                Intent walkOut = new Intent(getActivity().getApplicationContext(), AllLogs.class);
+                walkOut.putExtra("TYPE", "WALK");
                 startActivity(walkOut);
                 break;
             case 2:
-                Intent resident=new Intent(getActivity().getApplicationContext(), Incidents.class);
+                Intent resident = new Intent(getActivity().getApplicationContext(), Incidents.class);
                 startActivity(resident);
                 break;
         }

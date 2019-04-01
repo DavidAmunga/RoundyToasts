@@ -153,7 +153,6 @@ public class SmsCheckInActivity extends AppCompatActivity {
                 }
 
 
-
             }
         });
 
@@ -209,10 +208,9 @@ public class SmsCheckInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Clicked");
-                if(selectedDestination==null){
+                if (selectedDestination == null) {
                     Toast.makeText(SmsCheckInActivity.this, "Select Destination First", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     new SimpleSearchDialogCompat(SmsCheckInActivity.this,
                             "Search for Host...", "Who is the visitor seeing in " + selectedDestination.getName(), null, hosts, new SearchResultListener<TypeObject>() {
                         @Override
@@ -275,7 +273,9 @@ public class SmsCheckInActivity extends AppCompatActivity {
         if (!phoneNo.equals("")) {
             try {
                 urlParameters =
-                        "phone=" + URLEncoder.encode(phoneNo, "UTF-8");
+                        "phone=" + URLEncoder.encode(phoneNo, "UTF-8")+
+                "&organisationID=" + URLEncoder.encode(preferences.getOrganizationId(), "UTF-8")
+                ;
 
                 new SMSCheckInAsync().execute(preferences.getBaseURL() + "send_code", urlParameters);
             } catch (UnsupportedEncodingException e) {
@@ -320,7 +320,6 @@ public class SmsCheckInActivity extends AppCompatActivity {
         String phoneNo = edtPhoneNo.getText().toString();
         String carNo = edtCarNo.getText().toString();
         int peopleNo = Integer.parseInt(edtPeopleNo.getText().toString());
-
 
 
         Log.d(TAG, "recordSMSCheckInDrive: Start");
@@ -610,6 +609,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
                             }
                         })
                         .show();
+                Log.d(TAG, "recordResultHandler: "+result);
+
             } else {
                 new MaterialDialog.Builder(this)
                         .title("Soja")
@@ -623,6 +624,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                             }
                         })
                         .show();
+                Log.d(TAG, "recordResultHandler: "+result);
             }
 
         }
@@ -673,6 +675,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                         }
                                     })
                                     .show();
+                            Log.d(TAG, "onPostExecute: "+result.toString());
                             Toast.makeText(SmsCheckInActivity.this, result, Toast.LENGTH_SHORT).show();
                         }
                     } else {

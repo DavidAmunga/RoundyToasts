@@ -1,6 +1,7 @@
 package miles.identigate.soja.Helpers;
 
 import android.content.Context;
+import android.location.Location;
 import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -25,6 +26,9 @@ public class Constants {
     public static final String LOGOUT_BROADCAST = "miles.identigate.soja.ACTION_LOGOUT";
     public static final String RECORDED_VISITOR = "miles.identigate.soja.RECORDED_VISITOR";
     public static final String EXITED_VISITOR = "miles.identigate.soja.EXITED_VISITOR";
+
+    public static Location mLastLocation = null;
+
 
     public static final String WALK="WALKING";
     public static final String DRIVE="DRIVING";

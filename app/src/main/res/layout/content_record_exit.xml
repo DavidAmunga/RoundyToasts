@@ -196,7 +196,7 @@
                 android:text="COMMENT"
                 android:textSize="16sp" />
 
-            <EditText
+            <miles.identigate.soja.Font.EditTextRegular
                 android:id="@+id/comment"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

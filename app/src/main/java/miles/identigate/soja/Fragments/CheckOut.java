@@ -11,10 +11,8 @@ import java.util.Arrays;
 
 import miles.identigate.soja.Adapters.CheckInAdapter;
 import miles.identigate.soja.ExpressCheckoutActivity;
-import miles.identigate.soja.FingerprintActivity;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.R;
-import miles.identigate.soja.ScanQRActivity;
 import miles.identigate.soja.UserInterface.Visitors;
 
 public class CheckOut extends ListFragment {
@@ -138,9 +136,9 @@ public class CheckOut extends ListFragment {
                 break;
             case "Biometric Checkout":
                 if (preferences.isFingerprintsEnabled()) {
-                    Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
-                    fingerPrint.putExtra("CHECKOUT", true);
-                    startActivity(fingerPrint);
+//                    Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
+//                    fingerPrint.putExtra("CHECKOUT", true);
+//                    startActivity(fingerPrint);
                 }
                 break;
         }

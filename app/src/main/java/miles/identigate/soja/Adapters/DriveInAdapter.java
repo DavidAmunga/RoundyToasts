@@ -1,6 +1,7 @@
 package miles.identigate.soja.Adapters;
 
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +115,24 @@ public class DriveInAdapter extends BaseAdapter {
         return 0;
     }
 
+    public void remove(int position) {
+        if (type.equals("DRIVE")) {
+            driveIns.remove(position);
+            notifyDataSetChanged();
+        } else if (type.equals("WALK")) {
+            walkIns.remove(position);
+            notifyDataSetChanged();
+        } else if (type.equals("PROVIDER")) {
+            serviceProviderModels.remove(position);
+            notifyDataSetChanged();
+        } else if (type.equals("RESIDENT")) {
+            residents.remove(position);
+            notifyDataSetChanged();
+        }
+
+    }
+
+
     @Override
     public Object getItem(int position) {
         if (type.equals("DRIVE")) {
@@ -141,6 +160,8 @@ public class DriveInAdapter extends BaseAdapter {
         TextView car = view.findViewById(R.id.car);
         TextView entry_date = view.findViewById(R.id.entry_date);
         TextView entry_time = view.findViewById(R.id.entry_time);
+
+
         if (type.equals("DRIVE")) {
             Log.d(TAG, "Name: " + driveIns.get(position).getName());
 

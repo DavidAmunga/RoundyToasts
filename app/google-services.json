@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "842117648978",
+    "firebase_url": "https://soja-cbab2.firebaseio.com",
+    "project_id": "soja-cbab2",
+    "storage_bucket": "soja-cbab2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842117648978:android:1849a0b114773d6e",
+        "android_client_info": {
+          "package_name": "com.identigate.soja.sojaresident"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842117648978-c6et1dgp8hlp4g1tc2h6d1d9jv2s134f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxMY30O4ZfJHBe1hpy4_CPMcfC6ryQaFo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842117648978:android:08934586853aeaea",
+        "android_client_info": {
+          "package_name": "miles.identigate.soja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842117648978-fr8mgeutkkjea0t3kbff49to9kp8dgsm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "miles.identigate.soja",
+            "certificate_hash": "475b7bef6fcc0392428d28de27f91287070861bf"
+          }
+        },
+        {
+          "client_id": "842117648978-c6et1dgp8hlp4g1tc2h6d1d9jv2s134f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxMY30O4ZfJHBe1hpy4_CPMcfC6ryQaFo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842117648978-c6et1dgp8hlp4g1tc2h6d1d9jv2s134f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

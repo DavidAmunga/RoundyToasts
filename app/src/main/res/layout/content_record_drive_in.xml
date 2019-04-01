@@ -132,7 +132,7 @@
                     android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
-                <EditText
+                <miles.identigate.soja.Font.EditTextRegular
                     android:id="@+id/car_number"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
                     android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
-                <EditText
+                <miles.identigate.soja.Font.EditTextRegular
                     android:id="@+id/phoneNumberEdittext"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -228,7 +228,7 @@
                     android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
-                <EditText
+                <miles.identigate.soja.Font.EditTextRegular
                     android:id="@+id/companyNameEdittext"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
