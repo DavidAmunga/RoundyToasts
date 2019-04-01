@@ -228,8 +228,10 @@ public class AdminSettingsActivity extends SojaActivity {
 
                             ip += "soja-rest/index.php/api/visits/";
                             Log.d("IP", ip);
+                            refresh=true;
                             preferences.setBaseURL(ip);
                             preferences.setResidentsURL(ip);
+
 
 
                             setServerName();
@@ -369,6 +371,9 @@ public class AdminSettingsActivity extends SojaActivity {
 
         if (item.getItemId() == R.id.ic_save) {
             saveSettings();
+        }
+        else if (item.getItemId() == android.R.id.home) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

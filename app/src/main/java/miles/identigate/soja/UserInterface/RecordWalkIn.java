@@ -161,7 +161,7 @@ public class RecordWalkIn extends SojaActivity {
             @Override
             public void onClick(View v) {
                 if (selectedDestination == null) {
-                    Toast.makeText(RecordWalkIn.this, "Select a "+entity_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RecordWalkIn.this, "Select a " + entity_name, Toast.LENGTH_SHORT).show();
                 } else {
                     if (CheckConnection.check(RecordWalkIn.this)) {
                         recordInternet();
@@ -517,7 +517,7 @@ public class RecordWalkIn extends SojaActivity {
     private class CheckLocationAsync extends AsyncTask<String, Void, String> {
         MaterialDialog builder = new MaterialDialog.Builder(RecordWalkIn.this)
                 .title("Please Wait")
-                .content("Checking In Location...")
+                .content("Confirming Location...")
                 .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
@@ -551,8 +551,8 @@ public class RecordWalkIn extends SojaActivity {
                             Double latitude = resultContent.getDouble("latitude");
                             Double longitude = resultContent.getDouble("longitude");
 
-                            Log.d(TAG, "onPostExecute: " + latitude + "," + longitude);
-                            Log.d(TAG, "onPostExecute: My Location " + Constants.mLastLocation.getLatitude() + "," + Constants.mLastLocation.getLongitude());
+//                            Log.d(TAG, "onPostExecute: " + latitude + "," + longitude);
+//                            Log.d(TAG, "onPostExecute: My Location " + Constants.mLastLocation.getLatitude() + "," + Constants.mLastLocation.getLongitude());
 
                             if (compareLocations(new LatLng(latitude, longitude))) {
 
@@ -627,12 +627,14 @@ public class RecordWalkIn extends SojaActivity {
 
         protected void onPostExecute(String result) {
             builder.dismiss();
+            Log.d(TAG, "onPostExecute:  Result" + result);
             if (result != null) {
 
                 if (result.contains("result_code")) {
                     try {
                         Object json = new JSONTokener(result).nextValue();
                         if (json instanceof JSONObject) {
+
                             resultHandler(result);
                         } else {
                             //TODO remove this.Temporary workaround
@@ -706,7 +708,9 @@ public class RecordWalkIn extends SojaActivity {
             recordOffline();
             parseResult();
         } else {
+            Log.d(TAG, "resultHandler: " + result);
             if (resultText.contains("still in")) {
+                Log.d(TAG, "resultHandler: Still In");
                 new MaterialDialog.Builder(RecordWalkIn.this)
                         .title("Soja")
                         .content(resultText)

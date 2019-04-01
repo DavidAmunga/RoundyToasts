@@ -21,6 +21,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 import miles.identigate.soja.UserInterface.Login;
 
@@ -29,8 +31,12 @@ import miles.identigate.soja.UserInterface.Login;
  */
 public class SojaActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, InternetConnectivityListener {
     Preferences settings;
+
+    InternetAvailabilityChecker mInternetAvailabilityChecker;
+
+
 
     private static final String TAG = "SojaActivity";
     private static final int MY_PERMISSION_REQUEST_CODE = 7000;
@@ -51,6 +57,14 @@ public class SojaActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         settings = new Preferences(getApplicationContext());
         isLoggedin();
+
+        //        Add Internet Availability Checker
+
+        InternetAvailabilityChecker.init(this);
+
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+
 
 
 
@@ -193,4 +207,17 @@ public class SojaActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+        if(!isConnected){
+            Toast.makeText(this, "Please make sure you have an active Internet Connection", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInternetAvailabilityChecker
+                .removeInternetConnectivityChangeListener(this);
+    }
 }
