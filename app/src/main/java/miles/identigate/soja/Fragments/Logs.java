@@ -31,6 +31,8 @@ public class Logs extends ListFragment {
     ArrayList<Integer> logsDrawables = new ArrayList<>();
 
 
+    String entity_owner = "visitor";
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -48,13 +50,20 @@ public class Logs extends ListFragment {
         if (!preferences.getBaseURL().contains("casuals")) {
             logsTitles.add("Drive Logs");
             logsDescriptions.add("Summary log of Motor Vehicles");
-            logsDrawables.add(R.drawable.ic_drive_in_new);
+            logsDrawables.add(R.drawable.ic_drive_in_log_new);
+
+        }
+
+        if (preferences.getBaseURL().contains("casuals")) {
+            entity_owner = "casual";
 
         }
 
         logsTitles.add("Pedestrian Logs");
-        logsDescriptions.add("Summary log of Walking Visitor");
-        logsDrawables.add(R.drawable.ic_walk_in_new);
+
+
+        logsDescriptions.add("Summary log of Walking "+entity_owner);
+        logsDrawables.add(R.drawable.ic_walk_in_log_new);
 
 
         Object[] a = logsTitles.toArray();

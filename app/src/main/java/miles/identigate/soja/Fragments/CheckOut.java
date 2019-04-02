@@ -68,7 +68,7 @@ public class CheckOut extends ListFragment {
             checkoutDescriptions.add("Check out a driving visitor");
         }
         if (preferences.getBaseURL().contains("casuals")) {
-            checkoutDescriptions.add("Check out a supervisor on foot");
+            checkoutDescriptions.add("Check out a casual on foot");
         } else {
             checkoutDescriptions.add("Check out a visitor on foot");
 

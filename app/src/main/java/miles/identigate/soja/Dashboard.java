@@ -102,7 +102,7 @@ public class Dashboard extends SojaActivity {
 
 
 //        Firebase Notifications
-        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseMessaging.getInstance().subscribeToTopic("soja-news");
 //        FirebaseMessaging.getInstance().subscribeToTopic("test");
 
 

@@ -51,6 +51,8 @@ public class CheckIn extends Fragment {
     DatabaseHandler handler;
 
 
+
+
     public static CheckIn newInstance(String param1, String param2) {
         CheckIn fragment = new CheckIn();
         Bundle args = new Bundle();
@@ -96,7 +98,7 @@ public class CheckIn extends Fragment {
         }
 
         if (preferences.getBaseURL().contains("casuals")) {
-            checkinDescriptions.add("Record walking supervisor");
+            checkinDescriptions.add("Record walking casual");
         } else {
             checkinDescriptions.add("Record walking visitor");
         }

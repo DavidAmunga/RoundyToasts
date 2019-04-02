@@ -551,8 +551,10 @@ public class RecordWalkIn extends SojaActivity {
                             Double latitude = resultContent.getDouble("latitude");
                             Double longitude = resultContent.getDouble("longitude");
 
-//                            Log.d(TAG, "onPostExecute: " + latitude + "," + longitude);
-//                            Log.d(TAG, "onPostExecute: My Location " + Constants.mLastLocation.getLatitude() + "," + Constants.mLastLocation.getLongitude());
+                            Log.d(TAG, "onPostExecute: " + latitude + "," + longitude);
+                            if (Constants.mLastLocation != null) {
+                                Log.d(TAG, "onPostExecute: My Location " + Constants.mLastLocation.getLatitude() + "," + Constants.mLastLocation.getLongitude());
+                            }
 
                             if (compareLocations(new LatLng(latitude, longitude))) {
 
@@ -597,11 +599,14 @@ public class RecordWalkIn extends SojaActivity {
     private boolean compareLocations(LatLng eventLocation) {
         float[] dist = new float[1];
 
-        Location.distanceBetween(Constants.mLastLocation.getLatitude(), Constants.mLastLocation.getLongitude(), eventLocation.latitude, eventLocation.longitude, dist);
+        if (Constants.mLastLocation != null) {
+            Location.distanceBetween(Constants.mLastLocation.getLatitude(), Constants.mLastLocation.getLongitude(), eventLocation.latitude, eventLocation.longitude, dist);
 
-        if (dist[0] / 1000 <= 1) {
-            return true;
+            if (dist[0] / 1000 <= 1) {
+                return true;
+            }
         }
+
         return false;
 
     }
