@@ -1,0 +1,21 @@
+package miles.identigate.soja.Services;
+
+
+import miles.identigate.soja.Models.FCMResponse;
+import miles.identigate.soja.Models.Sender;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+
+public interface IFCMService {
+
+    @Headers({
+            "Content-Type:application/json",
+            "Authorization:key=AAAAxBIfklI:APA91bGYcvRUsim41oIQfd9dHqJKLDCzBweRj1wa8dDvv8ustY-K0i_vKSlazN2AF-hb2uzkdDP7Cv5_MjUFDirxozohLO4Hyc0VK30yJ7Uf6gtaFP6cCDyoChfw443MwdVH1_BEFrcN"
+    })
+
+    @POST("fcm/send")
+    Call<FCMResponse> sendMessage(@Body Sender body);
+
+}

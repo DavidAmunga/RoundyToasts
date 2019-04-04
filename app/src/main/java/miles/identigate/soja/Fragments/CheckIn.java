@@ -29,11 +29,14 @@ import miles.identigate.soja.Models.PremiseResident;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.ScanQRActivity;
+import miles.identigate.soja.Services.IFCMService;
 import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.app.Common;
 
 public class CheckIn extends Fragment {
+
+
 
     private static final String TAG = "CheckIn";
     @BindView(R.id.linearLayout)
@@ -98,7 +101,7 @@ public class CheckIn extends Fragment {
         }
 
         if (preferences.getBaseURL().contains("casuals")) {
-            checkinDescriptions.add("Record walking casual");
+            checkinDescriptions.add("Record walking employee");
         } else {
             checkinDescriptions.add("Record walking visitor");
         }

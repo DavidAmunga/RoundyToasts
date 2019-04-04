@@ -375,7 +375,7 @@ public class RecordDriveIn extends SojaActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = Constants.showProgressDialog(RecordDriveIn.this, "Drive in", "Recording...");
+            progressDialog = Constants.showProgressDialog(RecordDriveIn.this, "Drive in", "Checking in...");
             progressDialog.show();
         }
 

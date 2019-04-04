@@ -26,6 +26,10 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.regula.documentreader.api.enums.eVisualFieldType;
 
 import org.json.JSONArray;
@@ -50,16 +54,26 @@ import miles.identigate.soja.Helpers.NetworkHandler;
 import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Helpers.SojaActivity;
 import miles.identigate.soja.Models.DriveIn;
+import miles.identigate.soja.Models.FCMResponse;
+import miles.identigate.soja.Models.Notification;
+import miles.identigate.soja.Models.Sender;
+import miles.identigate.soja.Models.Token;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
+import miles.identigate.soja.Services.IFCMService;
 import miles.identigate.soja.SlipActivity;
 import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.app.Common;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecordWalkIn extends SojaActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
+    IFCMService fcmService;
 
     private static final String TAG = "RecordWalkIn";
     Spinner visitor_type;
@@ -118,6 +132,8 @@ public class RecordWalkIn extends SojaActivity {
         receiveFilter.addAction(Constants.RECORDED_VISITOR);
 
         handler = new DatabaseHandler(this);
+
+        fcmService = Common.getFCMService();
 
         visitor_type = findViewById(R.id.visitor_type);
         record = findViewById(R.id.record);
@@ -190,7 +206,7 @@ public class RecordWalkIn extends SojaActivity {
         if (preferences.getBaseURL().contains("casuals")) {
             visitor_type.setSelection(4);
             visitor_type.setSelected(true);
-            visitor_type.setEnabled(false);
+//            visitor_type.setEnabled(false);
         }
 
         if (preferences.getBaseURL().contains("casuals")) {
@@ -511,7 +527,57 @@ public class RecordWalkIn extends SojaActivity {
                         }
                     })
                     .show();
+
         }
+    }
+
+    private void pushNotificationToHost() {
+        Log.d(TAG, "pushNotificationToHost: Hre" + String.valueOf(selectedHost.getHostId()));
+        FirebaseDatabase.getInstance().getReference(Common.TOKENS).child("resident_" + selectedHost.getHostId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Token token = dataSnapshot.getValue(Token.class);
+
+                Log.d(TAG, "onDataChange: Changed");
+
+                if (token != null && token.getToken() != null) {
+                    String tokenResident = token.getToken();
+
+                    Log.d(TAG, "onDataChange: Changed" + tokenResident);
+
+                    Notification data = new Notification("Visitor Arrived", "Your visitor " + firstName + " has arrived", "All");
+//                    Send to Resident app and we will deserialize it again
+                    Sender content = new Sender(data, tokenResident);
+
+                    fcmService.sendMessage(content).enqueue(new Callback<FCMResponse>() {
+                        @Override
+                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                            if (response.body().success == 1) {
+                                Toast.makeText(RecordWalkIn.this, "Notification Sent to Resident", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Log.d(TAG, "onResponse: " + response.toString()
+                                );
+
+                                Toast.makeText(RecordWalkIn.this, "Failed !", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<FCMResponse> call, Throwable t) {
+                            Log.e(TAG, "onFailure: Failed", t);
+                        }
+                    });
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private class CheckLocationAsync extends AsyncTask<String, Void, String> {
@@ -693,6 +759,12 @@ public class RecordWalkIn extends SojaActivity {
                         }
                     })
                     .show();
+
+            if (selectedHost != null) {
+                Log.d(TAG, "recordOffline: Not Null");
+                pushNotificationToHost();
+            }
+
             // Get instance of Vibrator from current Context
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 

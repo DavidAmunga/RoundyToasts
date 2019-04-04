@@ -28,6 +28,8 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        Log.d(TAG, "onMessageReceived: Received");
+
         if (remoteMessage.getData().isEmpty()) {
             showNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
 
@@ -58,7 +60,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
             notificationChannel.setDescription("Soja");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.setVibrationPattern(new long[]{0, 500, 500, 500});
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
@@ -80,7 +82,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     private void showNotification(String title, String body) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        String NOTIFICATION_CHANNEL_ID = "com.identigate.soja.sojaresident";
+        String NOTIFICATION_CHANNEL_ID = "miles.identigate.soja";
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -88,10 +90,10 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
                     "Notification",
                     NotificationManager.IMPORTANCE_DEFAULT);
 
-            notificationChannel.setDescription("Soja Resident");
+            notificationChannel.setDescription("Soja");
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.BLUE);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.setVibrationPattern(new long[]{0, 500, 500, 500});
             notificationManager.createNotificationChannel(notificationChannel);
         }
 

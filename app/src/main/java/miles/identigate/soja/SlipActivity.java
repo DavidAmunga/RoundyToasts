@@ -271,8 +271,8 @@ public class SlipActivity extends SojaActivity {
             if (dialog.isShowing())
                 dialog.dismiss();
             showSuccess();
-            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-            finish();
+//            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+//            finish();
         } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> PrintSampleReceipt ")).append(e.getMessage()).toString());
         }

@@ -3,9 +3,11 @@ package miles.identigate.soja.Logs;
 import android.os.Bundle;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,7 +38,7 @@ public class AllLogs extends SojaActivity {
     //TextView type;
     ContentLoadingProgressBar progressBar;
     Preferences preferences;
-    private EditText searchbox;
+//    private EditText searchbox;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -65,7 +67,7 @@ public class AllLogs extends SojaActivity {
         lv = findViewById(R.id.visitors);
         lv.setVisibility(View.VISIBLE);
         progressBar = findViewById(R.id.loading);
-        searchbox = findViewById(R.id.searchbox);
+//        searchbox = findViewById(R.id.searchbox);
         progressBar.setVisibility(View.GONE);
         lv.setEmptyView(findViewById(R.id.empty));
         //type=(TextView)findViewById(R.id.type);
@@ -103,27 +105,60 @@ public class AllLogs extends SojaActivity {
 
             }
         });
-        searchbox.addTextChangedListener(new TextWatcher() {
+//        searchbox.addTextChangedListener(new TextWatcher() {
+//
+//            @Override
+//            public void afterTextChanged(Editable arg0) {
+//
+//                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
+//                adapter.filter(text);
+//            }
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence arg0, int arg1,
+//                                          int arg2, int arg3) {
+//                // TODO Auto-generated method stub
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+//                                      int arg3) {
+//                // TODO Auto-generated method stub
+//            }
+//        });
+    }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_visitors, menu);
+
+        MenuItem mSearch = menu.findItem(R.id.nav_search);
+        SearchView mSearchView = (SearchView) mSearch.getActionView();
+        mSearchView.setIconifiedByDefault(false);
+
+        mSearchView.setQueryHint("Search");
+
+
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void afterTextChanged(Editable arg0) {
-
-                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
-                adapter.filter(text);
+            public boolean onQueryTextSubmit(String query) {
+                return false;
             }
 
             @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                // TODO Auto-generated method stub
-            }
+            public boolean onQueryTextChange(String newText) {
 
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                // TODO Auto-generated method stub
+//                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
+                adapter.filter(newText);
+                return true;
             }
         });
+
+
+
+        return true;
     }
 
     @Override

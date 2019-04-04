@@ -55,7 +55,7 @@ public class Logs extends ListFragment {
         }
 
         if (preferences.getBaseURL().contains("casuals")) {
-            entity_owner = "casual";
+            entity_owner = "employee";
 
         }
 

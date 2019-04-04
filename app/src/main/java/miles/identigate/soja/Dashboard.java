@@ -52,13 +52,15 @@ import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
     private static final String TAG = "Dashboard";
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
-    private  static final int CAMERA_REQUEST=200;
-    private  static  final int STORAGE_REQUEST = 300;
-    private static final  int PHONE_STATE_REQUEST  = 400;
-    private  MaterialDialog dialog;
+
+    private static final int CAMERA_REQUEST = 200;
+    private static final int STORAGE_REQUEST = 300;
+    private static final int PHONE_STATE_REQUEST = 400;
+    private MaterialDialog dialog;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     DatabaseHandler handler;
@@ -68,7 +70,7 @@ public class Dashboard extends SojaActivity {
     String houseResult;
     String premiseResidentResult;
     Preferences preferences;
-    private BroadcastReceiver receiver=new BroadcastReceiver() {
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
@@ -76,13 +78,14 @@ public class Dashboard extends SojaActivity {
                 String string = bundle.getString(SyncService.MESSAGE);
                 int resultCode = bundle.getInt(SyncService.RESULT);
                 if (resultCode == RESULT_OK) {
-                    Toast.makeText(Dashboard.this, string,Toast.LENGTH_LONG).show();
+                    Toast.makeText(Dashboard.this, string, Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(Dashboard.this,string,Toast.LENGTH_LONG).show();
+                    Toast.makeText(Dashboard.this, string, Toast.LENGTH_LONG).show();
                 }
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
@@ -96,13 +99,14 @@ public class Dashboard extends SojaActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        handler=new DatabaseHandler(this);
+        handler = new DatabaseHandler(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
 //        Firebase Notifications
         FirebaseMessaging.getInstance().subscribeToTopic("soja-news");
+        FirebaseMessaging.getInstance().subscribeToTopic("soja-general");
 //        FirebaseMessaging.getInstance().subscribeToTopic("test");
 
 
@@ -118,9 +122,9 @@ public class Dashboard extends SojaActivity {
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
             public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                LayoutInflater inflater=LayoutInflater.from(container.getContext());
+                LayoutInflater inflater = LayoutInflater.from(container.getContext());
                 View tab = inflater.inflate(R.layout.custom_tab, container, false);
-                TextView customText =   tab.findViewById(R.id.custom_text);
+                TextView customText = tab.findViewById(R.id.custom_text);
 
                 switch (position) {
                     case 0:
@@ -144,23 +148,23 @@ public class Dashboard extends SojaActivity {
 
         tabLayout.setViewPager(mViewPager);
         SharedPreferences getPrefs = PreferenceManager
-                        .getDefaultSharedPreferences(getBaseContext());
+                .getDefaultSharedPreferences(getBaseContext());
         boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
 
 
-        if (isFirstStart&&preferences.isLoggedin()) {
+        if (isFirstStart && preferences.isLoggedin()) {
             if (new CheckConnection().check(this)) {
                 new FetchDetails().execute();
                 SharedPreferences.Editor e = getPrefs.edit();
                 e.putBoolean("firstStart", false);
                 e.apply();
-            }else {
-                 dialog = new MaterialDialog.Builder(Dashboard.this)
+            } else {
+                dialog = new MaterialDialog.Builder(Dashboard.this)
                         .title("Soja")
                         .titleGravity(GravityEnum.CENTER)
                         .titleColor(getResources().getColor(R.color.ColorPrimary))
                         .content("It seems you have a poor internet connection.Please try again later.")
-                         .cancelable(false)
+                        .cancelable(false)
                         .positiveText("EXIT")
                         .callback(new MaterialDialog.ButtonCallback() {
                             @Override
@@ -178,10 +182,10 @@ public class Dashboard extends SojaActivity {
                         })
                         .widgetColorRes(R.color.colorPrimary)
                         .build();
-                 dialog.show();
+                dialog.show();
             }
-        }else if(isFirstStart&& !preferences.isLoggedin()){
-           //startActivity(new Intent(getApplicationContext(), Login.class));
+        } else if (isFirstStart && !preferences.isLoggedin()) {
+            //startActivity(new Intent(getApplicationContext(), Login.class));
             finish();
         }
 
@@ -194,17 +198,18 @@ public class Dashboard extends SojaActivity {
     }
 
 
-    private void askPermissions(){
+    private void askPermissions() {
         if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.CAMERA }, CAMERA_REQUEST);
+            ActivityCompat.requestPermissions(Dashboard.this, new String[]{permission.CAMERA}, CAMERA_REQUEST);
         }
         if (ContextCompat.checkSelfPermission(Dashboard.this, permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.WRITE_EXTERNAL_STORAGE }, STORAGE_REQUEST);
+            ActivityCompat.requestPermissions(Dashboard.this, new String[]{permission.WRITE_EXTERNAL_STORAGE}, STORAGE_REQUEST);
         }
         if (ContextCompat.checkSelfPermission(Dashboard.this, permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Dashboard.this, new String[] { permission.READ_PHONE_STATE }, PHONE_STATE_REQUEST);
+            ActivityCompat.requestPermissions(Dashboard.this, new String[]{permission.READ_PHONE_STATE}, PHONE_STATE_REQUEST);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -221,6 +226,7 @@ public class Dashboard extends SojaActivity {
                 break;
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -266,7 +272,6 @@ public class Dashboard extends SojaActivity {
                             preferences.setFingerprintsEnabled(false);
 
 
-
                             SQLiteDatabase db = handler.getWritableDatabase();
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_INCIDENT_TYPES);
@@ -279,8 +284,8 @@ public class Dashboard extends SojaActivity {
                             SharedPreferences.Editor e = getPrefs.edit();
                             e.putBoolean("firstStart", true);
                             e.apply();
-                           startActivity(new Intent(Dashboard.this, Login.class));
-                           finish();
+                            startActivity(new Intent(Dashboard.this, Login.class));
+                            finish();
                         }
 
                         @Override
@@ -288,11 +293,11 @@ public class Dashboard extends SojaActivity {
                             dialog.dismiss();
                         }
                     }).build();
-                    dialog.show();
+            dialog.show();
             return true;
-        }else if(id == R.id.settings){
+        } else if (id == R.id.settings) {
             startActivity(new Intent(getApplicationContext(), AdminSettingsActivity.class));
-            return  true;
+            return true;
         } else if (id == R.id.refresh) {
             if (new CheckConnection().check(this)) {
                 new FetchDetails().execute();
@@ -335,15 +340,15 @@ public class Dashboard extends SojaActivity {
 
         @Override
         public Fragment getItem(int position) {
-            switch (position){
+            switch (position) {
                 case 0:
-                    CheckIn checkIn=new CheckIn();
+                    CheckIn checkIn = new CheckIn();
                     return checkIn;
                 case 1:
-                    CheckOut checkOut=new CheckOut();
+                    CheckOut checkOut = new CheckOut();
                     return checkOut;
                 case 2:
-                    Logs logs=new Logs();
+                    Logs logs = new Logs();
                     return logs;
 
                 default:
@@ -370,8 +375,9 @@ public class Dashboard extends SojaActivity {
             return null;
         }
     }
+
     private class FetchDetails extends AsyncTask<Void, String, String> {
-        MaterialDialog builder=new MaterialDialog.Builder(Dashboard.this)
+        MaterialDialog builder = new MaterialDialog.Builder(Dashboard.this)
                 .title("Soja")
                 .titleGravity(GravityEnum.CENTER)
                 .titleColor(getResources().getColor(R.color.ColorPrimary))
@@ -380,16 +386,18 @@ public class Dashboard extends SojaActivity {
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             builder.show();
         }
+
         @Override
         protected String doInBackground(Void... params) {
-            visitorResult=NetworkHandler.GET(preferences.getBaseURL()+"visitor-types");
-            providerResult=NetworkHandler.GET(preferences.getBaseURL()+"service-providers");
-            incidentsResult=NetworkHandler.GET(preferences.getBaseURL()+"incident-types");
+            visitorResult = NetworkHandler.GET(preferences.getBaseURL() + "visitor-types");
+            providerResult = NetworkHandler.GET(preferences.getBaseURL() + "service-providers");
+            incidentsResult = NetworkHandler.GET(preferences.getBaseURL() + "incident-types");
 
 
 //            TODO : Change Endpoint
@@ -399,7 +407,7 @@ public class Dashboard extends SojaActivity {
                 houseResult = NetworkHandler.GET(preferences.getBaseURL() + "houses-blocks/zone/" + preferences.getPremiseZoneId());
             }
 
-            premiseResidentResult =  NetworkHandler.GET(preferences.getBaseURL() + "houses-residents/?premise=" + preferences.getPremise());
+            premiseResidentResult = NetworkHandler.GET(preferences.getBaseURL() + "houses-residents/?premise=" + preferences.getPremise());
             return "success";
         }
 
@@ -409,15 +417,16 @@ public class Dashboard extends SojaActivity {
 
         }
     }
-    public void getAllData(){
-        if(visitorResult==null||providerResult==null||incidentsResult==null||houseResult==null || premiseResidentResult == null){
-            Toast.makeText(getApplicationContext(),"An error occurred",Toast.LENGTH_LONG).show();
-        }else {
+
+    public void getAllData() {
+        if (visitorResult == null || providerResult == null || incidentsResult == null || houseResult == null || premiseResidentResult == null) {
+            Toast.makeText(getApplicationContext(), "An error occurred", Toast.LENGTH_LONG).show();
+        } else {
             try {
                 JSONObject visitorObject = new JSONObject(visitorResult);
                 JSONObject providerObject = new JSONObject(providerResult);
                 JSONObject incidentsObject = new JSONObject(incidentsResult);
-                JSONObject housesObject=new JSONObject(houseResult);
+                JSONObject housesObject = new JSONObject(houseResult);
                 JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
@@ -473,32 +482,30 @@ public class Dashboard extends SojaActivity {
                     JSONArray housesArray = housesObject.getJSONArray("result_content");
                     for (int i = 0; i < housesArray.length(); i++) {
                         JSONObject house = housesArray.getJSONObject(i);
-                        handler.insertHouse(house.getString("house_id"), house.getString("house_description"),house.getString("block_description"));
+                        handler.insertHouse(house.getString("house_id"), house.getString("house_description"), house.getString("block_description"));
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve houses", Toast.LENGTH_SHORT).show();
                 }
 
-               if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
+                if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
                     JSONArray residentsArray = premiseResidentObject.getJSONArray("result_content");
                     for (int i = 0; i < residentsArray.length(); i++) {
                         JSONObject resident = residentsArray.getJSONObject(i);
                         int length = 0;
-                        if(resident.getString("length") != "null"){
+                        if (resident.getString("length") != "null") {
                             length = Integer.valueOf(resident.getString("length"));
                         }
-                        String fingerPrint = resident.get("fingerprint")==null?null:resident.getString("fingerprint");
+                        String fingerPrint = resident.get("fingerprint") == null ? null : resident.getString("fingerprint");
                         if (fingerPrint == "0")
                             fingerPrint = null;
                         fingerPrint = fingerPrint.replaceAll("\\n", "");
                         fingerPrint = fingerPrint.replace("\\r", "");
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"),resident.getString("firstname"), resident.getString("lastname"), fingerPrint,length, resident.getString("house_id"), resident.getString("host_id"));
+                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"), resident.getString("firstname"), resident.getString("lastname"), fingerPrint, length, resident.getString("house_id"), resident.getString("host_id"));
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();
                 }
-
-
 
 
             } catch (JSONException e) {
@@ -509,7 +516,7 @@ public class Dashboard extends SojaActivity {
 
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
 

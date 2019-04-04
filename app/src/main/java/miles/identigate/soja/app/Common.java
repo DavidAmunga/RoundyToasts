@@ -35,12 +35,15 @@ import miles.identigate.soja.Helpers.Preferences;
 import miles.identigate.soja.Models.Token;
 import miles.identigate.soja.Models.TypeObject;
 import miles.identigate.soja.R;
+import miles.identigate.soja.Services.FCMClient;
+import miles.identigate.soja.Services.IFCMService;
 
 /**
  * Created by myles on 4/24/16.
  */
 public class Common extends Application {
     Preferences preferences;
+
     private static final String TAG = "Common";
     public static final String TOKENS = "TOKENS";
 
@@ -67,11 +70,19 @@ public class Common extends Application {
     public static final String ID_TYPE = "ID_TYPE";
     public static final String ID_NUMBER = "ID_NUMBER";
 
+    public static final String fcmURL = "https://fcm.googleapis.com/";
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
         preferences = new Preferences(context);
+    }
+
+
+    public static IFCMService getFCMService() {
+        return FCMClient.getClient(fcmURL).create(IFCMService.class);
     }
 
     public static void updateFirebaseToken(final Preferences preferences) {
@@ -92,7 +103,7 @@ public class Common extends Application {
 //                String token = task.getResult().getToken();
 
                 Token token = new Token(task.getResult().getToken());
-                tokens.child(preferences.getPremiseZoneId()).setValue(token);
+                tokens.child("sentry_" + preferences.getId()).setValue(token);
             }
         });
 
