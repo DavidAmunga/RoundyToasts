@@ -58,6 +58,9 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
             String value = Constants.documentReaderResults.getTextFieldValueByType(p.fieldType, p.lcid);
 			textValue.setText(value);
 
+			Log.d(TAG, "getView: "+p.fieldType);
+
+			Log.d(TAG, "getView: "+value);
 //            Log.d(TAG, "Number: "+p.fieldType);
 //            Log.d(TAG, "getView: "+Constants.documentReaderResults.getTextFieldValueByType(p.fieldType,p.lcid));
 
@@ -66,6 +69,7 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
             if (portrait != null) {
                 Log.d(TAG, "getView: Available");
             }
+
 
 
             if (preferences.isDarkModeOn()) {

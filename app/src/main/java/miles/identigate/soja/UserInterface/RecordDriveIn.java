@@ -260,8 +260,13 @@ public class RecordDriveIn extends SojaActivity {
             String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
             if (classCode.equals("ID")) {
                 scan_id_type = "ID";
-                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
-                idNumber = idN.substring(2, idN.length() - 1);
+                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
+                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                } else {
+                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+
+                }
+                 idNumber = idN.substring(2, idN.length() - 1);
                 Log.d(TAG, "ID Number: " + idNumber);
             } else if (classCode.equals("P")) {
                 scan_id_type = "P";

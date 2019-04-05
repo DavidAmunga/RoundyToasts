@@ -199,13 +199,13 @@ public class Login extends AppCompatActivity {
                         String premiseZoneId = object.getString("premise_zone_id");
                         String access_token = object.getString("access_token");
                         String premiseId = object.getString("premise_id");
-//                        String organizationID = object.getString("organisationID").isEmpty() ? "" : object.getString("organizationID");
+                        String organizationID = object.getString("organisationID");
                         preferences.setPremiseName(object.getString("premise_name"));
                         preferences.setIsLoggedin(true);
                         preferences.setPremise(premiseId);
                         preferences.setName(firstname + " " + lastname);
                         preferences.setId(id);
-//                        preferences.setOrganizationId(organizationID);
+                        preferences.setOrganizationId(organizationID);
                         preferences.setDeviceId(deviceId);
                         preferences.setToken(access_token);
                         preferences.setPremiseZoneId(premiseZoneId);

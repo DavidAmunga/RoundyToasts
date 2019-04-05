@@ -52,10 +52,12 @@ public class SojaActivity extends AppCompatActivity implements
     private static int DISPLACEMENT = 10;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings = new Preferences(getApplicationContext());
+
         isLoggedin();
 
         //        Add Internet Availability Checker
@@ -79,7 +81,12 @@ public class SojaActivity extends AppCompatActivity implements
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         } else {
-            setupLocation();
+            if(settings.getBaseURL().contains("casuals")){
+                setupLocation();
+            }else{
+
+                Log.d(TAG, "isLoggedin: Not Casuals");
+            }
 
         }
     }
@@ -196,6 +203,7 @@ public class SojaActivity extends AppCompatActivity implements
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+
                 GooglePlayServicesUtil.getErrorDialog(resultCode, this, PLAY_SERVICE_RES_REQUEST).show();
             } else {
                 Toast.makeText(this, "This device is not supported", Toast.LENGTH_SHORT).show();

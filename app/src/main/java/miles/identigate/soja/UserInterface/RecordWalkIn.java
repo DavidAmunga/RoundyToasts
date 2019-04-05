@@ -309,7 +309,13 @@ public class RecordWalkIn extends SojaActivity {
             if (classCode.equals("ID")) {
                 Log.d(TAG, "recordInternet: ID");
                 scan_id_type = "ID";
-                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+
+                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
+                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                } else {
+                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+
+                }
                 idNumber = idN.substring(2, idN.length() - 1);
 
             } else if (classCode.equals("P")) {
@@ -391,10 +397,16 @@ public class RecordWalkIn extends SojaActivity {
 
             Log.d(TAG, "recordInternet: " + Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
 
+
             if (classCode.equals("ID")) {
                 Log.d(TAG, "recordInternet: ID");
                 scan_id_type = "ID";
-                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
+                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                } else {
+                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+
+                }
                 idNumber = idN.substring(2, idN.length() - 1);
 
             } else if (classCode.equals("P")) {
@@ -486,9 +498,18 @@ public class RecordWalkIn extends SojaActivity {
         String idN = "000000000";
         String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
         if (classCode.equals("ID")) {
-            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+            if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+            } else {
+                idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+
+            }
         } else if (classCode.equals("P")) {
             idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+        } else if (classCode.equals("AC")) {
+            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA).replace("^", "\n");
+
+
         }
         DriveIn driveIn = new DriveIn();
         driveIn.setVisitorType(selectedType.getId());
@@ -553,13 +574,13 @@ public class RecordWalkIn extends SojaActivity {
                         @Override
                         public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
                             if (response.body().success == 1) {
-                                Toast.makeText(RecordWalkIn.this, "Notification Sent to Resident", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(RecordWalkIn.this, "Notification Sent to Resident", Toast.LENGTH_SHORT).show();
 
                             } else {
-                                Log.d(TAG, "onResponse: " + response.toString()
-                                );
+//                                Log.d(TAG, "onResponse: " + response.toString()
+//                                );
 
-                                Toast.makeText(RecordWalkIn.this, "Failed !", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(RecordWalkIn.this, "Failed !", Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -806,7 +827,12 @@ public class RecordWalkIn extends SojaActivity {
                                 String idNumber = "";
                                 String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
                                 if (classCode.equals("ID")) {
-                                    idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+                                    if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
+                                        idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
+                                    } else {
+                                        idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
+
+                                    }
                                     idNumber = idN.substring(2, idN.length() - 1);
                                 } else if (classCode.equals("P")) {
                                     idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
