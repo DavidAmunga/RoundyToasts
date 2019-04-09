@@ -20,7 +20,7 @@
             android:padding="20dp"
             android:id="@+id/brand"
             android:orientation="vertical">
-            <miles.identigate.soja.Font.OpenSansBold
+            <miles.identigate.soja.font.OpenSansBold
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -43,7 +43,7 @@
                 android:layout_gravity="center"
                 android:layout_below="@+id/modeSection"
                 android:orientation="vertical">
-                <miles.identigate.soja.Font.OpenSansBold
+                <miles.identigate.soja.font.OpenSansBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
@@ -71,7 +71,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@+id/modeSection"
                 android:orientation="vertical">
-                <miles.identigate.soja.Font.OpenSansBold
+                <miles.identigate.soja.font.OpenSansBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
@@ -100,7 +100,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 android:orientation="vertical">
-                <miles.identigate.soja.Font.OpenSansBold
+                <miles.identigate.soja.font.OpenSansBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"

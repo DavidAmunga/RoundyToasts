@@ -4,16 +4,11 @@
  **/
 package miles.identigate.soja.app;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.GravityEnum;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -21,22 +16,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import miles.identigate.soja.Dashboard;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Models.Token;
-import miles.identigate.soja.Models.TypeObject;
-import miles.identigate.soja.R;
-import miles.identigate.soja.Services.FCMClient;
-import miles.identigate.soja.Services.IFCMService;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.models.Token;
+import miles.identigate.soja.services.FCMClient;
+import miles.identigate.soja.services.IFCMService;
 
 /**
  * Created by myles on 4/24/16.
@@ -56,6 +39,9 @@ public class Common extends Application {
     public static final int SERVICE_PROVIDER = 2;
     public static final int RESIDENTS = 3;
     public static final int INCIDENT = 4;
+    public static final int REGISTER_GUEST = 5;
+    public static final int ISSUE_TICKET = 6;
+    public static final int CHECK_IN_GUEST = 7;
 
     //Entry types
     public static final int SCAN = 0;

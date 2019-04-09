@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,15 +39,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import miles.identigate.soja.Fragments.CheckIn;
-import miles.identigate.soja.Fragments.CheckOut;
-import miles.identigate.soja.Fragments.Logs;
-import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Services.SyncService;
+import miles.identigate.soja.fragments.CheckIn;
+import miles.identigate.soja.fragments.CheckOut;
+import miles.identigate.soja.fragments.Logs;
+import miles.identigate.soja.helpers.CheckConnection;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
+import miles.identigate.soja.services.SyncService;
 import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
 
@@ -451,6 +452,7 @@ public class Dashboard extends SojaActivity {
                     JSONArray visitorArray = visitorObject.getJSONArray("result_content");
                     for (int i = 0; i < visitorArray.length(); i++) {
                         JSONObject visitorType = visitorArray.getJSONObject(i);
+                        Log.d(TAG, "getAllData: visitorType"+visitorType);
                         handler.insertVisitorType(visitorType.getString("id"), visitorType.getString("name"));
                     }
                 } else {

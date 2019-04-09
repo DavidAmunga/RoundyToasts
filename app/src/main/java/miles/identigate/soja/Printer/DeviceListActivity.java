@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import HPRTAndroidSDK.HPRTPrinterHelper;
-import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.R;
 
 public class DeviceListActivity extends Activity {

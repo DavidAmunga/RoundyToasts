@@ -23,13 +23,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.regex.Pattern;
-
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.SojaActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import miles.identigate.soja.font.OpenSansBold;
+import miles.identigate.soja.font.OpenSansRegular;
 import miles.identigate.soja.UserInterface.Login;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
 
 public class AdminSettingsActivity extends SojaActivity {
     static {
@@ -64,6 +65,10 @@ public class AdminSettingsActivity extends SojaActivity {
     TextView versionCode;
 
     boolean customServer = false;
+    @BindView(R.id.sentryName)
+    OpenSansBold sentryName;
+    @BindView(R.id.premiseName)
+    OpenSansRegular premiseName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,7 @@ public class AdminSettingsActivity extends SojaActivity {
 
 
         setContentView(R.layout.activity_admin_settings);
+        ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView title = toolbar.findViewById(R.id.title);
         title.setText("Settings");
@@ -111,6 +117,8 @@ public class AdminSettingsActivity extends SojaActivity {
         fingerprints.setChecked(preferences.isFingerprintsEnabled());
         sms.setChecked(preferences.isSMSCheckInEnabled());
         darkMode.setChecked(preferences.isDarkModeOn());
+        premiseName.setText(preferences.getPremiseName());
+        sentryName.setText(preferences.getName());
 
 
         darkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -127,9 +135,9 @@ public class AdminSettingsActivity extends SojaActivity {
         });
 
 
-        if (preferences.getBaseURL().contains("casuals")) {
-            sms.setVisibility(View.GONE);
-        }
+//        if (preferences.getBaseURL().contains("casuals")) {
+//            sms.setVisibility(View.GONE);
+//        }
 
         fingerprints.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -152,7 +160,7 @@ public class AdminSettingsActivity extends SojaActivity {
 //            int versionNumber = pinfo.versionCode;
             String versionName = pinfo.versionName;
 
-            versionCode.setText("Version Name: " + versionName);
+            versionCode.setText("Version: " + versionName);
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -228,10 +236,9 @@ public class AdminSettingsActivity extends SojaActivity {
 
                             ip += "soja-rest/index.php/api/visits/";
                             Log.d("IP", ip);
-                            refresh=true;
+                            refresh = true;
                             preferences.setBaseURL(ip);
                             preferences.setResidentsURL(ip);
-
 
 
                             setServerName();
@@ -371,8 +378,7 @@ public class AdminSettingsActivity extends SojaActivity {
 
         if (item.getItemId() == R.id.ic_save) {
             saveSettings();
-        }
-        else if (item.getItemId() == android.R.id.home) {
+        } else if (item.getItemId() == android.R.id.home) {
             finish();
         }
 

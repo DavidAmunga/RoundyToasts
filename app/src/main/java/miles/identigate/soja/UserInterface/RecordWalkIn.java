@@ -45,24 +45,23 @@ import java.util.concurrent.ExecutionException;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import miles.identigate.soja.Adapters.TypeAdapter;
+import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
-import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Models.DriveIn;
-import miles.identigate.soja.Models.FCMResponse;
-import miles.identigate.soja.Models.Notification;
-import miles.identigate.soja.Models.Sender;
-import miles.identigate.soja.Models.Token;
-import miles.identigate.soja.Models.TypeObject;
+import miles.identigate.soja.helpers.CheckConnection;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
+import miles.identigate.soja.models.DriveIn;
+import miles.identigate.soja.models.FCMResponse;
+import miles.identigate.soja.models.Notification;
+import miles.identigate.soja.models.Sender;
+import miles.identigate.soja.models.Token;
+import miles.identigate.soja.models.TypeObject;
 import miles.identigate.soja.R;
-import miles.identigate.soja.Services.IFCMService;
+import miles.identigate.soja.services.IFCMService;
 import miles.identigate.soja.SlipActivity;
-import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.app.Common;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -188,6 +187,7 @@ public class RecordWalkIn extends SojaActivity {
 
             }
         });
+        Log.d(TAG, "onCreate: " + visitorTypes.size());
         TypeAdapter adapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, visitorTypes);
 
 
@@ -204,20 +204,18 @@ public class RecordWalkIn extends SojaActivity {
             }
         });
         if (preferences.getBaseURL().contains("casuals")) {
-            visitor_type.setSelection(4);
+            visitor_type.setSelection(1);
             visitor_type.setSelected(true);
 //            visitor_type.setEnabled(false);
-        }
 
-        if (preferences.getBaseURL().contains("casuals")) {
             entity_name = "event";
-            entity_owner = "supervisor";
+            entity_owner = "Employee";
 
             hostLabel.setText(entity_name.toUpperCase());
             spinnerDestination.setText("Select " + entity_name);
             visitorLabel.setText(entity_owner.toUpperCase());
-
         }
+
 
 //        DESTINATION
         spinnerDestination.setOnClickListener(new View.OnClickListener() {
@@ -537,7 +535,7 @@ public class RecordWalkIn extends SojaActivity {
             handler.insertDriveIn(driveIn);
             new MaterialDialog.Builder(RecordWalkIn.this)
                     .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
+                    .content("Recorded successfully.")
                     .positiveText("OK")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
@@ -769,7 +767,7 @@ public class RecordWalkIn extends SojaActivity {
         } else {
             new MaterialDialog.Builder(RecordWalkIn.this)
                     .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
+                    .content("Recorded successfully.")
                     .positiveText("OK")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override

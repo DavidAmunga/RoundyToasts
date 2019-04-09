@@ -54,14 +54,14 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <miles.identigate.soja.Font.OpenSansBold
+            <miles.identigate.soja.font.OpenSansBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:text="ID/ Phone Number"
                 android:textStyle="bold" />
 
-            <miles.identigate.soja.Font.EditTextRegular
+            <miles.identigate.soja.font.EditTextRegular
                 android:id="@+id/username"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -79,14 +79,14 @@
                 android:textCursorDrawable="@null" />
 
 
-            <miles.identigate.soja.Font.OpenSansBold
+            <miles.identigate.soja.font.OpenSansBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:text="Password"
                 android:textStyle="bold" />
 
-            <miles.identigate.soja.Font.EditTextRegular
+            <miles.identigate.soja.font.EditTextRegular
                 android:id="@+id/pin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

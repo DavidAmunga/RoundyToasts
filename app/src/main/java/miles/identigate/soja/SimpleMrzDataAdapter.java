@@ -13,14 +13,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.regula.documentreader.api.enums.eVisualFieldType;
 import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
 
 import java.util.List;
 
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.Preferences;
 
 public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> {
 	public SimpleMrzDataAdapter(Context context, int resource, List<DocumentReaderTextField> objects) {
@@ -58,16 +57,16 @@ public class SimpleMrzDataAdapter extends ArrayAdapter<DocumentReaderTextField> 
             String value = Constants.documentReaderResults.getTextFieldValueByType(p.fieldType, p.lcid);
 			textValue.setText(value);
 
-			Log.d(TAG, "getView: "+p.fieldType);
+//			Log.d(TAG, "getView: "+p.fieldType);
 
-			Log.d(TAG, "getView: "+value);
+//			Log.d(TAG, "getView: "+value);
 //            Log.d(TAG, "Number: "+p.fieldType);
 //            Log.d(TAG, "getView: "+Constants.documentReaderResults.getTextFieldValueByType(p.fieldType,p.lcid));
 
             Bitmap portrait = Constants.documentReaderResults.getGraphicFieldImageByType(eGraphicFieldType.GF_PORTRAIT);
 
             if (portrait != null) {
-                Log.d(TAG, "getView: Available");
+//                Log.d(TAG, "getView: Available");
             }
 
 

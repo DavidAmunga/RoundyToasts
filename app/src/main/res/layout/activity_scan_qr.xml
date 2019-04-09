@@ -5,7 +5,7 @@
     android:layout_gravity="center_horizontal"
     android:background="?attr/backgroundColor"
     android:orientation="vertical"
-    tools:context="miles.identigate.soja.Fragments.EntryTypeFragment">
+    tools:context="miles.identigate.soja.fragments.EntryTypeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:orientation="vertical"
         >
 
-        <miles.identigate.soja.Font.OpenSansBold
+        <miles.identigate.soja.font.OpenSansBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -40,7 +40,7 @@
                 android:tint="?attr/iconColor" />
 
 
-            <miles.identigate.soja.Font.OpenSansBold
+            <miles.identigate.soja.font.OpenSansBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/scan_icon"
@@ -71,7 +71,7 @@
                 android:tint="?attr/iconColor" />
 
 
-            <miles.identigate.soja.Font.OpenSansBold
+            <miles.identigate.soja.font.OpenSansBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/scan_icon_2"

@@ -5,9 +5,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 
-import miles.identigate.soja.Fragments.EntryTypeFragment;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.SojaActivity;
+import miles.identigate.soja.fragments.EntryTypeFragment;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
 import miles.identigate.soja.app.Common;
 
 public class EntryTypeActivity extends SojaActivity implements EntryTypeFragment.OnEntrySelectedListener {

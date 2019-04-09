@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import miles.identigate.soja.Services.SyncService;
+import miles.identigate.soja.services.SyncService;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public ConnectivityChangeReceiver() {

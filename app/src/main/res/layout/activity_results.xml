@@ -48,7 +48,7 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 app:srcCompat="@drawable/ic_no_data_70dp"/>
-            <miles.identigate.soja.Font.OpenSansLight
+            <miles.identigate.soja.font.OpenSansLight
                 android:layout_width="match_parent"
                 android:textSize="20sp"
                 android:layout_marginTop="15dp"

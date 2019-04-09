@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -21,7 +19,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.crashlytics.android.Crashlytics;
@@ -33,10 +30,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import miles.identigate.soja.Dashboard;
-import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.helpers.CheckConnection;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.R;
 import miles.identigate.soja.app.Common;
 
@@ -110,7 +107,10 @@ public class Login extends AppCompatActivity {
                             urlParameters = "username=" + URLEncoder.encode(emailValue, "UTF-8") +
                                     "&password=" + URLEncoder.encode(passwordValue, "UTF-8") +
                                     "&deviceCode=" + URLEncoder.encode("9105772e98eb39b2", "UTF-8");
+
                             new Validate().execute(url, urlParameters);
+
+                            Log.d(TAG, "onClick: "+urlParameters);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }

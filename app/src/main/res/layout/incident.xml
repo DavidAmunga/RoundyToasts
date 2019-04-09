@@ -7,14 +7,14 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="horizontal">
-        <miles.identigate.soja.Font.OpenSansRegular
+        <miles.identigate.soja.font.OpenSansRegular
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight=".5"
             android:id="@+id/name"
             android:text="OBADIAH OBARE" />
-        <miles.identigate.soja.Font.OpenSansRegular
+        <miles.identigate.soja.font.OpenSansRegular
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="horizontal">
-        <miles.identigate.soja.Font.OpenSansRegular
+        <miles.identigate.soja.font.OpenSansRegular
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -36,7 +36,7 @@
             android:id="@+id/date"
             android:text="DATE: 16th January,2016"
             />
-        <miles.identigate.soja.Font.OpenSansRegular
+        <miles.identigate.soja.font.OpenSansRegular
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -49,11 +49,11 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="vertical">
-        <miles.identigate.soja.Font.OpenSansBold
+        <miles.identigate.soja.font.OpenSansBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description"/>
-        <miles.identigate.soja.Font.OpenSansLight
+        <miles.identigate.soja.font.OpenSansLight
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/description"

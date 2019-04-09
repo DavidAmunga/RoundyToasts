@@ -19,9 +19,9 @@ import com.regula.documentreader.api.results.DocumentReaderScenario;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import miles.identigate.soja.Fragments.EntryTypeFragment;
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.fragments.EntryTypeFragment;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.app.Common;
 
 

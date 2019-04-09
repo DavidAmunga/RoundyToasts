@@ -31,7 +31,7 @@
                 android:orientation="vertical"
                 android:padding="15dp">
 
-                <miles.identigate.soja.Font.OpenSansRegular
+                <miles.identigate.soja.font.OpenSansRegular
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Select Server"
@@ -39,7 +39,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <miles.identigate.soja.Font.OpenSansBold
+                <miles.identigate.soja.font.OpenSansBold
                     android:id="@+id/serverName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -309,16 +309,39 @@
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
-            <miles.identigate.soja.Font.OpenSansBold
+
+
+
+            <miles.identigate.soja.font.OpenSansRegular
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Premise Name"
+                android:id="@+id/premiseName"
+                android:textColor="?attr/textColor"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <miles.identigate.soja.font.OpenSansBold
+                android:id="@+id/sentryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
+                android:text="Sentry Name"
+                android:layout_marginBottom="10.0dip"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+
+            <miles.identigate.soja.font.OpenSansBold
                 android:id="@+id/version_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="5.0dip"
                 android:text="Version Code"
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
-
 
         </LinearLayout>
     </ScrollView>

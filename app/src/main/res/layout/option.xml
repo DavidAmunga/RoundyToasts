@@ -21,7 +21,7 @@
         android:orientation="vertical"
         android:paddingLeft="10dp">
 
-        <miles.identigate.soja.Font.OpenSansBold
+        <miles.identigate.soja.font.OpenSansBold
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="18dp" />
 
-        <miles.identigate.soja.Font.OpenSansRegular
+        <miles.identigate.soja.font.OpenSansRegular
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

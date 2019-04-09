@@ -8,14 +8,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import miles.identigate.soja.Dashboard;
-import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.R;
 
 public class SplashScreen extends Activity {

@@ -3,17 +3,10 @@ package miles.identigate.soja.UserInterface;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
-import android.app.LoaderManager;
-import java.util.ArrayList;
 
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Models.Visitor;
+import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.R;
 
 public class SearchResults extends AppCompatActivity {

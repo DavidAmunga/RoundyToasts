@@ -2,31 +2,30 @@ package miles.identigate.soja.UserInterface;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.hudomju.swipe.SwipeToDismissTouchListener;
-import com.hudomju.swipe.adapter.ListViewAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,39 +39,56 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.HorizontalCalendarListener;
-import miles.identigate.soja.Adapters.DriveInAdapter;
-import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Models.DriveIn;
-import miles.identigate.soja.Models.Resident;
-import miles.identigate.soja.Models.ServiceProviderModel;
 import miles.identigate.soja.R;
+import miles.identigate.soja.adapters.DriveInRecyclerAdapter;
+import miles.identigate.soja.helpers.CheckConnection;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.RecyclerItemTouchHelper;
+import miles.identigate.soja.helpers.RecyclerItemTouchHelperListener;
+import miles.identigate.soja.interfaces.OnItemClick;
+import miles.identigate.soja.models.DriveIn;
+import miles.identigate.soja.models.QueryResponse;
+import miles.identigate.soja.models.Resident;
+import miles.identigate.soja.models.ServiceProviderModel;
+import miles.identigate.soja.services.DataService;
+import miles.identigate.soja.services.RetrofitClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class Visitors extends AppCompatActivity {
-    ListView lv;
+public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelperListener, OnItemClick {
     DatabaseHandler handler;
-    DriveInAdapter adapter;
+    //    DriveInAdapter adapter;
     ArrayList<DriveIn> driveIns;
     ArrayList<DriveIn> walkIns;
     ArrayList<ServiceProviderModel> serviceProviderModels;
     ArrayList<Resident> residents;
+    ArrayList<DriveIn> sortedDriveIns = new ArrayList<>();
+    ArrayList<DriveIn> sortedWalkIns = new ArrayList<>();
+    ArrayList<Resident> sortedResidentList = new ArrayList<>();
 
+    DriveInRecyclerAdapter driveInRecyclerAdapter;
     String str;
     @BindView(R.id.empty)
     LinearLayout empty;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.root_layout)
+    RelativeLayout rootLayout;
     private ContentLoadingProgressBar loading;
     private Preferences preferences;
     private static final String TAG = "Visitors";
     TextView info_message;
     String[] filterItems = {"Entry Time", "SMS Login", "Alphabetically"};
+    private boolean canDeleteItem = true;
 
     Date selectedDate = new Date();
 
@@ -116,7 +132,6 @@ public class Visitors extends AppCompatActivity {
         walkIns = new ArrayList<>();
         serviceProviderModels = new ArrayList<>();
         residents = new ArrayList<>();
-        lv = findViewById(R.id.visitors);
         loading = findViewById(R.id.loading);
         handler = new DatabaseHandler(this);
         info_message = findViewById(R.id.info_message);
@@ -136,6 +151,8 @@ public class Visitors extends AppCompatActivity {
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
+
+                Log.d(TAG, "onDateSelected: Sorting");
                 selectedDate = date;
                 sortVisitorsByEntryTime();
 
@@ -143,40 +160,14 @@ public class Visitors extends AppCompatActivity {
             }
         });
 
+//        Setup Recycler View
 
-//        final SwipeToDismissTouchListener<ListViewAdapter> touchListener =
-//                new SwipeToDismissTouchListener<>(
-//                        new ListViewAdapter(lv),
-//                        new SwipeToDismissTouchListener.DismissCallbacks<ListViewAdapter>() {
-//                            @Override
-//                            public boolean canDismiss(int position) {
-//                                return true;
-//                            }
-//
-//                            @Override
-//                            public void onDismiss(ListViewAdapter view, int position) {
-//                                adapter.remove(position);
-//
-//                                Toast.makeText(Visitors.this, "Dismissed", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-
-
-//        lv.setOnTouchListener(touchListener);
-//
-//
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (touchListener.existPendingDismisses()) {
-//                    touchListener.undoPendingDismiss();
-//                } else {
-////                    Toast.makeText(Visitors.this, "Position " + position, LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//        lv.setOnScrollListener((AbsListView.OnScrollListener) touchListener.makeScrollListener());
-
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallBack = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
 
 
         if (getIntent() != null) {
@@ -184,22 +175,29 @@ public class Visitors extends AppCompatActivity {
             if (str.equals("DRIVE")) {
                 title.setText("Drive Out");
                 //driveIns=handler.getDriveIns(0);
-                adapter = new DriveInAdapter(this, driveIns, 1);
+                driveInRecyclerAdapter = new DriveInRecyclerAdapter(this, driveIns, 1, this);
+//                adapter = new DriveInAdapter(this, driveIns, 1);
                 //adapter.notifyDataSetChanged();
             } else if (str.equals("WALK")) {
                 title.setText("Walk Out");
                 //walkIns=handler.getWalk(0);
-                adapter = new DriveInAdapter(this, walkIns, "WALK");
+                driveInRecyclerAdapter = new DriveInRecyclerAdapter(this, walkIns, "WALK", this);
+
+//                adapter = new DriveInAdapter(this, walkIns, "WALK");
                 //adapter.notifyDataSetChanged();
             } else if (str.equals("PROVIDER")) {
                 title.setText("Service Providers");
                 //serviceProviderModels=handler.getProviders(0);
-                adapter = new DriveInAdapter(this, "TYPE", serviceProviderModels);
+                driveInRecyclerAdapter = new DriveInRecyclerAdapter(this, "TYPE", serviceProviderModels, this);
+
+//                adapter = new DriveInAdapter(this, "TYPE", serviceProviderModels);
                 //adapter.notifyDataSetChanged();
             } else if (str.equals("RESIDENTS")) {
                 title.setText("Residents");
                 //residents=handler.getResidents(0);
-                adapter = new DriveInAdapter(this, residents);
+                driveInRecyclerAdapter = new DriveInRecyclerAdapter(this, residents, this);
+
+//                adapter = new DriveInAdapter(this, residents);
                 //adapter.notifyDataSetChanged();
             }
         } else {
@@ -207,9 +205,7 @@ public class Visitors extends AppCompatActivity {
         }
 
 
-
-
-        lv.setAdapter(adapter);
+        recyclerView.setAdapter(driveInRecyclerAdapter);
         if (new CheckConnection().check(this)) {
             String s = preferences.getBaseURL();
             String url = s.substring(0, s.length() - 11);
@@ -220,49 +216,51 @@ public class Visitors extends AppCompatActivity {
             info_message.setText("No Data Available");
             findViewById(R.id.empty).setVisibility(View.VISIBLE);
         }
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent exit = new Intent(getApplicationContext(), RecordExit.class);
-                if (str.equals("DRIVE")) {
-                    DriveIn drive = (DriveIn) parent.getItemAtPosition(position);
-                    //Toast.makeText(getApplicationContext(),drive.getExitTime(),Toast.LENGTH_LONG).show();
-                    exit.putExtra("TYPE", "DRIVE");
-                    exit.putExtra("NAME", drive.getName());
-                    exit.putExtra("ID", drive.getNationalId());
-                    exit.putExtra("ENTRY", drive.getEntryTime());
-                    exit.putExtra("CAR", drive.getCarNumber());
-                    startActivity(exit);
 
-                } else if (str.equals("WALK")) {
-                    DriveIn walk = (DriveIn) parent.getItemAtPosition(position);
-                    exit.putExtra("TYPE", "WALK");
-                    exit.putExtra("NAME", walk.getName());
-                    exit.putExtra("ID", walk.getNationalId());
-                    exit.putExtra("ENTRY", walk.getEntryTime());
-                    startActivity(exit);
-
-                } else if (str.equals("PROVIDER")) {
-                    ServiceProviderModel service = (ServiceProviderModel) parent.getItemAtPosition(position);
-                    exit.putExtra("TYPE", "PROVIDER");
-                    exit.putExtra("NAME", service.getCompanyName());
-                    exit.putExtra("ID", service.getNationalId());
-                    exit.putExtra("ENTRY", service.getEntryTime());
-                    exit.putExtra("PROVIDERNAME", service.getProviderName());
-                    startActivity(exit);
-
-                } else if (str.equals("RESIDENTS")) {
-                    Resident res = (Resident) parent.getItemAtPosition(position);
-                    exit.putExtra("TYPE", "RESIDENT");
-                    exit.putExtra("NAME", res.getName());
-                    exit.putExtra("ID", res.getNationalId());
-                    exit.putExtra("ENTRY", res.getEntryTime());
-                    exit.putExtra("HOUSE", res.getHouse());
-                    startActivity(exit);
-                }
-
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent exit = new Intent(getApplicationContext(), RecordExit.class);
+//                if (str.equals("DRIVE")) {
+//                    DriveIn drive = (DriveIn) parent.getItemAtPosition(position);
+//                    //Toast.makeText(getApplicationContext(),drive.getExitTime(),Toast.LENGTH_LONG).show();
+//                    exit.putExtra("TYPE", "DRIVE");
+//                    exit.putExtra("NAME", drive.getName());
+//                    exit.putExtra("ID", drive.getNationalId());
+//                    exit.putExtra("ENTRY", drive.getEntryTime());
+//                    exit.putExtra("CAR", drive.getCarNumber());
+//                    startActivity(exit);
+//
+//                } else if (str.equals("WALK")) {
+//                    DriveIn walk = (DriveIn) parent.getItemAtPosition(position);
+//                    exit.putExtra("TYPE", "WALK");
+//                    exit.putExtra("NAME", walk.getName());
+//                    exit.putExtra("ID", walk.getNationalId());
+//                    exit.putExtra("ENTRY", walk.getEntryTime());
+//                    startActivity(exit);
+//
+//                } else if (str.equals("PROVIDER")) {
+//                    ServiceProviderModel service = (ServiceProviderModel) parent.getItemAtPosition(position);
+//                    exit.putExtra("TYPE", "PROVIDER");
+//                    exit.putExtra("NAME", service.getCompanyName());
+//                    exit.putExtra("ID", service.getNationalId());
+//                    exit.putExtra("ENTRY", service.getEntryTime());
+//                    exit.putExtra("PROVIDERNAME", service.getProviderName());
+//                    startActivity(exit);
+//
+//                } else if (str.equals("RESIDENTS")) {
+//                    Resident res = (Resident) parent.getItemAtPosition(position);
+//                    exit.putExtra("TYPE", "RESIDENT");
+//                    exit.putExtra("NAME", res.getName());
+//                    exit.putExtra("ID", res.getNationalId());
+//                    exit.putExtra("ID", res.getNationalId());
+//                    exit.putExtra("ENTRY", res.getEntryTime());
+//                    exit.putExtra("HOUSE", res.getHouse());
+//                    startActivity(exit);
+//                }
+//
+//            }
+//        });
 
     }
 
@@ -278,7 +276,6 @@ public class Visitors extends AppCompatActivity {
         mSearchView.setQueryHint("Search");
 
 
-
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -289,11 +286,10 @@ public class Visitors extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
 
 //                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
-                adapter.filter(newText);
+                driveInRecyclerAdapter.filter(newText);
                 return true;
             }
         });
-
 
 
         return true;
@@ -303,16 +299,14 @@ public class Visitors extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-        } else if (item.getItemId() == R.id.nav_search) {
-            lv.setEmptyView(empty);
-        }else if(item.getItemId()==R.id.nav_filter){
+        } else if (item.getItemId() == R.id.nav_filter) {
             showFilterDialog();
         }
         return super.onOptionsItemSelected(item);
     }
 
 
-    public void showFilterDialog(){
+    public void showFilterDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Visitors.this);
         builder.setTitle("Filter Visitors By");
@@ -355,10 +349,55 @@ public class Visitors extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        driveInRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onVisitorClick(Object object) {
+//        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show();
+        Intent exit = new Intent(getApplicationContext(), RecordExit.class);
+        if (str.equals("DRIVE")) {
+            DriveIn drive = (DriveIn) object;
+            //Toast.makeText(getApplicationContext(),drive.getExitTime(),Toast.LENGTH_LONG).show();
+            exit.putExtra("TYPE", "DRIVE");
+            exit.putExtra("NAME", drive.getName());
+            exit.putExtra("ID", drive.getNationalId());
+            exit.putExtra("ENTRY", drive.getEntryTime());
+            exit.putExtra("CAR", drive.getCarNumber());
+            startActivity(exit);
+
+        } else if (str.equals("WALK")) {
+            DriveIn walk = (DriveIn) object;
+            exit.putExtra("TYPE", "WALK");
+            exit.putExtra("NAME", walk.getName());
+            exit.putExtra("ID", walk.getNationalId());
+            exit.putExtra("ENTRY", walk.getEntryTime());
+            startActivity(exit);
+
+        } else if (str.equals("PROVIDER")) {
+            ServiceProviderModel service = (ServiceProviderModel) object;
+            exit.putExtra("TYPE", "PROVIDER");
+            exit.putExtra("NAME", service.getCompanyName());
+            exit.putExtra("ID", service.getNationalId());
+            exit.putExtra("ENTRY", service.getEntryTime());
+            exit.putExtra("PROVIDERNAME", service.getProviderName());
+            startActivity(exit);
+
+        } else if (str.equals("RESIDENTS")) {
+            Resident res = (Resident) object;
+            exit.putExtra("TYPE", "RESIDENT");
+            exit.putExtra("NAME", res.getName());
+            exit.putExtra("ID", res.getNationalId());
+            exit.putExtra("ENTRY", res.getEntryTime());
+            exit.putExtra("HOUSE", res.getHouse());
+            startActivity(exit);
+        }
+
+
     }
 
     private class GetActiveVisitors extends AsyncTask<String, Void, String> {
@@ -503,9 +542,9 @@ public class Visitors extends AppCompatActivity {
 
 
                             loading.setVisibility(View.GONE);
-                            lv.setVisibility(View.VISIBLE);
-                            adapter.notifyDataSetChanged();
-                            adapter.reloadData();
+                            recyclerView.setVisibility(View.VISIBLE);
+                            driveInRecyclerAdapter.notifyDataSetChanged();
+                            driveInRecyclerAdapter.reloadData();
 
 
                             sortVisitorsByEntryTime();
@@ -531,6 +570,9 @@ public class Visitors extends AppCompatActivity {
     }
 
     public void sortVisitorsByEntryTime() {
+        sortedDriveIns.clear();
+        sortedResidentList.clear();
+        sortedWalkIns.clear();
 
         if (driveIns.size() > 0) {
             Collections.sort(driveIns, new Comparator<DriveIn>() {
@@ -552,7 +594,6 @@ public class Visitors extends AppCompatActivity {
 
             });
 
-            ArrayList<DriveIn> newdriveIns = new ArrayList<DriveIn>();
 
             for (DriveIn d : driveIns) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -571,15 +612,15 @@ public class Visitors extends AppCompatActivity {
                 if (isSameDay(selectCal, entryCal)) {
                     Log.d(TAG, "onPostExecute: " + d.getName());
 
-                    newdriveIns.add(d);
+                    sortedDriveIns.add(d);
                 }
             }
 
-            adapter = new DriveInAdapter(Visitors.this, newdriveIns, 1);
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, sortedDriveIns, 1, this);
             Log.d(TAG, "Items Desc" + driveIns.get(0).getEntryTime());
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
 
 
         } else if (walkIns.size() > 0) {
@@ -602,7 +643,6 @@ public class Visitors extends AppCompatActivity {
 
             });
 
-            ArrayList<DriveIn> newWalkIns = new ArrayList<DriveIn>();
 
             for (DriveIn d : walkIns) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -621,15 +661,17 @@ public class Visitors extends AppCompatActivity {
                 if (isSameDay(selectCal, entryCal)) {
                     Log.d(TAG, "onPostExecute: " + d.getName());
 
-                    newWalkIns.add(d);
+                    sortedWalkIns.add(d);
                 }
             }
 
-            adapter = new DriveInAdapter(Visitors.this, newWalkIns, "type");
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, sortedWalkIns, "type", this);
             Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime());
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
+            updateRecyclerViewState();
+
         } else if (residents.size() > 0) {
             Collections.sort(residents, new Comparator<Resident>() {
                 public int compare(Resident o1, Resident o2) {
@@ -650,7 +692,6 @@ public class Visitors extends AppCompatActivity {
 
             });
 
-            ArrayList<Resident> newresidentsList = new ArrayList<Resident>();
 
             for (Resident resident : residents) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -669,24 +710,29 @@ public class Visitors extends AppCompatActivity {
                 if (isSameDay(selectCal, entryCal)) {
                     Log.d(TAG, "onPostExecute: " + resident.getName());
 
-                    newresidentsList.add(resident);
+                    sortedResidentList.add(resident);
                 }
             }
 
-            adapter = new DriveInAdapter(Visitors.this, newresidentsList);
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, sortedResidentList, this);
             Log.d(TAG, "Items Desc" + residents.get(0).getEntryTime());
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
 
 
         }
+
 
     }
 
 
     private void sortVisitorsBySMS() {
-        ArrayList<DriveIn> smsFilterList = new ArrayList<>();
+        sortedDriveIns.clear();
+        sortedResidentList.clear();
+        sortedWalkIns.clear();
+
+//        ArrayList<DriveIn> smsFilterList = new ArrayList<>();
         if (driveIns.size() > 0) {
             for (DriveIn driveIn : driveIns) {
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -703,15 +749,15 @@ public class Visitors extends AppCompatActivity {
 
                 if (driveIn.getName().equals(" ") && isSameDay(selectCal, entryCal)) {
 
-                    smsFilterList.add(driveIn);
+                    sortedDriveIns.add(driveIn);
                 }
             }
 
 
-            adapter = new DriveInAdapter(Visitors.this, smsFilterList, 1);
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, sortedDriveIns, 1, this);
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
         } else if (walkIns.size() > 0) {
 
             for (DriveIn driveIn : walkIns) {
@@ -728,15 +774,42 @@ public class Visitors extends AppCompatActivity {
                 selectCal.setTime(selectedDate);
 
                 if (driveIn.getName().equals(" ") && isSameDay(selectCal, entryCal)) {
-                    smsFilterList.add(driveIn);
+                    sortedWalkIns.add(driveIn);
                 }
             }
-            adapter = new DriveInAdapter(Visitors.this, smsFilterList, 1);
-            Log.d(TAG, "Items Desc" + walkIns.get(0).getEntryTime());
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, sortedWalkIns, 1, this);
+            Log.d(TAG, "Items Desc" + sortedWalkIns.get(0).getEntryTime());
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
+        } else if (residents.size() > 0) {
+
+            for (Resident resident : residents) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date entryDate = null;
+                try {
+                    entryDate = format.parse(resident.getEntryTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Calendar entryCal = Calendar.getInstance();
+                entryCal.setTime(entryDate);
+                Calendar selectCal = Calendar.getInstance();
+                selectCal.setTime(selectedDate);
+
+                if (resident.getName().equals(" ") && isSameDay(selectCal, entryCal)) {
+                    sortedResidentList.add(resident);
+                }
+            }
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, sortedResidentList, this);
+            Log.d(TAG, "Items Desc" + sortedResidentList.get(0).getEntryTime());
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
         }
+
+        updateRecyclerViewState();
+
 
     }
 
@@ -774,10 +847,10 @@ public class Visitors extends AppCompatActivity {
 
 
             Log.d(TAG, "sortVisitorsAlphabetically: DriveIns" + driveIns.toString());
-            adapter = new DriveInAdapter(Visitors.this, alphaFilterListA, 1);
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, alphaFilterListA, 1, this);
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
 
         } else if (walkIns.size() > 0) {
             Collections.sort(walkIns, new Comparator<DriveIn>() {
@@ -810,11 +883,13 @@ public class Visitors extends AppCompatActivity {
 
 
             Log.d(TAG, "sortVisitorsAlphabetically: WalkIns" + alphaFilterListA.toString());
-            adapter = new DriveInAdapter(Visitors.this, alphaFilterListA, 1);
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            adapter.reloadData();
+            driveInRecyclerAdapter = new DriveInRecyclerAdapter(Visitors.this, alphaFilterListA, 1, this);
+            recyclerView.setAdapter(driveInRecyclerAdapter);
+            driveInRecyclerAdapter.notifyDataSetChanged();
+            driveInRecyclerAdapter.reloadData();
         }
+        updateRecyclerViewState();
+
     }
 
     public static boolean isSameDay(Calendar cal1, Calendar cal2) {
@@ -826,4 +901,431 @@ public class Visitors extends AppCompatActivity {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR));
     }
 
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+
+        if (viewHolder instanceof DriveInRecyclerAdapter.DriveInViewHolder) {
+            if (driveIns.size() > 0) {
+                final String name = driveIns.get(viewHolder.getAdapterPosition()).getName();
+
+                final DriveIn deletedDriveIn = driveIns.get(viewHolder.getAdapterPosition());
+                final int deleteIndex = viewHolder.getAdapterPosition();
+
+                driveInRecyclerAdapter.removeItem(deleteIndex);
+
+                Log.d(TAG, "onSwiped: " + deleteIndex + deletedDriveIn.getName());
+
+                Snackbar snackbar = Snackbar.make(rootLayout, name + " checked out", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        canDeleteItem = false;
+
+                        driveInRecyclerAdapter.restoreItem(deletedDriveIn, deleteIndex);
+                    }
+                });
+                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(getResources().getColor(R.color.white));
+                snackbar.show();
+
+                snackbar.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+
+                    }
+
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
+
+                        if (canDeleteItem) {
+                            recordCheckOut(deletedDriveIn);
+                            updateRecyclerViewState();
+
+                            canDeleteItem = true;
+                        }
+
+
+                    }
+                });
+
+            } else if (walkIns.size() > 0) {
+                String name = walkIns.get(viewHolder.getAdapterPosition()).getName();
+
+                final DriveIn deletedWalkIn = walkIns.get(viewHolder.getAdapterPosition());
+                final int deleteIndex = viewHolder.getAdapterPosition();
+
+                driveInRecyclerAdapter.removeItem(deleteIndex);
+
+                Log.d(TAG, "onSwiped: " + deleteIndex + deletedWalkIn.getName());
+
+                Snackbar snackbar = Snackbar.make(rootLayout, name + " checked out", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        canDeleteItem = false;
+
+                        driveInRecyclerAdapter.restoreItem(deletedWalkIn, deleteIndex);
+                    }
+                });
+                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(getResources().getColor(R.color.white));
+                snackbar.show();
+
+                snackbar.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+
+                    }
+
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
+
+                        if (canDeleteItem) {
+                            recordCheckOut(deletedWalkIn);
+                            updateRecyclerViewState();
+
+                            canDeleteItem = true;
+                        }
+
+
+                    }
+                });
+
+
+            } else if (residents.size() > 0) {
+                String name = residents.get(viewHolder.getAdapterPosition()).getName();
+
+                final Resident deletedResident = residents.get(viewHolder.getAdapterPosition());
+                final int deleteIndex = viewHolder.getAdapterPosition();
+
+                driveInRecyclerAdapter.removeItem(deleteIndex);
+
+                Log.d(TAG, "onSwiped: " + deleteIndex + deletedResident.getName());
+
+                Snackbar snackbar = Snackbar.make(rootLayout, name + " checked out", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        canDeleteItem = false;
+
+                        driveInRecyclerAdapter.restoreItem(deletedResident, deleteIndex);
+                    }
+                });
+                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(getResources().getColor(R.color.white));
+                snackbar.show();
+
+                snackbar.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+
+                    }
+
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
+
+                        if (canDeleteItem) {
+                            recordCheckOut(deletedResident);
+                            updateRecyclerViewState();
+
+                            canDeleteItem = true;
+                        }
+
+
+                    }
+                });
+            } else if (serviceProviderModels.size() > 0) {
+                String name = serviceProviderModels.get(viewHolder.getAdapterPosition()).getOtherNames();
+
+                final ServiceProviderModel deletedModel = serviceProviderModels.get(viewHolder.getAdapterPosition());
+                final int deleteIndex = viewHolder.getAdapterPosition();
+
+                driveInRecyclerAdapter.removeItem(deleteIndex);
+
+                Log.d(TAG, "onSwiped: " + deleteIndex + deletedModel.getOtherNames());
+
+                Snackbar snackbar = Snackbar.make(rootLayout, name + " checked out", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        canDeleteItem = false;
+
+                        driveInRecyclerAdapter.restoreItem(deletedModel, deleteIndex);
+                    }
+                });
+                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(getResources().getColor(R.color.white));
+                snackbar.show();
+
+                snackbar.getView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                    @Override
+                    public void onViewAttachedToWindow(View v) {
+
+                    }
+
+                    @Override
+                    public void onViewDetachedFromWindow(View v) {
+
+                        if (canDeleteItem) {
+                            recordCheckOut(deletedModel);
+                            updateRecyclerViewState();
+
+                            canDeleteItem = true;
+                        }
+
+
+                    }
+                });
+            }
+
+
+        }
+    }
+
+
+    public void recordCheckOut(Object object) {
+
+        if (str.equals("DRIVE")) {
+
+            final DriveIn driveIn = (DriveIn) object;
+            RetrofitClient.getDataService(this).visitorExit(driveIn.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
+                @Override
+                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    if (response.body() != null) {
+                        QueryResponse queryResponse = response.body();
+
+                        if (queryResponse.getResultCode() != null) {
+                            if (queryResponse.getResultCode() == 0 && queryResponse.getResultText().equals("OK") && queryResponse.getResultContent().equals("success")) {
+//                           Query Successful, Visitor Successfully exited
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Checked "+driveIn.getName() + " out...", Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            } else {
+//                           Not Successful
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Error: " + queryResponse.getResultText(), Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            }
+
+
+                        } else {
+//                       Possibly poor internet connection
+                            Snackbar snackbar = Snackbar.make(rootLayout, "Error,Poor Internet Connection", Snackbar.LENGTH_LONG);
+                            snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<QueryResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t);
+                }
+            });
+
+        } else if (str.equals("WALK")) {
+
+            final DriveIn walkIn = (DriveIn) object;
+            RetrofitClient.getDataService(this).visitorExit(walkIn.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
+                @Override
+                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    if (response.body() != null) {
+                        QueryResponse queryResponse = response.body();
+
+                        if (queryResponse.getResultCode() != null) {
+                            if (queryResponse.getResultCode() == 0 && queryResponse.getResultText().equals("OK") && queryResponse.getResultContent().equals("success")) {
+//                           Query Successful, Visitor Successfully exited
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Checked "+walkIn.getName() + " out", Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            } else {
+//                           Not Successful
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Error: " + queryResponse.getResultText(), Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            }
+
+
+                        } else {
+//                       Possibly poor internet connection
+                            Snackbar snackbar = Snackbar.make(rootLayout, "Error,Poor Internet Connection", Snackbar.LENGTH_LONG);
+                            snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<QueryResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t);
+                }
+            });
+
+        } else if (str.equals("PROVIDER")) {
+            final ServiceProviderModel model = (ServiceProviderModel) object;
+            RetrofitClient.getDataService(this).visitorExit(model.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
+                @Override
+                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    if (response.body() != null) {
+                        QueryResponse queryResponse = response.body();
+
+                        if (queryResponse.getResultCode() != null) {
+                            if (queryResponse.getResultCode() == 0 && queryResponse.getResultText().equals("OK") && queryResponse.getResultContent().equals("success")) {
+//                           Query Successful, Visitor Successfully exited
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Checked "+model.getOtherNames() + "out", Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            } else {
+//                           Not Successful
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Error: " + queryResponse.getResultText(), Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            }
+
+
+                        } else {
+//                       Possibly poor internet connection
+                            Snackbar snackbar = Snackbar.make(rootLayout, "Error,Poor Internet Connection", Snackbar.LENGTH_LONG);
+                            snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<QueryResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t);
+                }
+            });
+
+        } else if (str.equals("RESIDENTS")) {
+            final Resident resident = (Resident) object;
+            RetrofitClient.getDataService(this).visitorExit(resident.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
+                @Override
+                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                    Log.d(TAG, "onResponse: " + response.body());
+                    if (response.body() != null) {
+                        QueryResponse queryResponse = response.body();
+
+                        if (queryResponse.getResultCode() != null) {
+                            if (queryResponse.getResultCode() == 0 && queryResponse.getResultText().equals("OK") && queryResponse.getResultContent().equals("success")) {
+//                           Query Successful, Visitor Successfully exited
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Checked "+resident.getName() + " out", Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            } else {
+//                           Not Successful
+                                Snackbar snackbar = Snackbar.make(rootLayout, "Error: " + queryResponse.getResultText(), Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                                TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(getResources().getColor(R.color.white));
+                                snackbar.show();
+
+                            }
+
+
+                        } else {
+//                       Possibly poor internet connection
+                            Snackbar snackbar = Snackbar.make(rootLayout, "Error,Poor Internet Connection", Snackbar.LENGTH_LONG);
+                            snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<QueryResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t);
+                }
+            });
+
+        }
+
+
+    }
+
+
+    public void updateRecyclerViewState() {
+        if (str.equals("DRIVE")) {
+            if (sortedDriveIns.size() == 0) {
+                empty.setVisibility(View.VISIBLE);
+                info_message.setText("No Drive Ins Available for this day");
+            } else {
+                empty.setVisibility(View.GONE);
+            }
+        } else if (str.equals("WALK")) {
+            if (sortedWalkIns.size() == 0) {
+                empty.setVisibility(View.VISIBLE);
+                info_message.setText("No Walk Ins Available for this day");
+
+            } else {
+                empty.setVisibility(View.GONE);
+            }
+
+        } else if (str.equals("PROVIDER")) {
+            if (serviceProviderModels.size() == 0) {
+                empty.setVisibility(View.VISIBLE);
+                info_message.setText("No Logs Available for this day");
+
+            } else {
+                empty.setVisibility(View.GONE);
+
+            }
+        } else if (str.equals("RESIDENTS")) {
+            if (sortedResidentList.size() == 0) {
+                empty.setVisibility(View.VISIBLE);
+                info_message.setText("No Resident Ins Available");
+            } else {
+                empty.setVisibility(View.GONE);
+
+            }
+
+        }
+
+
+    }
 }

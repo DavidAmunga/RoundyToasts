@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -20,21 +19,20 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import miles.identigate.soja.Adapters.TypeAdapter;
+import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
-import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Models.TypeObject;
+import miles.identigate.soja.helpers.CheckConnection;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
+import miles.identigate.soja.models.TypeObject;
 import miles.identigate.soja.R;
 
 public class RecordExit extends SojaActivity {
@@ -140,6 +138,8 @@ public class RecordExit extends SojaActivity {
                         urlParameters = "idNumber=" + URLEncoder.encode(idN, "UTF-8") +
                                 "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8")+
                                 "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+
+                        Log.d(TAG, "URL Parameters: "+urlParameters);
                         new ExitAsync().execute(preferences.getBaseURL()+"record-visitor-exit", urlParameters);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();

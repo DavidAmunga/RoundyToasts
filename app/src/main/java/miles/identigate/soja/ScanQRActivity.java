@@ -5,20 +5,17 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.regula.documentreader.api.enums.eVisualFieldType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,13 +27,12 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.ZxingHelperActivity;
-import miles.identigate.soja.Models.TypeObject;
-import miles.identigate.soja.UserInterface.RecordWalkIn;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.ZxingHelperActivity;
+import miles.identigate.soja.models.TypeObject;
 
 
 public class ScanQRActivity extends AppCompatActivity {

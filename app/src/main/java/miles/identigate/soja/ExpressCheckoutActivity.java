@@ -24,10 +24,10 @@ import org.json.JSONTokener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.ZxingHelperActivity;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.ZxingHelperActivity;
 
 public class ExpressCheckoutActivity extends AppCompatActivity {
     String visit_id;

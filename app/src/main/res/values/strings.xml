@@ -77,5 +77,7 @@
     <string name="capture_single_fail">Capture Single Fail</string>
     <string name="imageViewNoData">No Data</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_register_guest">RegisterGuest</string>
+    <string name="title_activity_guest_list">GuestList</string>
 
 </resources>

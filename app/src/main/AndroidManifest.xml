@@ -3,13 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="miles.identigate.soja"
     android:installLocation="preferExternal">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -47,7 +45,19 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
-
+        <activity
+            android:name=".activities.GuestList"
+            android:label="@string/title_activity_guest_list"
+            android:parentActivityName=".Dashboard"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="miles.identigate.soja.Dashboard" />
+        </activity>
+        <activity
+            android:name=".activities.RegisterGuest"
+            android:label="@string/title_activity_register_guest"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -62,7 +72,7 @@
 
         <activity
             android:name=".Maps"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".ScanActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
@@ -170,7 +180,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".Logs.AllLogs"
+            android:name=".logs.AllLogs"
             android:label="Soja"
             android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar"
@@ -180,7 +190,7 @@
                 android:value="miles.identigate.soja.Dashboard" />
         </activity>
         <activity
-            android:name=".Logs.Incidents"
+            android:name=".logs.Incidents"
             android:label="Soja"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
@@ -205,7 +215,7 @@
         </activity>
 
         <service
-            android:name=".Services.SyncService"
+            android:name=".services.SyncService"
             android:enabled="true"
             android:exported="false" />
 
@@ -227,7 +237,7 @@
                 android:value="miles.identigate.soja.Dashboard" />
         </activity>
         <activity
-            android:name=".Helpers.ZxingHelperActivity"
+            android:name=".helpers.ZxingHelperActivity"
             android:parentActivityName=".ExpressCheckoutActivity"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
@@ -248,7 +258,7 @@
             android:value="6f92896eb86607007f04cba0a38fc5fc2004837e" />
 
         <service
-            android:name=".Services.VisitorsService"
+            android:name=".services.VisitorsService"
             android:enabled="true"
             android:exported="false" />
 
@@ -267,18 +277,16 @@
             android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".Services.MyFirebaseIdService">
+        <service android:name=".services.MyFirebaseIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name=".Services.MyFirebaseMessaging">
+        <service android:name=".services.MyFirebaseMessaging">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

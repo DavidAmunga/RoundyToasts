@@ -24,13 +24,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import miles.identigate.soja.Adapters.TypeAdapter;
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Helpers.SojaActivity;
-import miles.identigate.soja.Models.TypeObject;
+import miles.identigate.soja.adapters.TypeAdapter;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
+import miles.identigate.soja.models.TypeObject;
 
 public class RecordResidentVehicleActivity extends SojaActivity {
     private static final String TAG = "RecordResidentVehicleAc";

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingTop="0dp">
 
-    <miles.identigate.soja.Font.EditTextRegular
+    <miles.identigate.soja.font.EditTextRegular
         android:id="@+id/searchbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

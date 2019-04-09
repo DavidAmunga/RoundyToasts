@@ -3,17 +3,12 @@ package miles.identigate.soja;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.regula.documentreader.api.enums.eVisualFieldType;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,22 +25,17 @@ import org.json.JSONTokener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
 
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import miles.identigate.soja.Adapters.SimpleListAdapter;
-import miles.identigate.soja.Adapters.TypeAdapter;
-import miles.identigate.soja.Helpers.CheckConnection;
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.DatabaseHandler;
-import miles.identigate.soja.Helpers.NetworkHandler;
-import miles.identigate.soja.Helpers.Preferences;
-import miles.identigate.soja.Models.TypeObject;
-import miles.identigate.soja.UserInterface.RecordDriveIn;
-import miles.identigate.soja.UserInterface.RecordWalkIn;
-import miles.identigate.soja.UserInterface.SplashScreen;
+import miles.identigate.soja.adapters.SimpleListAdapter;
+import miles.identigate.soja.adapters.TypeAdapter;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.DatabaseHandler;
+import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.models.TypeObject;
 
 public class SmsCheckInActivity extends AppCompatActivity {
 

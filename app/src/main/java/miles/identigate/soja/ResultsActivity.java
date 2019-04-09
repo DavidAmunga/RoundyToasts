@@ -19,8 +19,8 @@ import com.regula.documentreader.api.results.DocumentReaderTextField;
 import java.util.ArrayList;
 import java.util.List;
 
-import miles.identigate.soja.Helpers.Constants;
-import miles.identigate.soja.Helpers.Preferences;
+import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.UserInterface.Incident;
 import miles.identigate.soja.UserInterface.RecordDriveIn;
 import miles.identigate.soja.UserInterface.RecordResident;
@@ -112,6 +112,21 @@ public class ResultsActivity extends AppCompatActivity {
                         finish();
                         break;
                     case Common.RESIDENTS:
+                        startActivity(new Intent(getApplicationContext(), RecordResident.class));
+                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        finish();
+                        break;
+                    case Common.REGISTER_GUEST:
+                        startActivity(new Intent(getApplicationContext(), RecordResident.class));
+                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        finish();
+                        break;
+                    case Common.CHECK_IN_GUEST:
+                        startActivity(new Intent(getApplicationContext(), RecordResident.class));
+                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        finish();
+                        break;
+                    case Common.ISSUE_TICKET:
                         startActivity(new Intent(getApplicationContext(), RecordResident.class));
                         overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
                         finish();
