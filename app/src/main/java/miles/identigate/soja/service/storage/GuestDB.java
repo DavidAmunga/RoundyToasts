@@ -49,7 +49,7 @@ public abstract class GuestDB extends RoomDatabase {
 
         Executor executor = Executors.newFixedThreadPool(NUMBERS_OF_THREADS);
         DBGuestDataSourceFactory dataSourceFactory = new DBGuestDataSourceFactory(guestDao());
-        LivePagedListBuilder livePagedListBuilder = new LivePagedListBuilder(dataSourceFactory, pagedListConfig);
+        LivePagedListBuilder livePagedListBuilder = new LivePagedListBuilder<>(dataSourceFactory, pagedListConfig);
 
 
         guestsPaged=livePagedListBuilder.setFetchExecutor(executor).build();

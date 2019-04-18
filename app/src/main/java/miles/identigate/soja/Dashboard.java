@@ -66,6 +66,7 @@ public class Dashboard extends SojaActivity {
     private ViewPager mViewPager;
     DatabaseHandler handler;
     String visitorResult;
+    String genderResult;
     String providerResult;
     String incidentsResult;
     String houseResult;
@@ -136,10 +137,10 @@ public class Dashboard extends SojaActivity {
                         customText.setTypeface(font);
                         customText.setText(adapter.getPageTitle(position));
                         break;
-                    case 2:
-                        customText.setTypeface(font);
-                        customText.setText(adapter.getPageTitle(position));
-                        break;
+//                    case 2:
+//                        customText.setTypeface(font);
+//                        customText.setText(adapter.getPageTitle(position));
+//                        break;
                     default:
                         throw new IllegalStateException("Invalid position: " + position);
                 }
@@ -348,9 +349,9 @@ public class Dashboard extends SojaActivity {
                 case 1:
                     CheckOut checkOut = new CheckOut();
                     return checkOut;
-                case 2:
-                    Logs logs = new Logs();
-                    return logs;
+//                case 2:
+//                    Logs logs = new Logs();
+//                    return logs;
 
                 default:
                     return null;
@@ -360,7 +361,7 @@ public class Dashboard extends SojaActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -370,8 +371,8 @@ public class Dashboard extends SojaActivity {
                     return "CHECK IN";
                 case 1:
                     return "CHECK OUT";
-                case 2:
-                    return "LOGS";
+//                case 2:
+//                    return "LOGS";
             }
             return null;
         }
@@ -399,6 +400,7 @@ public class Dashboard extends SojaActivity {
             visitorResult = NetworkHandler.GET(preferences.getBaseURL() + "visitor-types");
             providerResult = NetworkHandler.GET(preferences.getBaseURL() + "service-providers");
             incidentsResult = NetworkHandler.GET(preferences.getBaseURL() + "incident-types");
+            genderResult = NetworkHandler.GET(preferences.getBaseURL() + "genders");
 
 
 //            TODO : Change Endpoint
@@ -420,7 +422,7 @@ public class Dashboard extends SojaActivity {
     }
 
     public void getAllData() {
-        if (visitorResult == null || providerResult == null || incidentsResult == null || houseResult == null || premiseResidentResult == null) {
+        if (visitorResult == null || providerResult == null || incidentsResult == null || houseResult == null || premiseResidentResult == null || genderResult == null) {
             Toast.makeText(getApplicationContext(), "An error occurred", Toast.LENGTH_LONG).show();
         } else {
             try {
@@ -429,6 +431,7 @@ public class Dashboard extends SojaActivity {
                 JSONObject incidentsObject = new JSONObject(incidentsResult);
                 JSONObject housesObject = new JSONObject(houseResult);
                 JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
+                JSONObject genderObject = new JSONObject(genderResult);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
@@ -436,23 +439,37 @@ public class Dashboard extends SojaActivity {
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_SERVICE_PROVIDERS_TYPES);
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOUSES);
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_GENDER_TYPES);
 
                 db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
                 db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);
                 db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS_TYPES);
                 db.execSQL(handler.CREATE_TABLE_HOUSES);
                 db.execSQL(handler.CREATE_PREMISE_RESIDENTS_TABLE);
+                db.execSQL(handler.CREATE_GENDER_TYPES_TABLE);
 
                 /*db.execSQL(handler.CREATE_TABLE_DRIVE_IN);
                 db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS);
                 db.execSQL(handler.CREATE_TABLE_RESIDENTS);
                 db.execSQL(handler.CREATE_TABLE_INCIDENTS);*/
+
+                //Gender types
+                if (genderObject.getInt("result_code") == 0 && genderObject.getString("result_text").equals("OK")) {
+                    JSONArray genderArray = genderObject.getJSONArray("result_content");
+                    for (int i = 0; i < genderArray.length(); i++) {
+                        JSONObject genderType = genderArray.getJSONObject(i);
+                        Log.d(TAG, "getAllData: Gender Types" + genderType);
+                        handler.insertGenderTypes(genderType.getString("id"), genderType.getString("description"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve gender types", Toast.LENGTH_SHORT).show();
+                }
                 //Visitor types
                 if (visitorObject.getInt("result_code") == 0 && visitorObject.getString("result_text").equals("OK")) {
                     JSONArray visitorArray = visitorObject.getJSONArray("result_content");
                     for (int i = 0; i < visitorArray.length(); i++) {
                         JSONObject visitorType = visitorArray.getJSONObject(i);
-                        Log.d(TAG, "getAllData: visitorType"+visitorType);
+                        Log.d(TAG, "getAllData: visitorType" + visitorType);
                         handler.insertVisitorType(visitorType.getString("id"), visitorType.getString("name"));
                     }
                 } else {

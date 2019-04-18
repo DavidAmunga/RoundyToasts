@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.RegisterGuest"
+    android:focusable="false"
     tools:showIn="@layout/activity_register_guest">
 
 
@@ -29,29 +30,136 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/nameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <miles.identigate.soja.font.OpenSansBold
+                    android:id="@+id/typeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5.0dip"
-                    android:text="Name"
+                    android:text="Visitor Type"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/visitor_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/border" />
+
+            </LinearLayout>
+
+
+            <miles.identigate.soja.font.OpenSansBold
+                android:id="@+id/hostLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5.0dip"
+                android:text="Event"
+                android:textColor="?attr/textColor"
+                android:textSize="16sp" />
+
+            <miles.identigate.soja.font.OpenSansBold
+                android:id="@+id/spinnerEvent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/border_grey"
+                android:ems="10"
+                android:hint="Select Event"
+                android:inputType="text"
+                android:padding="15dp"
+                android:singleLine="false"
+                android:text=""
+                android:textColor="?attr/textColor"
+                android:textColorHint="?attr/textColorHint"
+                android:textCursorDrawable="@null" />
+
+
+            <LinearLayout
+                android:id="@+id/nameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <miles.identigate.soja.font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="First Name"
                     android:textColor="?attr/textColor"
                     android:textSize="16sp" />
 
                 <miles.identigate.soja.font.EditTextRegular
-                    android:id="@+id/txtName"
+                    android:id="@+id/txt_first_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/border"
+                    android:hint="Enter First Name"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
+                    android:textCursorDrawable="@null" />
+
+                <miles.identigate.soja.font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Last Name"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <miles.identigate.soja.font.EditTextRegular
+                    android:id="@+id/txt_last_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
-                    android:ems="10"
-                    android:hint="Enter Name"
+                    android:hint="Enter Last Name"
                     android:inputType="text"
-                    android:maxLength="10"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
+                    android:textCursorDrawable="@null" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/idLayout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+
+                <miles.identigate.soja.font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="ID"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <miles.identigate.soja.font.EditTextRegular
+                    android:id="@+id/txtID"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/border"
+                    android:hint="Enter ID (07123123)"
+                    android:inputType="text"
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColor="?attr/textColor"
@@ -61,9 +169,36 @@
 
 
             <LinearLayout
+                android:id="@+id/genderLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <miles.identigate.soja.font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Gender"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/gender_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/border" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/phoneNumberLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
                 <miles.identigate.soja.font.OpenSansBold
@@ -75,7 +210,7 @@
                     android:textSize="16sp" />
 
                 <miles.identigate.soja.font.EditTextRegular
-                    android:id="@+id/phoneNo"
+                    android:id="@+id/txtPhoneNo"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -91,12 +226,43 @@
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/designationLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+
+                <miles.identigate.soja.font.OpenSansBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Designation"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <miles.identigate.soja.font.EditTextRegular
+                    android:id="@+id/txt_designation"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/border"
+                    android:hint="Enter Designation"
+                    android:inputType="text"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
+                    android:textCursorDrawable="@null" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/emailLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
                 <miles.identigate.soja.font.OpenSansBold
@@ -113,10 +279,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
-                    android:ems="10"
                     android:hint="Enter Email Address"
                     android:inputType="textEmailAddress"
-                    android:maxLength="10"
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColor="?attr/textColor"
@@ -129,7 +293,6 @@
                 android:id="@+id/companyNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <miles.identigate.soja.font.OpenSansBold
@@ -146,7 +309,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
-                    android:ems="10"
                     android:hint="Enter company name"
                     android:inputType="text"
                     android:padding="10dp"

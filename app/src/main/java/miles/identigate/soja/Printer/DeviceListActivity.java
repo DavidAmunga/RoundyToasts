@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,8 +28,10 @@ import android.widget.Toast;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.CustomEvent;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +46,9 @@ public class DeviceListActivity extends Activity {
 
     public static final String TAG = "DeviceListActivity";
     public static final boolean D = true;
-    // 返回  Intent的extra
+    // ����  Intent��extra
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
-    // 成员字段
+    // ��Ա�ֶ�
     public BluetoothAdapter mBtAdapter;
     private BluetoothDevice mmDevice;
     private BluetoothSocket mmSocket;
@@ -61,32 +64,18 @@ public class DeviceListActivity extends Activity {
     public static String toothName=null;
     private Context thisCon=null;
     private String strAddressList="";
-    private Thread thread;
-    Handler handler=new Handler(){
-        public void handleMessage(Message msg) {
-            progress.setVisibility(View.GONE);
-            Intent intent = new Intent();
-            intent.putExtra("is_connected", ((msg.what==0)?"OK":"NO"));
-            intent.putExtra("BTAddress", toothAddress);
-            setResult(HPRTPrinterHelper.ACTIVITY_CONNECT_BT, intent);
-            finish();
-        }
-    };
-    private Message message;
-    IntentFilter intent;
-    Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //启用窗口拓展功能，方便调用
+        //���ô�����չ���ܣ��������
+
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        preferences = new Preferences(this);
         setContentView(R.layout.activity_devicelist);
         setResult(Activity.RESULT_CANCELED);
-        progress = findViewById(R.id.progress);
-        Button scanButton = findViewById(R.id.button_scan);
+        // ��ʼ����ť��ִ���豸����
+        Button scanButton = (Button) findViewById(R.id.button_scan);
         scanButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 strAddressList="";
@@ -94,24 +83,25 @@ public class DeviceListActivity extends Activity {
                 v.setVisibility(View.GONE);
             }
         });
+
         thisCon=this.getApplicationContext();
 
-        // 初始化 arryadapter 已经配对的设备和新扫描到得设备
+        // ��ʼ�� arryadapter �Ѿ���Ե��豸����ɨ�赽���豸
         mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,getPairedData());
         mNewDevicesArrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
-        ListView pairedListView = findViewById(R.id.paired_devices);
-        ListView newDevicesListView = findViewById(R.id.new_devices);
+        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
+        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         newDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
-        intent = new IntentFilter();
-        intent.addAction(BluetoothDevice.ACTION_FOUND);// 用BroadcastReceiver来取得搜索结果 
+        IntentFilter intent = new IntentFilter();
+        intent.addAction(BluetoothDevice.ACTION_FOUND);// ��BroadcastReceiver��ȡ���������
         intent.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         intent.addAction(ACTION_PAIRING_REQUEST);
         intent.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
         intent.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         intent.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
+        registerReceiver(mReceiver, intent);
         try
         {
             pairedListView.setOnItemClickListener(mDeviceClickListener);
@@ -121,20 +111,20 @@ public class DeviceListActivity extends Activity {
             Toast.makeText(this, thisCon.getString(R.string.activity_devicelist_get_device_err)+excpt,Toast.LENGTH_LONG).show();
         }
     }
-    //取得已经配对的蓝牙信息,用来加载到ListView中去
+    //ȡ���Ѿ���Ե�������Ϣ,�������ص�ListView��ȥ
     public List<String> getPairedData()
     {
         List<String> data = new ArrayList<String>();
-        //默认的蓝牙适配器
+        //Ĭ�ϵ�����������
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
-        // 得到当前的一个已经配对的蓝牙设备
+        // �õ���ǰ��һ���Ѿ���Ե������豸
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
-        ListView pairedListView = findViewById(R.id.paired_devices);
-        ListView newDevicesListView = findViewById(R.id.new_devices);
+        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
+        ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
         if (pairedDevices.size() > 0)
         {
             findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
-            for (BluetoothDevice device : pairedDevices) //遍历
+            for (BluetoothDevice device : pairedDevices) //����
             {
                 data.add(device.getName() + "\n" + device.getAddress());
             }
@@ -151,36 +141,32 @@ public class DeviceListActivity extends Activity {
     protected void onDestroy()
     {
         super.onDestroy();
-        // 确认是否还需要做扫描
+        // ȷ���Ƿ���Ҫ��ɨ��
         if (mBtAdapter != null)
             mBtAdapter.cancelDiscovery();
-        if (thread!=null) {
-            Thread dummy = thread;
-            thread = null;
-            dummy.interrupt();
-        }
     }
 
     /**
-     * 启动装置发现的BluetoothAdapter
+     * ����װ�÷��ֵ�BluetoothAdapter
      */
+
     public void doDiscovery()
     {
         if (D) Log.d(TAG, "doDiscovery()");
-        // 在标题中注明扫描
+        // �ڱ�����ע��ɨ��
         setProgressBarIndeterminateVisibility(true);
         setTitle(R.string.activity_devicelist_scanning);
-        // 打开子标题的新设备
+        // ���ӱ�������豸
         findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
-        // 若启动了扫描，关闭扫描
+        // ��������ɨ�裬�ر�ɨ��
         if (mBtAdapter.isDiscovering()) {
             mBtAdapter.cancelDiscovery();
         }
-        //扫描        
+        //ɨ��
         int intStartCount=0;
         while (!mBtAdapter.startDiscovery() && intStartCount<5)
         {
-            Log.e("BlueTooth", "扫描尝试失败");
+            Log.e("BlueTooth", "ɨ�賢��ʧ��");
             intStartCount++;
             try
             {
@@ -193,15 +179,20 @@ public class DeviceListActivity extends Activity {
         }
     }
 
-    // 给列表的中的蓝牙设备创建监听事件
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(mReceiver!=null)
+            unregisterReceiver(mReceiver);
+
+    }
+
+    // ���б���е������豸���������¼�
     public OnItemClickListener mDeviceClickListener = new OnItemClickListener()
     {
-
-
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
         {
             boolean hasConnected=false;
-            progress.setVisibility(View.VISIBLE);
             try
             {
                 if(mBtAdapter.isDiscovering())
@@ -209,57 +200,45 @@ public class DeviceListActivity extends Activity {
                     mBtAdapter.cancelDiscovery();
                 }
 
-                //取得蓝牙mvc地址
+                //ȡ������mvc��ַ
                 String info = ((TextView) v).getText().toString();
                 toothAddress = info.substring(info.length() - 17);
                 if(!toothAddress.contains(":"))
                 {
                     return;
                 }
-                Log.d(TAG, "Bluetooth Address: " + toothAddress);
-                thread = new Thread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        try {
-                            int portOpen = HPRTPrinterHelper.PortOpen("Bluetooth,"+toothAddress);
-                            message = new Message();
-                            message.what=portOpen;
-                            handler.sendMessage(message);
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                thread.start();
-//	            hasConnected= ConnectDevice();
-//	            if (hasConnected)
-//	            {	            	
-//	            	DisConnect();
-//	            }
+                hasConnected= ConnectDevice();
+                if (hasConnected)
+                {
+                    DisConnect();
+                }
 
+                Intent intent = new Intent();
+                intent.putExtra("is_connected", (hasConnected)?"OK":"NO");
+                intent.putExtra("BTAddress", toothAddress);
+                intent.putExtra("PrinterName",info);
+                setResult(HPRTPrinterHelper.ACTIVITY_CONNECT_BT, intent);
+                finish();
             }
             catch (Exception e)
             {
-                progress.setVisibility(View.GONE);
                 e.printStackTrace();
             }
-//        	finally
-//        	{ 
-//        		finish();
-//        	}          	
+            finally
+            {
+                finish();
+            }
         }
     };
-    // 扫描完成时候，改变按钮text
+    // ɨ�����ʱ�򣬸ı䰴ťtext
     public final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
             String action = intent.getAction();
             BluetoothDevice device = null;
-            // 搜索设备时，取得设备的MAC地址 
+            // �����豸ʱ��ȡ���豸��MAC��ַ
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device.getBondState() == BluetoothDevice.BOND_NONE)
@@ -268,14 +247,8 @@ public class DeviceListActivity extends Activity {
                     {
                         if(!strAddressList.contains(device.getAddress()))
                         {
-                            Bundle b = intent.getExtras();
-                            String object =  String.valueOf(b.get("android.bluetooth.device.extra.RSSI"));
-                            int valueOf = Integer.valueOf(object);
-                            float power=(float) ((Math.abs(valueOf)-59)/(10*2.0));
-                            float pow=(float) Math.pow(10,power);
                             strAddressList+=device.getAddress()+",";
-                            DecimalFormat decimalFormat = new DecimalFormat("0.00");
-                            mNewDevicesArrayAdapter.add(device.getName()+"  "+decimalFormat.format(pow)+" m" + "\n" + device.getAddress());
+                            mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                         }
                     }
                 }
@@ -283,13 +256,13 @@ public class DeviceListActivity extends Activity {
                 device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 switch (device.getBondState()) {
                     case BluetoothDevice.BOND_BONDING:
-                        Log.d("BlueToothTestActivity", "正在配对......");
+                        Log.d("BlueToothTestActivity", "�������......");
                         break;
                     case BluetoothDevice.BOND_BONDED:
-                        Log.d("BlueToothTestActivity", "完成配对");
+                        Log.d("BlueToothTestActivity", "������");
                         break;
                     case BluetoothDevice.BOND_NONE:
-                        Log.d("BlueToothTestActivity", "取消配对");
+                        Log.d("BlueToothTestActivity", "ȡ�����");
                     default:
                         break;
                 }
@@ -302,22 +275,164 @@ public class DeviceListActivity extends Activity {
             }
         }
     };
-    private ProgressBar progress;
+
+
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
-        registerReceiver(mReceiver, intent);
-    }
-    @Override
-    public void onPause() {
-        super.onPause();
         try {
-            unregisterReceiver(mReceiver);
-        }catch (IllegalArgumentException e){
-            //Fail silently
-            Answers.getInstance().logCustom(new CustomEvent("Printer Error")
-                    .putCustomAttribute("Sentry", preferences.getId()));
+            String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
+            IntentFilter intent = new IntentFilter();
+            intent.addAction(BluetoothDevice.ACTION_FOUND);// ��BroadcastReceiver��ȡ���������
+            intent.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            intent.addAction(ACTION_PAIRING_REQUEST);
+            intent.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+            intent.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            intent.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            registerReceiver(mReceiver, intent);
+        }catch (Exception e){
+            e.printStackTrace();
         }
+    }
+
+    private boolean ConnectDevice()
+    {
+        boolean bRet=false;
+
+        mBtAdapter.cancelDiscovery();
+        try
+        {
+            Thread.sleep(500);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            // 4.0.3�汾 �����ԣ��߰汾���ݵͰ汾
+            mmDevice = mBtAdapter.getRemoteDevice(toothAddress);
+            if(Build.VERSION.SDK_INT < 15)
+            {
+                mmSocket = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
+            }
+            else
+            {
+                mmSocket = mmDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+            }
+            mBtAdapter.cancelDiscovery();
+            Thread.sleep(500);
+            if(mBtAdapter.isDiscovering())
+            {
+                int iCnt=0;
+                while (iCnt<5)
+                {
+                    Thread.sleep(500);
+                    iCnt++;
+                    if(mBtAdapter.cancelDiscovery())
+                    {
+                        break;
+                    }
+                }
+            }
+            mmSocket.connect();
+        }
+        catch (Exception e)
+        {
+            try
+            {
+                Method m;
+                m = mmDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
+                mmSocket = (BluetoothSocket) m.invoke(mmDevice, 1);
+                if(mBtAdapter.isDiscovering())
+                {
+                    int iCnt=0;
+                    while (iCnt<5)
+                    {
+                        Thread.sleep(500);
+                        iCnt++;
+                        if(mBtAdapter.cancelDiscovery())
+                        {
+                            break;
+                        }
+                    }
+                }
+                mmSocket.connect();
+            }
+            catch (Exception e1)
+            {
+                Log.d("PRTLIB", (new StringBuilder("BTO_ConnectDevice --> create ")).append(e1.getMessage()).toString());
+                return false;
+            }
+        }
+
+        try
+        {
+            bRet=GetIOInterface();
+            return bRet;
+        }
+        catch (Exception e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean DisConnect()
+    {
+        boolean bRet = true;
+        try
+        {
+            Thread.sleep(1500);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            if(mmInStream!=null)
+            {
+                mmInStream.close();
+                mmInStream=null;
+            }
+            if(mmOutStream!=null)
+            {
+                mmOutStream.close();
+                mmOutStream=null;
+            }
+            if(mmSocket!=null)
+            {
+                mmSocket.close();
+                mmSocket=null;
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println((new StringBuilder(
+                    "BTO_ConnectDevice close ")).append(e.getMessage())
+                    .toString());
+            bRet = false;
+        }
+        return bRet;
+    }
+
+    private boolean GetIOInterface()
+    {
+        Log.d("PRTLIB", "BTO_GetIOInterface...");
+        try
+        {
+            mmInStream = mmSocket.getInputStream();
+            mmOutStream = mmSocket.getOutputStream();
+        }
+        catch(IOException e)
+        {
+            Log.d("PRTLIB", (new StringBuilder("BTO_GetIOInterface ")).append(e.getMessage()).toString());
+            return false;
+        }
+        return true;
     }
 }
 

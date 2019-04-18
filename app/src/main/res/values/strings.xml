@@ -79,5 +79,30 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_register_guest">RegisterGuest</string>
     <string name="title_activity_guest_list">GuestList</string>
+    <string-array name="activity_main_sample_2inch_receipt">
+        <item>"   Xiamen Hanin Electronics\n"</item>
+        <item>"     Technology Co., Ltd.\n"</item>
+        <item>"\n"</item>
+        <item>"Room 305A, Ang'ye Buliding\n"</item>
+        <item>",Pioneering Park,Torch High-\n"</item>
+        <item>"tech Zone, Xiamen,China\n"</item>
+        <item>"TEL +86-(0)592-5885991\n"</item>
+        <item>"                             C#2\n"</item>
+        <item>"         2013-08-20\n"</item>
+        <item>"MPT-II                   $333.00\n"</item>
+        <item>"--------------------------------\n"</item>
+        <item>"MPT-III                  $444.00\n"</item>
+        <item>"--------------------------------\n"</item>
+        <item>"LPQ58                    $555.00\n"</item>
+        <item>"--------------------------------\n"</item>
+        <item>"\n"</item>
+        <item>"Before adding tax       $1332.00\n"</item>
+        <item>"tax   5.0%                $66.60\n"</item>
+        <item>"--------------------------------\n"</item>
+        <item>"total                   $1398.60\n"</item>
+        <item>"Customer's payment      $1400.00\n"</item>
+        <item>"Change                     $1.40\n"</item>
+    </string-array>
+
 
 </resources>

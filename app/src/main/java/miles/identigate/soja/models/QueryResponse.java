@@ -8,6 +8,8 @@ import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class QueryResponse implements Parcelable {
 
     @SerializedName("result_code")
@@ -18,7 +20,7 @@ public class QueryResponse implements Parcelable {
     private String resultText;
     @SerializedName("result_content")
     @Expose
-    private String resultContent;
+    private Object resultContent;
     public final static Parcelable.Creator<QueryResponse> CREATOR = new Creator<QueryResponse>() {
 
 
@@ -38,7 +40,7 @@ public class QueryResponse implements Parcelable {
     protected QueryResponse(Parcel in) {
         this.resultCode = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.resultText = ((String) in.readValue((String.class.getClassLoader())));
-        this.resultContent = ((String) in.readValue((String.class.getClassLoader())));
+        this.resultContent = ((List) in.readValue((List.class.getClassLoader())));
     }
 
     public QueryResponse() {
@@ -60,11 +62,11 @@ public class QueryResponse implements Parcelable {
         this.resultText = resultText;
     }
 
-    public String getResultContent() {
+    public Object getResultContent() {
         return resultContent;
     }
 
-    public void setResultContent(String resultContent) {
+    public void setResultContent(Object resultContent) {
         this.resultContent = resultContent;
     }
 

@@ -45,6 +45,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
+        <activity android:name=".activities.CheckInGuest"></activity>
         <activity
             android:name=".activities.GuestList"
             android:label="@string/title_activity_guest_list"
@@ -57,6 +58,8 @@
         <activity
             android:name=".activities.RegisterGuest"
             android:label="@string/title_activity_register_guest"
+            android:windowSoftInputMode="adjustPan"
+            android:parentActivityName=".Dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

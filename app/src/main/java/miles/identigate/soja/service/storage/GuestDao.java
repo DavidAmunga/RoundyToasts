@@ -22,14 +22,12 @@ public interface GuestDao {
     int countUsers();
 
 
-
 //    Insert a guest in the database. If already exists, replace it.
 //    @param guest is the movie to be inserted
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertGuest(Guest guest);
-
 
 
     @Query("DELETE FROM guest")

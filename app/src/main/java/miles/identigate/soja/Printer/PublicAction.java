@@ -13,7 +13,7 @@ public class PublicAction
 	private Context context=null;	
 	public PublicAction()
 	{
-		
+
 	}
 	public PublicAction(Context con)
 	{
@@ -37,28 +37,28 @@ public class PublicAction
 			Log.e("HPRTSDKSample", (new StringBuilder("PublicAction --> BeforePrintAction ")).append(e.getMessage()).toString());
 		}
 	}
-	
+
 	public void AfterPrintAction()
 	{
 		try
 		{
 			PublicFunction PFun=new PublicFunction(context);
-						
-    		if(PFun.ReadSharedPreferencesData("Cashdrawer").equals("2") && PrinterProperty.Cashdrawer)    		
-    			HPRTPrinterHelper.OpenCashdrawer(0);
-    		if(PFun.ReadSharedPreferencesData("Buzzer").equals("2") && PrinterProperty.Buzzer)    		
-    			HPRTPrinterHelper.BeepBuzzer((byte)1,(byte)10,(byte)10);
-    		
-    		int iFeed=Integer.valueOf(PFun.ReadSharedPreferencesData("Feeds"));
-    		ArrayAdapter arrFeeds;
-    		arrFeeds = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item);					
-    		arrFeeds=ArrayAdapter.createFromResource(context, R.array.feeds_list, android.R.layout.simple_spinner_item);
-    		arrFeeds.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    		iFeed=(Integer.valueOf(arrFeeds.getItem(iFeed).toString().replace("mm", "")));
-    		HPRTPrinterHelper.PrintAndFeed(iFeed*8);
-    		if(PFun.ReadSharedPreferencesData("Cut").equals("2") && PrinterProperty.Cut)    
-    			
-    			HPRTPrinterHelper.CutPaper(HPRTPrinterHelper.HPRT_PARTIAL_CUT,PrinterProperty.CutSpacing);
+
+			if(PFun.ReadSharedPreferencesData("Cashdrawer").equals("2") && PrinterProperty.Cashdrawer)
+				HPRTPrinterHelper.OpenCashdrawer(0);
+			if(PFun.ReadSharedPreferencesData("Buzzer").equals("2") && PrinterProperty.Buzzer)
+				HPRTPrinterHelper.BeepBuzzer((byte)1,(byte)10,(byte)10);
+
+			int iFeed=Integer.valueOf(PFun.ReadSharedPreferencesData("Feeds"));
+			ArrayAdapter arrFeeds;
+			arrFeeds = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item);
+			arrFeeds=ArrayAdapter.createFromResource(context, R.array.feeds_list, android.R.layout.simple_spinner_item);
+			arrFeeds.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			iFeed=(Integer.valueOf(arrFeeds.getItem(iFeed).toString().replace("mm", "")));
+			HPRTPrinterHelper.PrintAndFeed(iFeed*4);
+			if(PFun.ReadSharedPreferencesData("Cut").equals("2") && PrinterProperty.Cut)
+
+				HPRTPrinterHelper.CutPaper(HPRTPrinterHelper.HPRT_PARTIAL_CUT,PrinterProperty.CutSpacing);
 			else
 				HPRTPrinterHelper.PrintAndFeed(PrinterProperty.TearSpacing);
 		}
@@ -67,7 +67,7 @@ public class PublicAction
 			Log.e("HPRTSDKSample", (new StringBuilder("PublicAction --> AfterPrintAction ")).append(e.getMessage()).toString());
 		}
 	}
-	
+
 	public String LanguageEncode()
 	{
 		try

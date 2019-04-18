@@ -16,8 +16,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.models.Token;
+import miles.identigate.soja.service.storage.model.Guest;
 import miles.identigate.soja.services.FCMClient;
 import miles.identigate.soja.services.IFCMService;
 
@@ -47,6 +55,14 @@ public class Common extends Application {
     public static final int SCAN = 0;
     public static final int MANUAL = 1;
     public Context context;
+
+
+    //    LISTS
+    public static final String GUEST_LIST = "GuestList";
+    public static final String VISITORS_LIST = "VisitorList";
+
+    public static final Type GUEST_ARRAY_LIST_CLASS_TYPE = (new ArrayList<Guest>()).getClass();
+
 
     //some public variables for scanned data:used in passing data from ScanActivity to the relevant activity
     public static final String DOB = "DOB";
@@ -93,6 +109,71 @@ public class Common extends Application {
             }
         });
 
+
+    }
+
+    public static Map<String, Object> getFieldNamesAndValues(final Object obj, boolean publicOnly)
+            throws IllegalArgumentException, IllegalAccessException {
+        Class<? extends Object> c1 = obj.getClass();
+        Map<String, Object> map = new HashMap<String, Object>();
+        Field[] fields = c1.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            String name = fields[i].getName();
+            if (publicOnly) {
+                if (Modifier.isPublic(fields[i].getModifiers())) {
+                    Object value = fields[i].get(obj);
+                    map.put(name, value);
+                }
+            } else {
+                fields[i].setAccessible(true);
+                Log.d(TAG, "getFieldNamesAndValues: " + name);
+                Object value = fields[i].get(obj);
+                map.put(name, value);
+            }
+        }
+        return map;
+    }
+
+    public static String toProperCase(String s) {
+        return s.substring(0, 1).toUpperCase() +
+                s.substring(1).toLowerCase();
+    }
+
+    public static String centerString(int width, String s) {
+        String finalText = String.format("%-" + width + "s", String.format("%" + (s.length() + (width - s.length()) / 2) + "s", s));
+        Log.d(TAG, "centerString: "+"\n"+finalText);
+
+        return finalText;
+    }
+
+    public static String formatString(String item) {
+        String finalText = "";
+
+        String[] splitStr = item.split("\\s+");
+
+        if (splitStr[0].length() < 16) {
+            Log.d(TAG, "formatString: Less than 16");
+            if (splitStr.length > 16) {
+                Log.d(TAG, "formatString: Less than 16 including second");
+
+                finalText = item + "\n";
+                finalText = Common.centerString(16, finalText);
+
+                return finalText;
+            } else {
+                Log.d(TAG, "formatString: More than 16");
+
+                for (int i = 0; i < 2; i++) {
+                    finalText = Common.toProperCase(splitStr[0]) + " " + Common.toProperCase(splitStr[1]).charAt(0) + "." + "\n";
+                    finalText = Common.centerString(16, finalText);
+                }
+
+                return finalText;
+            }
+        }
+
+
+        return finalText;
 
     }
 

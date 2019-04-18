@@ -36,6 +36,7 @@ import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.R;
 import miles.identigate.soja.app.Common;
+import miles.identigate.soja.models.User;
 
 // 909090, soja2016
 public class Login extends AppCompatActivity {
@@ -110,7 +111,7 @@ public class Login extends AppCompatActivity {
 
                             new Validate().execute(url, urlParameters);
 
-                            Log.d(TAG, "onClick: "+urlParameters);
+                            Log.d(TAG, "onClick: " + urlParameters);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -197,6 +198,7 @@ public class Login extends AppCompatActivity {
                         String lastname = object.getString("lastname");
                         String deviceId = object.getString("device_id");
                         String premiseZoneId = object.getString("premise_zone_id");
+                        String premiseName = object.getString("premise_name");
                         String access_token = object.getString("access_token");
                         String premiseId = object.getString("premise_id");
                         String organizationID = object.getString("organisationID");
@@ -209,6 +211,22 @@ public class Login extends AppCompatActivity {
                         preferences.setDeviceId(deviceId);
                         preferences.setToken(access_token);
                         preferences.setPremiseZoneId(premiseZoneId);
+
+
+                        User user = new User();
+                        user.setId(id);
+                        user.setPremiseId(premiseId);
+                        user.setPremiseName(premiseName);
+                        user.setFirstname(firstname);
+                        user.setLastname(lastname);
+                        user.setDeviceId(deviceId);
+                        user.setPremiseZoneId(premiseZoneId);
+                        user.setPremiseName(premiseName);
+                        user.setAccessToken(access_token);
+                        user.setOrganisationID(organizationID);
+
+
+                        preferences.setCurrentUser(user);
 
                         Common.updateFirebaseToken(preferences);
 

@@ -20,6 +20,7 @@ public class Preferences {
     public Preferences(Context context) {
         _context = context;
         settings = context.getSharedPreferences(PREFS_NAME, 0);
+        Paper.init(context);
     }
 
     public String getBaseURL() {

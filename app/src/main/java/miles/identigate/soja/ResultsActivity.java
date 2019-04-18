@@ -1,4 +1,5 @@
 package miles.identigate.soja;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import com.regula.documentreader.api.results.DocumentReaderTextField;
 import java.util.ArrayList;
 import java.util.List;
 
+import miles.identigate.soja.activities.RegisterGuest;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.UserInterface.Incident;
@@ -32,9 +34,10 @@ public class ResultsActivity extends AppCompatActivity {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
-	private ImageView mrzImgView;
-	private ListView mrzItemsList;
-	private SimpleMrzDataAdapter mAdapter;
+
+    private ImageView mrzImgView;
+    private ListView mrzItemsList;
+    private SimpleMrzDataAdapter mAdapter;
     private List<DocumentReaderTextField> mResultItems;
     private Button cancel;
     private Button next;
@@ -45,16 +48,16 @@ public class ResultsActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Constants.RECORDED_VISITOR)){
+            if (action.equals(Constants.RECORDED_VISITOR)) {
                 finish();
-            }else if(action.equals(Constants.LOGOUT_BROADCAST)){
+            } else if (action.equals(Constants.LOGOUT_BROADCAST)) {
                 finish();
             }
         }
     };
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
 
         if (preferences.isDarkModeOn()) {
@@ -62,10 +65,10 @@ public class ResultsActivity extends AppCompatActivity {
         } else {
             setTheme(R.style.AppTheme);
         }
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_results);
-		if (Constants.documentReaderResults == null)
-		    finish();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_results);
+        if (Constants.documentReaderResults == null)
+            finish();
 
         receiveFilter = new IntentFilter();
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
@@ -80,13 +83,13 @@ public class ResultsActivity extends AppCompatActivity {
         mResultItems = new ArrayList<>();
         mrzItemsList.setEmptyView(findViewById(R.id.empty));
 
-        mAdapter = new SimpleMrzDataAdapter(ResultsActivity.this,0,mResultItems);
+        mAdapter = new SimpleMrzDataAdapter(ResultsActivity.this, 0, mResultItems);
         mrzItemsList.setAdapter(mAdapter);
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),Dashboard.class));
+                startActivity(new Intent(getApplicationContext(), Dashboard.class));
                 finish();
             }
         });
@@ -94,59 +97,61 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Bundle args = getIntent().getExtras();
-                int TargetActivity=args.getInt("TargetActivity");
-                switch(TargetActivity){
+                int TargetActivity = args.getInt("TargetActivity");
+                switch (TargetActivity) {
                     case Common.DRIVE_IN:
                         startActivity(new Intent(getApplicationContext(), RecordDriveIn.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.WALK_IN:
                         startActivity(new Intent(getApplicationContext(), RecordWalkIn.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.SERVICE_PROVIDER:
                         startActivity(new Intent(getApplicationContext(), ServiceProvider.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.RESIDENTS:
                         startActivity(new Intent(getApplicationContext(), RecordResident.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.REGISTER_GUEST:
-                        startActivity(new Intent(getApplicationContext(), RecordResident.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        startActivity(new Intent(getApplicationContext(), RegisterGuest.class));
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.CHECK_IN_GUEST:
                         startActivity(new Intent(getApplicationContext(), RecordResident.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.ISSUE_TICKET:
                         startActivity(new Intent(getApplicationContext(), RecordResident.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                     case Common.INCIDENT:
                         startActivity(new Intent(getApplicationContext(), Incident.class));
-                        overridePendingTransition(R.anim.pull_in_left,R.anim.push_out_right);
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
                 }
             }
         });
-	}
+    }
+
     @Override
     protected void onPause() {
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
         super.onPause();
     }
-	@Override
-	protected void onResume() {
+
+    @Override
+    protected void onResume() {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
 
         mResultItems.addAll(Constants.documentReaderResults.textResult.fields);
@@ -154,13 +159,13 @@ public class ResultsActivity extends AppCompatActivity {
 
         Bitmap documentImage = Constants.documentReaderResults.getGraphicFieldImageByType(eGraphicFieldType.GT_DOCUMENT_FRONT);
 
-        if (documentImage != null){
+        if (documentImage != null) {
             mrzImgView.setImageBitmap(documentImage);
-        }else {
+        } else {
             mrzImgView.setVisibility(View.GONE);
         }
 
 
         super.onResume();
-	}
+    }
 }

@@ -31,8 +31,6 @@ public class Constants {
     public static Location mLastLocation = null;
 
 
-
-
     public static final String WALK = "WALKING";
     public static final String DRIVE = "DRIVING";
     public static HashMap<String, String> fieldItems = new HashMap<>();
@@ -42,8 +40,6 @@ public class Constants {
     public static final String DATABASE_NAME = "GuestDB";
     public static final int NUMBERS_OF_THREADS = 3;
     public static final int LOADING_PAGE_SIZE = 20;
-
-
 
 
     public static MaterialDialog showProgressDialog(Context context, String title, String content) {
@@ -144,6 +140,19 @@ public class Constants {
 
         } else if (preferences.getBaseURL().contains("events")) {
 
+            titles.add("Register");
+            titles.add("Issue Ticket");
+            titles.add("Check In");
+
+            descriptions.add("Register a new guest");
+            descriptions.add("Issue a Ticket/Badge");
+            descriptions.add("Check in a guest");
+
+            drawables.add(R.drawable.ic_walk_in_new);
+            drawables.add(R.drawable.ic_tickets);
+            drawables.add(R.drawable.ic_qr);
+
+
         } else {
             titles.add("Drive In");
             titles.add("Walk In");
@@ -166,6 +175,8 @@ public class Constants {
 
 
             }
+
+
             if (preferences.isFingerprintsEnabled()) {
                 titles.add("Biometric Checkin");
                 descriptions.add("Check in using biometrics");
@@ -174,18 +185,6 @@ public class Constants {
 
 
 //            Temp Events
-
-//            titles.add("Register");
-//            titles.add("Issue Ticket");
-//            titles.add("Check In");
-//
-//            descriptions.add("Register a new guest");
-//            descriptions.add("Issue a Ticket/Badge");
-//            descriptions.add("Check in a guest");
-//
-//            drawables.add(R.drawable.ic_walk_in_new);
-//            drawables.add(R.drawable.ic_tickets);
-//            drawables.add(R.drawable.ic_qr);
 
 
         }
@@ -210,6 +209,11 @@ public class Constants {
 
 
         } else if (preferences.getBaseURL().contains("events")) {
+            titles.add("Check Out");
+
+            descriptions.add("Check out an guest");
+
+            drawables.add(R.drawable.ic_walk_in_new);
 
         } else {
             titles.add("Express Checkout");

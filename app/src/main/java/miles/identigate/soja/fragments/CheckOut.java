@@ -78,6 +78,11 @@ public class CheckOut extends ListFragment {
                 walkOut.putExtra("TYPE", "WALK");
                 startActivity(walkOut);
                 break;
+            case "Check Out":
+                Intent checkOut = new Intent(getActivity().getApplicationContext(), Visitors.class);
+                checkOut.putExtra("TYPE", "RESIDENTS");
+                startActivity(checkOut);
+                break;
             case "Residents":
                 Intent resident = new Intent(getActivity().getApplicationContext(), Visitors.class);
                 resident.putExtra("TYPE", "RESIDENTS");

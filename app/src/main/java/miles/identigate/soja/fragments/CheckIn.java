@@ -19,6 +19,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import miles.identigate.soja.activities.CheckInGuest;
 import miles.identigate.soja.activities.GuestList;
 import miles.identigate.soja.adapters.CheckInAdapter;
 import miles.identigate.soja.helpers.Constants;
@@ -141,9 +142,7 @@ public class CheckIn extends Fragment {
                         startActivity(new Intent(getActivity(), GuestList.class));
                         break;
                     case "Check In":
-                        extras.putInt("TargetActivity", Common.CHECK_IN_GUEST);
-                        intent.putExtras(extras);
-                        startActivity(intent);
+                        startActivity(new Intent(getActivity(), CheckInGuest.class));
                         break;
                     case "Residents":
 
