@@ -14,7 +14,7 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
     @GET("premise_residents")
-    Call<ArrayList<Guest>> getGuests(
+    Call<QueryResponse> getGuests(
             @Query("premiseID") String premiseID,
             @Query("page") Integer page,
             @Query("pageSize") Integer pageSize,

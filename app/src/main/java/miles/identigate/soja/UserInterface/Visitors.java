@@ -464,6 +464,7 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
                                     model.setNationalId(id);
                                     serviceProviderModels.add(model);
                                 } else if (str.equals("RESIDENTS")) {
+                                    Log.d(TAG, "onPostExecute: "+visitorType);
                                     if (visitorType.equals("Resident")) {
 
                                         Resident resident = new Resident();

@@ -21,6 +21,10 @@ public class QueryResponse implements Parcelable {
     @SerializedName("result_content")
     @Expose
     private Object resultContent;
+    @SerializedName("result_detail")
+    @Expose
+    private Object resultDetail;
+
     public final static Parcelable.Creator<QueryResponse> CREATOR = new Creator<QueryResponse>() {
 
 
@@ -40,10 +44,19 @@ public class QueryResponse implements Parcelable {
     protected QueryResponse(Parcel in) {
         this.resultCode = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.resultText = ((String) in.readValue((String.class.getClassLoader())));
-        this.resultContent = ((List) in.readValue((List.class.getClassLoader())));
+        this.resultContent = ((Object) in.readValue((Object.class.getClassLoader())));
+        this.resultDetail = ((Object) in.readValue((Object.class.getClassLoader())));
     }
 
     public QueryResponse() {
+    }
+
+    public Object getResultDetail() {
+        return resultDetail;
+    }
+
+    public void setResultDetail(Object resultDetail) {
+        this.resultDetail = resultDetail;
     }
 
     public Integer getResultCode() {

@@ -222,6 +222,11 @@ public class RegisterGuest extends AppCompatActivity {
             }
         });
 
+
+//        HOTFIX Select Visitor Type
+//        selectedType = visi.get(0);
+//        spinnerEvent.setText(events.get(0).getName());
+
 //        DESTINATION
 
         events = handler.getTypes("houses", null);
@@ -293,9 +298,6 @@ public class RegisterGuest extends AppCompatActivity {
             return false;
         } else if (manualEdit && TextUtils.isEmpty(txtFirstName.getText().toString())) {
             Toast.makeText(this, "Please fill First Name", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (manualEdit && TextUtils.isEmpty(txtLastName.getText().toString())) {
-            Toast.makeText(this, "Please fill Last Name", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -430,15 +432,15 @@ public class RegisterGuest extends AppCompatActivity {
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"),
                 gender,
                 firstName,
-                lastName,
+                TextUtils.isEmpty(lastName) ? null : lastName,
+                TextUtils.isEmpty(email) ? null : email,
+                TextUtils.isEmpty(phoneNo) ? null : phoneNo,
+                TextUtils.isEmpty(designation) ? null : designation,
                 idNumber,
-                email,
-                phoneNo,
-                designation,
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"),
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"),
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"),
-                companyName,
+                TextUtils.isEmpty(companyName) ? null : companyName,
                 "walk-in",
                 preferences.getDeviceId(),
                 preferences.getPremiseZoneId(),
@@ -597,15 +599,15 @@ public class RegisterGuest extends AppCompatActivity {
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"),
                 gender,
                 firstName,
-                lastName,
+                TextUtils.isEmpty(lastName) ? null : lastName,
+                TextUtils.isEmpty(email) ? null : email,
+                TextUtils.isEmpty(phoneNo) ? null : phoneNo,
+                TextUtils.isEmpty(designation) ? null : designation,
                 idNumber,
-                email,
-                phoneNo,
-                designation,
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"),
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"),
                 Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"),
-                companyName,
+                TextUtils.isEmpty(companyName) ? null : companyName,
                 "walk-in",
                 preferences.getDeviceId(),
                 preferences.getPremiseZoneId(),
@@ -742,6 +744,7 @@ public class RegisterGuest extends AppCompatActivity {
             progressDialog.setMessage("Checking Out");
             progressDialog.show();
         }
+        Log.d(TAG, "recordCheckOut: "+idNumber+","+preferences.getDeviceId());
         APIClient.getClient(preferences, "").recordVisitExit(
                 idNumber,
                 preferences.getDeviceId(),

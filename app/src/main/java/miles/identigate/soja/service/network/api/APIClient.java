@@ -19,23 +19,11 @@ public class APIClient {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
 
-        Gson gson = null;
-
-        if (list.equals(Common.GUEST_LIST)) {
-            gson = new GsonBuilder()
-                    // we remove from the response some wrapper tags from our Guest array
-                    .registerTypeAdapter(Common.GUEST_ARRAY_LIST_CLASS_TYPE, new APIJsonSerializer(Common.GUEST_LIST))
-                    .create();
-
-        } else {
-            gson = new GsonBuilder()
-                    .create();
-
-        }
+//        Gson gson = null;
 
 
         Retrofit.Builder builder = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .baseUrl(preferences.getBaseURL());
 

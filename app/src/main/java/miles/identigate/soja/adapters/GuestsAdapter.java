@@ -21,7 +21,6 @@ import miles.identigate.soja.models.DriveIn;
 import miles.identigate.soja.models.Resident;
 import miles.identigate.soja.models.ServiceProviderModel;
 import miles.identigate.soja.service.storage.model.Guest;
-import miles.identigate.soja.ui.adapters.GuestsPagedAdapter;
 import miles.identigate.soja.ui.listeners.ItemClickListener;
 
 public class GuestsAdapter extends PagedListAdapter<Guest, RecyclerView.ViewHolder> {

@@ -480,7 +480,6 @@ public class GuestList extends SojaActivity implements OnItemClick {
     }
 
 
-
     private void CapturePrinterFunction() {
         try {
             int[] propType = new int[1];

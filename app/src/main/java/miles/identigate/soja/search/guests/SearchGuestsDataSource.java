@@ -7,13 +7,21 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.models.QueryResponse;
 import miles.identigate.soja.service.network.api.APIClient;
 import miles.identigate.soja.service.network.api.APIInterface;
 import miles.identigate.soja.service.storage.model.Guest;
@@ -25,7 +33,8 @@ import rx.subjects.ReplaySubject;
 
 public class SearchGuestsDataSource extends PageKeyedDataSource<Integer, Guest> {
 
-    private static final String TAG = "NetGuestPageKeyedDataSo";
+
+    private static final String TAG = "SearchGuestsDataSource";
 
     private final APIInterface apiService;
 
@@ -55,7 +64,7 @@ public class SearchGuestsDataSource extends PageKeyedDataSource<Integer, Guest> 
         Log.d(TAG, "loadInitial: "+query);
 
 
-        final Call<ArrayList<Guest>> callBack =
+        final Call<QueryResponse> callBack =
                 apiService.getGuests(
                         preferences.getCurrentUser().getPremiseId(),
                         FIRST_PAGE,
@@ -63,20 +72,33 @@ public class SearchGuestsDataSource extends PageKeyedDataSource<Integer, Guest> 
                         query
                 );
 
-        callBack.enqueue(new Callback<ArrayList<Guest>>() {
+        callBack.enqueue(new Callback<QueryResponse>() {
             @Override
-            public void onResponse(Call<ArrayList<Guest>> call, Response<ArrayList<Guest>> response) {
+            public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
                 if (response.isSuccessful()) {
+                    QueryResponse queryResponse = response.body();
+                    if (queryResponse.getResultText().equals("OK") && queryResponse.getResultCode() == 0 && queryResponse.getResultContent() != null) {
+
+                        Gson gson = new Gson();
+                        JsonArray resultContent = gson.toJsonTree(queryResponse.getResultContent()).getAsJsonArray();
+                        Type guestType = new TypeToken<ArrayList<Guest>>() {
+                        }.getType();
 
 
-                    callback.onResult(response.body(), null, FIRST_PAGE + 1);
+                        ArrayList<Guest> guests = gson.fromJson(resultContent, guestType);
 
+
+                        callback.onResult(guests, null, FIRST_PAGE + 1);
+
+                    }
 
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Guest>> call, Throwable t) {
+            public void onFailure(Call<QueryResponse> call, Throwable t) {
+
+                Log.d(TAG, "onFailure: ", t);
 
                 String errorMessage;
 
@@ -109,7 +131,7 @@ public class SearchGuestsDataSource extends PageKeyedDataSource<Integer, Guest> 
             e.printStackTrace();
         }
 
-        final Call<ArrayList<Guest>> callBack =
+        final Call<QueryResponse> callBack =
                 apiService.getGuests(
                         preferences.getCurrentUser().getPremiseId(),
                         page.get(),
@@ -118,20 +140,49 @@ public class SearchGuestsDataSource extends PageKeyedDataSource<Integer, Guest> 
                 );
 
 
-        callBack.enqueue(new Callback<ArrayList<Guest>>() {
+        callBack.enqueue(new Callback<QueryResponse>() {
             @Override
-            public void onResponse(Call<ArrayList<Guest>> call, Response<ArrayList<Guest>> response) {
+            public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
                 if (response.isSuccessful()) {
+                    QueryResponse queryResponse = response.body();
 
-                    Log.d(TAG, "onResponse: "+response.body().toString());
-                    callback.onResult(response.body(), page.get() + 1);
+                    Log.d(TAG, "onResponse: " + response.body());
 
+                    if (queryResponse.getResultText().equals("OK") && queryResponse.getResultCode() == 0 && queryResponse.getResultContent() != null) {
+
+                        Gson gson = new Gson();
+                        JsonArray resultContent = gson.toJsonTree(queryResponse.getResultContent()).getAsJsonArray();
+                        Type guestType = new TypeToken<ArrayList<Guest>>() {
+                        }.getType();
+
+
+                        ArrayList<Guest> guests = gson.fromJson(resultContent, guestType);
+
+                        JsonObject resultDetail = gson.toJsonTree(queryResponse.getResultDetail()).getAsJsonObject();
+
+
+
+                        boolean hasMore = resultDetail.get("hasMore").getAsBoolean();
+
+
+                        Log.d(TAG, "onResponse: " + hasMore);
+
+
+                        Integer key = hasMore ? params.key + 1 : null;
+
+                        if(hasMore!=false){
+                            callback.onResult(guests, key);
+                        }
+
+                    }
 
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Guest>> call, Throwable t) {
+            public void onFailure(Call<QueryResponse> call, Throwable t) {
+
+                Log.d(TAG, "onFailure: ", t);
 
                 String errorMessage;
 
