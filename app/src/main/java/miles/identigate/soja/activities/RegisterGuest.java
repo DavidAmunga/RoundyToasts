@@ -297,6 +297,16 @@ public class RegisterGuest extends AppCompatActivity {
         EnableBluetooth();
         InitSetting();
 
+        ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
+            @Override
+            public void onCountrySelected() {
+                Log.d(TAG, "onCountrySelected: " +
+                        ccp.getSelectedCountryCode()
+
+                );
+            }
+        });
+
 
     }
 
@@ -544,6 +554,10 @@ public class RegisterGuest extends AppCompatActivity {
         nationality = ccp.getSelectedCountryEnglishName();
         nationalityCode = ccp.getSelectedCountryCode();
 
+        if (nationalityCode.length() <= 2) {
+            nationalityCode = String.format("%03d", Integer.parseInt(nationalityCode));
+        }
+
 
         gender = selectedGender.getId();
 
@@ -777,28 +791,7 @@ public class RegisterGuest extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_guests, menu);
-
-        MenuItem mSearch = menu.findItem(R.id.nav_search);
-        SearchView mSearchView = (SearchView) mSearch.getActionView();
-        mSearchView.setIconifiedByDefault(false);
-
-        mSearchView.setQueryHint("Search");
-
-
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-//                String text = searchbox.getText().toString().toLowerCase(Locale.getDefault());
-                return true;
-            }
-        });
+        getMenuInflater().inflate(R.menu.menu_register, menu);
 
 
         return true;

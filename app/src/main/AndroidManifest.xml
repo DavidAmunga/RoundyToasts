@@ -183,16 +183,6 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".logs.AllLogs"
-            android:label="Soja"
-            android:parentActivityName=".Dashboard"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="miles.identigate.soja.Dashboard" />
-        </activity>
-        <activity
             android:name=".logs.Incidents"
             android:label="Soja"
             android:theme="@style/AppTheme.NoActionBar"
