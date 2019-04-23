@@ -143,6 +143,8 @@ dependencies {
 
 
     implementation 'io.paperdb:paperdb:2.6'
+    implementation 'com.hbb20:ccp:2.2.7'
+
 
 
 

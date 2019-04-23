@@ -141,7 +141,7 @@ public class Common extends Application {
 
     public static String centerString(int width, String s) {
         String finalText = String.format("%-" + width + "s", String.format("%" + (s.length() + (width - s.length()) / 2) + "s", s));
-        Log.d(TAG, "centerString: "+"\n"+finalText);
+        Log.d(TAG, "centerString: " + "\n" + finalText);
 
         return finalText;
     }
@@ -149,12 +149,17 @@ public class Common extends Application {
     public static String formatString(String item) {
         String finalText = "";
 
+
         String[] splitStr = item.split("\\s+");
 
+        Log.d(TAG, "formatString: String "+splitStr);
+        Log.d(TAG, "formatString: String Length"+splitStr.length);
+        Log.d(TAG, "formatString:  Total String Length "+splitStr[0].length()+splitStr[1].length()+1);
+
         if (splitStr[0].length() < 16) {
-            Log.d(TAG, "formatString: Less than 16");
-            if (splitStr.length > 16) {
-                Log.d(TAG, "formatString: Less than 16 including second");
+//            Log.d(TAG, "formatString: Less than 16");
+            if (splitStr[1]!=null && splitStr[0].length() + splitStr[1].length() + 1 < 16) {
+//                Log.d(TAG, "formatString: Less than 16 including second");
 
                 finalText = item + "\n";
                 finalText = Common.centerString(16, finalText);

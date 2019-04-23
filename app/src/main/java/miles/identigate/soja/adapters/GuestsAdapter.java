@@ -73,7 +73,7 @@ public class GuestsAdapter extends PagedListAdapter<Guest, RecyclerView.ViewHold
         void bindTo(int position) {
             Guest guest = getItem(position);
 
-            txtGuest.setText(guest.getFirstName() + " " + guest.getLastName());
+            txtGuest.setText(guest.getFirstName() + " " + (guest.getLastName() != null ? guest.getLastName() : ""));
             txtCompany.setText(guest.getCompany());
 
             itemView.setOnClickListener(v -> {

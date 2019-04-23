@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hbb20.CountryCodePicker;
 import com.regula.documentreader.api.enums.eVisualFieldType;
 
 import org.json.JSONArray;
@@ -42,11 +44,17 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
+import miles.identigate.soja.R;
+import miles.identigate.soja.SlipActivity;
+import miles.identigate.soja.adapters.TypeAdapter;
+import miles.identigate.soja.app.Common;
+import miles.identigate.soja.font.EditTextRegular;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -59,10 +67,7 @@ import miles.identigate.soja.models.Notification;
 import miles.identigate.soja.models.Sender;
 import miles.identigate.soja.models.Token;
 import miles.identigate.soja.models.TypeObject;
-import miles.identigate.soja.R;
 import miles.identigate.soja.services.IFCMService;
-import miles.identigate.soja.SlipActivity;
-import miles.identigate.soja.app.Common;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,8 +83,8 @@ public class RecordWalkIn extends SojaActivity {
     Spinner visitor_type;
     DatabaseHandler handler;
     Button record;
-    TypeObject selectedDestination, selectedHost, selectedType;
-    ArrayList<TypeObject> houses, visitorTypes, hosts;
+    TypeObject selectedDestination, selectedHost, selectedType, selectedGender, selectedDocument;
+    ArrayList<TypeObject> houses, visitorTypes, hosts, genderTypes, documentTypes;
     Preferences preferences;
 
     LinearLayout phoneNumberLayout, companyNameLayout, hostLayout;
@@ -92,9 +97,36 @@ public class RecordWalkIn extends SojaActivity {
     String entity_name = "destination";
     String entity_owner = "visitor";
 
+    String nationality, nationalityCode;
+
+
+    boolean manualEdit = false;
+
 
     String result_slip = "";
     int visit_id = 0;
+    @BindView(R.id.txt_first_name)
+    EditTextRegular txtFirstName;
+    @BindView(R.id.txt_last_name)
+    EditTextRegular txtLastName;
+    @BindView(R.id.nameLayout)
+    LinearLayout nameLayout;
+    @BindView(R.id.txtID)
+    EditTextRegular txtID;
+    @BindView(R.id.idLayout)
+    LinearLayout idLayout;
+    @BindView(R.id.gender_type)
+    Spinner genderType;
+    @BindView(R.id.genderLayout)
+    LinearLayout genderLayout;
+    @BindView(R.id.document_type)
+    Spinner documentType;
+    @BindView(R.id.documentLayout)
+    LinearLayout documentLayout;
+    @BindView(R.id.ccp)
+    CountryCodePicker ccp;
+    @BindView(R.id.countryLayout)
+    LinearLayout countryLayout;
     private IntentFilter receiveFilter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -119,6 +151,7 @@ public class RecordWalkIn extends SojaActivity {
         }
 
         setContentView(R.layout.activity_record_walk_in);
+        ButterKnife.bind(this);
         if (Constants.documentReaderResults == null)
             finish();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -170,6 +203,20 @@ public class RecordWalkIn extends SojaActivity {
         }
 
 
+//        Check if manual
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+
+            if (bundle != null) {
+                if (bundle.getBoolean("manual")) {
+                    manualEdit = true;
+                    updateOptions();
+                }
+            }
+
+        }
+
+
         Log.d(TAG, "Houses: " + houses);
         visitorTypes = handler.getTypes("visitors", null);
         record.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +250,8 @@ public class RecordWalkIn extends SojaActivity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+
         if (preferences.getBaseURL().contains("casuals")) {
             visitor_type.setSelection(1);
             visitor_type.setSelected(true);
@@ -293,6 +342,67 @@ public class RecordWalkIn extends SojaActivity {
         super.onPause();
     }
 
+    private void updateOptions() {
+        if (manualEdit) {
+            nameLayout.setVisibility(View.VISIBLE);
+            idLayout.setVisibility(View.VISIBLE);
+            genderLayout.setVisibility(View.VISIBLE);
+
+            genderTypes = handler.getTypes("genders", null);
+
+
+            TypeAdapter adapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, genderTypes);
+
+
+            genderType.setAdapter(adapter);
+            genderType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TypeObject object = (TypeObject) parent.getSelectedItem();
+                    selectedGender = object;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+
+            documentTypes.add(new TypeObject("ID", "ID Number"));
+            documentTypes.add(new TypeObject("P", "Passport"));
+            documentTypes.add(new TypeObject("AC", "Alien ID"));
+
+
+            TypeAdapter documentAdapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, documentTypes);
+
+            documentTypes = new ArrayList<>();
+
+            documentType.setAdapter(documentAdapter);
+
+            selectedDocument = documentTypes.get(0);
+
+            documentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TypeObject object = (TypeObject) parent.getSelectedItem();
+                    selectedDocument = object;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+
+        } else {
+            nameLayout.setVisibility(View.GONE);
+            genderLayout.setVisibility(View.GONE);
+            idLayout.setVisibility(View.GONE);
+            documentLayout.setVisibility(View.GONE);
+
+        }
+    }
+
 
     //    Record Check In Only
     public void recordCheckIn() {
@@ -374,6 +484,50 @@ public class RecordWalkIn extends SojaActivity {
                             "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
                             "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8") +
                             "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
+
+            Log.d(TAG, "recordInternet: " + preferences.getBaseURL() + "record-visit/" + urlParameters);
+
+            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void recordCheckInManual() {
+
+        String scan_id_type = String.valueOf(documentType.getId());
+
+
+        String urlParameters = null;
+        try {
+
+            firstName = txtFirstName.getText().toString().trim();
+            lastName = txtLastName.getText().toString().trim();
+            String gender = selectedGender.getName();
+            idNumber = txtID.getText().toString();
+
+            urlParameters =
+                    "mrz=" + URLEncoder.encode("1001", "UTF-8") +
+                            "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
+                            (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
+                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
+                            "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
+                            "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
+                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                            "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                            "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
+                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
+                            "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
+                            "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
+                            "&birthDate=" + URLEncoder.encode("2031-3-3", "UTF-8") +
+                            "&genderID=" + URLEncoder.encode(gender, "UTF-8") +
+                            "&firstName=" + URLEncoder.encode(firstName, "UTF-8") +
+                            "&lastName=" + URLEncoder.encode(lastName, "UTF-8") +
+                            "&idType=" + URLEncoder.encode(selectedDocument.getId(), "UTF-8") +
+                            "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
+                            "&nationality=" + URLEncoder.encode(ccp.getSelectedCountryEnglishName(), "UTF-8") +
+                            "&nationCode=" + URLEncoder.encode(ccp.getSelectedCountryCode(), "UTF-8");
 
             Log.d(TAG, "recordInternet: " + preferences.getBaseURL() + "record-visit/" + urlParameters);
 
@@ -1017,6 +1171,21 @@ public class RecordWalkIn extends SojaActivity {
             builder.dismiss();
         }
     }
+
+    private boolean validateDetails() {
+        if (selectedType == null) {
+            Toast.makeText(this, "Please fill Visitor type", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (selectedDestination == null) {
+            Toast.makeText(this, "Please fill Destination type", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (manualEdit && TextUtils.isEmpty(txtFirstName.getText().toString())) {
+            Toast.makeText(this, "Please fill First Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
 }
 
 

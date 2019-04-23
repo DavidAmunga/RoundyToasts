@@ -414,9 +414,13 @@ public class GuestList extends SojaActivity implements OnItemClick {
 //            HPRTPrinterHelper.PrintText("\t " + preferences.getPremiseName() + "\n");
 
             HPRTPrinterHelper.PrintText(
-                    Common.formatString(selectedGuest.getFirstName() + " " + (selectedGuest.getLastName() != null ? selectedGuest.getLastName() : ""))
+                    Common.centerString(18, Common.formatString(selectedGuest.getFirstName() + " " + (selectedGuest.getLastName() != null ? selectedGuest.getLastName() : "")))
                     , 32, 2, 16);
-            String msg = (selectedGuest.getCompany() != null ? selectedGuest.getCompany() + "\n" : "");
+            String msg = (
+
+                    selectedGuest.getCompany() != null ? selectedGuest.getCompany() + "\n" : ""
+
+            );
 
 
             HPRTPrinterHelper.PrintText(msg, 32, 0, 16);
@@ -427,7 +431,8 @@ public class GuestList extends SojaActivity implements OnItemClick {
             HPRTPrinterHelper.PrintQRCode(qrCode, 7, (3 + 0x30), 1);
 
 
-            HPRTPrinterHelper.PrintText("\n" + Common.centerString(16, "POWERED BY SOJA.CO.KE"), 32, 0, 16);
+//            HPRTPrinterHelper.PrintText("\n" + Common.centerString(16, "Powered By soja.co.ke"), 0, 1, 0);
+            HPRTPrinterHelper.PrintText("\n" + ">>>> Powered By soja.co.ke <<<<", 0, 0, 0);
 
 
             HPRTPrinterHelper.PrintText("\n", 0, 1, 0);

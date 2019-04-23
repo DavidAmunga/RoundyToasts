@@ -1,1 +1,1 @@
-include ':app', ':libBioMini_v20'
+include ':app'

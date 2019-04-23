@@ -2,15 +2,27 @@ package miles.identigate.soja.fragments;
 
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import miles.identigate.soja.R;
+import miles.identigate.soja.UserInterface.RecordDriveIn;
+import miles.identigate.soja.UserInterface.RecordResident;
+import miles.identigate.soja.UserInterface.RecordWalkIn;
+import miles.identigate.soja.UserInterface.ServiceProvider;
+import miles.identigate.soja.activities.GuestList;
+import miles.identigate.soja.activities.RegisterGuest;
 import miles.identigate.soja.app.Common;
 
 /**
@@ -21,6 +33,9 @@ public class EntryTypeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String activity = "TargetActivity";
+    @BindView(R.id.manualBtn)
+    Button manualBtn;
+    Unbinder unbinder;
 
     // TODO: Rename and change types of parameters
     private int TargetActivity;
@@ -103,7 +118,57 @@ public class EntryTypeFragment extends Fragment {
                 //StartActivity(Common.MANUAL);
             }
         });
+        unbinder = ButterKnife.bind(this, view);
+
+
+        manualBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+
+                bundle.putBoolean("manual", true);
+                switch (TargetActivity) {
+                    case Common.DRIVE_IN:
+                        startActivity(new Intent(getActivity(), RecordDriveIn.class).putExtras(bundle));
+                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        getActivity().finish();
+                        break;
+                    case Common.WALK_IN:
+                        startActivity(new Intent(getActivity(), RecordWalkIn.class).putExtras(bundle));
+                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        getActivity().finish();
+                        break;
+                    case Common.SERVICE_PROVIDER:
+                        startActivity(new Intent(getActivity(), ServiceProvider.class).putExtras(bundle));
+                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        getActivity().finish();
+                        break;
+                    case Common.RESIDENTS:
+                        startActivity(new Intent(getActivity(), RecordResident.class).putExtras(bundle));
+                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        getActivity().finish();
+                        break;
+                    case Common.REGISTER_GUEST:
+                        startActivity(new Intent(getActivity(), RegisterGuest.class).putExtras(bundle));
+                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        getActivity().finish();
+                        break;
+                    case Common.ISSUE_TICKET:
+                        startActivity(new Intent(getActivity(), GuestList.class).putExtras(bundle));
+                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        getActivity().finish();
+                        break;
+
+                }
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     public interface OnEntrySelectedListener {

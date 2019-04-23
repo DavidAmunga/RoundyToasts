@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="false"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.RegisterGuest"
-    android:focusable="false"
     tools:showIn="@layout/activity_register_guest">
 
 
@@ -137,11 +137,11 @@
 
             <LinearLayout
                 android:id="@+id/idLayout"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
 
                 <miles.identigate.soja.font.OpenSansBold
@@ -193,6 +193,56 @@
                     android:background="@drawable/border" />
 
             </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/countryLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/ccp"
+                    app:ccp_autoDetectCountry="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:ccp_showFullName="true"
+                    app:ccp_showNameCode="false"
+                    app:ccp_showPhoneCode="false" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/documentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <miles.identigate.soja.font.OpenSansBold
+                    android:id="@+id/documentLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Document Type"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/document_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/border">
+
+                </Spinner>
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/phoneNumberLayout"

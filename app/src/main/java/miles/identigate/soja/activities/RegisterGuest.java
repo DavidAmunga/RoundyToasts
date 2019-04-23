@@ -31,17 +31,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.internal.LinkedTreeMap;
+import com.hbb20.CountryCodePicker;
 import com.regula.documentreader.api.enums.eVisualFieldType;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import HPRTAndroidSDK.HPRTPrinterHelper;
 import HPRTAndroidSDK.PublicFunction;
@@ -55,7 +48,6 @@ import miles.identigate.soja.Printer.DeviceListActivity;
 import miles.identigate.soja.Printer.PrinterProperty;
 import miles.identigate.soja.Printer.PublicAction;
 import miles.identigate.soja.R;
-import miles.identigate.soja.SlipActivity;
 import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.EditTextRegular;
@@ -99,19 +91,27 @@ public class RegisterGuest extends AppCompatActivity {
     @BindView(R.id.spinnerEvent)
     OpenSansBold spinnerEvent;
 
-    ArrayList<TypeObject> events, visitorTypes, genderTypes;
-    TypeObject selectedEvent, selectedType, selectedGender;
+    ArrayList<TypeObject> events, visitorTypes, genderTypes, documentTypes;
+    TypeObject selectedEvent, selectedType, selectedGender, selectedDocument;
 
     ProgressDialog progressDialog;
 
 
+    String nationality, nationalityCode;
     String companyName = "";
+    @BindView(R.id.ccp)
+    CountryCodePicker ccp;
+    @BindView(R.id.countryLayout)
+    LinearLayout countryLayout;
+    @BindView(R.id.document_type)
+    Spinner documentType;
+    @BindView(R.id.documentLayout)
+    LinearLayout documentLayout;
     private String PrinterName = "";
     @BindView(R.id.typeLabel)
     OpenSansBold typeLabel;
     @BindView(R.id.visitor_type)
     Spinner visitorType;
-
 
     boolean manualEdit = false;
     @BindView(R.id.txtID)
@@ -178,8 +178,8 @@ public class RegisterGuest extends AppCompatActivity {
 
         setContentView(R.layout.activity_register_guest);
         ButterKnife.bind(this);
-        if (Constants.documentReaderResults == null)
-            finish();
+//        if (Constants.documentReaderResults == null)
+//            finish();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -187,7 +187,6 @@ public class RegisterGuest extends AppCompatActivity {
 
 
 //        Confirm Manual
-        confirmReaderResults();
 
         receiveFilter = new IntentFilter();
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
@@ -197,6 +196,18 @@ public class RegisterGuest extends AppCompatActivity {
         handler = new DatabaseHandler(this);
 
         progressDialog = new ProgressDialog(this);
+
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+
+            if (bundle != null) {
+                if (bundle.getBoolean("manual")) {
+                    manualEdit = true;
+                    updateOptions();
+                }
+            }
+
+        }
 
 
 //        PFun = new PublicFunction(GuestList.this);
@@ -301,64 +312,6 @@ public class RegisterGuest extends AppCompatActivity {
             return false;
         }
         return true;
-    }
-
-    public void confirmReaderResults() {
-        String idN = "000000000";
-        String scan_id_type = "ID";
-        String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
-
-
-        if (classCode.equals("ID")) {
-            Log.d(TAG, "recordInternet: ID");
-            scan_id_type = "ID";
-            if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
-
-                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER) == null) {
-                    manualEdit = true;
-                    updateOptions();
-                }
-
-            }
-        } else if (classCode.equals("P")) {
-            Log.d(TAG, "recordInternet: Passport");
-
-            if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
-
-                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER) == null) {
-                    manualEdit = true;
-                    updateOptions();
-                }
-
-            }
-        } else if (classCode.equals("PA")) {
-            Log.d(TAG, "recordInternet: Passport");
-
-            if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
-
-                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER) == null) {
-                    manualEdit = true;
-                    updateOptions();
-                }
-
-            }
-        } else if (classCode.equals("AC")) {
-            Log.d(TAG, "Class Code : " + classCode);
-//                TODO: Standardize Alien ID
-            Log.d(TAG, "recordInternet: Alien Id");
-            scan_id_type = "AID";
-
-            if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER) == null) {
-
-                if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER) == null) {
-                    if (Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA) == null) {
-                        manualEdit = true;
-                        updateOptions();
-                    }
-                }
-
-            }
-        }
     }
 
 
@@ -577,7 +530,7 @@ public class RegisterGuest extends AppCompatActivity {
         progressDialog.show();
 
 
-        String scan_id_type = "ID";
+        String scan_id_type = selectedDocument.getId();
         idNumber = txtID.getText().toString();
 
 
@@ -588,6 +541,9 @@ public class RegisterGuest extends AppCompatActivity {
         email = txtEmail.getText().toString();
         designation = txtDesignation.getText().toString();
 
+        nationality = ccp.getSelectedCountryEnglishName();
+        nationalityCode = ccp.getSelectedCountryCode();
+
 
         gender = selectedGender.getId();
 
@@ -596,7 +552,7 @@ public class RegisterGuest extends AppCompatActivity {
         APIClient.getClient(preferences, "").recordGuest(
                 selectedEvent.getId(),
                 Constants.getCurrentTimeStamp(),
-                Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"),
+                Constants.getCurrentTimeStamp(),
                 gender,
                 firstName,
                 TextUtils.isEmpty(lastName) ? null : lastName,
@@ -604,9 +560,9 @@ public class RegisterGuest extends AppCompatActivity {
                 TextUtils.isEmpty(phoneNo) ? null : phoneNo,
                 TextUtils.isEmpty(designation) ? null : designation,
                 idNumber,
-                Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"),
-                Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"),
-                Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"),
+                selectedDocument.getName(),
+                nationality,
+                nationalityCode,
                 TextUtils.isEmpty(companyName) ? null : companyName,
                 "walk-in",
                 preferences.getDeviceId(),
@@ -744,7 +700,7 @@ public class RegisterGuest extends AppCompatActivity {
             progressDialog.setMessage("Checking Out");
             progressDialog.show();
         }
-        Log.d(TAG, "recordCheckOut: "+idNumber+","+preferences.getDeviceId());
+        Log.d(TAG, "recordCheckOut: " + idNumber + "," + preferences.getDeviceId());
         APIClient.getClient(preferences, "").recordVisitExit(
                 idNumber,
                 preferences.getDeviceId(),
@@ -865,6 +821,9 @@ public class RegisterGuest extends AppCompatActivity {
             nameLayout.setVisibility(View.VISIBLE);
             idLayout.setVisibility(View.VISIBLE);
             genderLayout.setVisibility(View.VISIBLE);
+            documentLayout.setVisibility(View.VISIBLE);
+            countryLayout.setVisibility(View.VISIBLE);
+
 
             genderTypes = handler.getTypes("genders", null);
 
@@ -885,10 +844,54 @@ public class RegisterGuest extends AppCompatActivity {
                 }
             });
 
+
+            documentTypes = new ArrayList<>();
+
+            documentTypes.add(new TypeObject("ID", "ID Number"));
+            documentTypes.add(new TypeObject("P", "Passport"));
+            documentTypes.add(new TypeObject("AC", "Alien ID"));
+
+
+            selectedDocument = documentTypes.get(0);
+
+
+            TypeAdapter documentAdapter = new TypeAdapter(RegisterGuest.this, R.layout.tv, documentTypes);
+
+            documentType.setAdapter(documentAdapter);
+
+            documentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TypeObject object = (TypeObject) parent.getSelectedItem();
+                    selectedDocument = object;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+
+            genderType.setAdapter(adapter);
+            genderType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TypeObject object = (TypeObject) parent.getSelectedItem();
+                    selectedGender = object;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
         } else {
             nameLayout.setVisibility(View.GONE);
             genderLayout.setVisibility(View.GONE);
             idLayout.setVisibility(View.GONE);
+            countryLayout.setVisibility(View.GONE);
+            documentLayout.setVisibility(View.GONE);
+
         }
     }
 
@@ -1010,7 +1013,7 @@ public class RegisterGuest extends AppCompatActivity {
 //            HPRTPrinterHelper.PrintQRCode(qrCode, 7, (3 + 0x30), 1);
 
 
-            HPRTPrinterHelper.PrintText("\n" + "POWERED BY WWW.SOJA.CO.KE", 0, 2, 0);
+            HPRTPrinterHelper.PrintText("\n" + ">>>> Powered By soja.co.ke <<<<", 0, 0, 0);
 
 
 //            }
@@ -1261,7 +1264,7 @@ public class RegisterGuest extends AppCompatActivity {
             HPRTPrinterHelper.PrintQRCode(qrCode, 7, (3 + 0x30), 1);
 
 
-            HPRTPrinterHelper.PrintText("\n" + Common.centerString(16, "POWERED BY SOJA.CO.KE"), 32, 0, 16);
+            HPRTPrinterHelper.PrintText("\n" + ">>>> Powered By soja.co.ke <<<<", 0, 0, 0);
 
 
             HPRTPrinterHelper.PrintText("\n", 0, 1, 0);

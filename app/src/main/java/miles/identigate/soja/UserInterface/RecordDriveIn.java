@@ -35,11 +35,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.Dashboard;
+import miles.identigate.soja.R;
+import miles.identigate.soja.SlipActivity;
+import miles.identigate.soja.adapters.TypeAdapter;
+import miles.identigate.soja.font.EditTextRegular;
+import miles.identigate.soja.font.OpenSansBold;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -48,8 +54,6 @@ import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
 import miles.identigate.soja.models.DriveIn;
 import miles.identigate.soja.models.TypeObject;
-import miles.identigate.soja.R;
-import miles.identigate.soja.SlipActivity;
 
 public class RecordDriveIn extends SojaActivity {
     static {
@@ -62,8 +66,8 @@ public class RecordDriveIn extends SojaActivity {
     String vehicleNo;
     EditText vehicleRegNo;
     EditText numberOfPeople;
-    TypeObject selectedType, selectedDestination, selectedHost;
-    ArrayList<TypeObject> houses, visitorTypes, hosts;
+    TypeObject selectedType, selectedDestination, selectedHost,selectedGender;
+    ArrayList<TypeObject> houses, visitorTypes, hosts,genderTypes;
     Preferences preferences;
     MaterialDialog progressDialog;
     MaterialDialog dialog;
@@ -79,6 +83,25 @@ public class RecordDriveIn extends SojaActivity {
     int visit_id = 0;
 
     private static final String TAG = "RecordDriveIn";
+    @BindView(R.id.txt_first_name)
+    EditTextRegular txtFirstName;
+    @BindView(R.id.txt_last_name)
+    EditTextRegular txtLastName;
+    @BindView(R.id.nameLayout)
+    LinearLayout nameLayout;
+    @BindView(R.id.txtID)
+    EditTextRegular txtID;
+    @BindView(R.id.idLayout)
+    LinearLayout idLayout;
+    @BindView(R.id.typeLabel)
+    OpenSansBold typeLabel;
+    @BindView(R.id.gender_type)
+    Spinner genderType;
+    @BindView(R.id.genderLayout)
+    LinearLayout genderLayout;
+
+    boolean manualEdit = false;
+
 
     private IntentFilter receiveFilter;
 
@@ -104,6 +127,7 @@ public class RecordDriveIn extends SojaActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_drive_in);
+        ButterKnife.bind(this);
         if (Constants.documentReaderResults == null)
             finish();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -151,6 +175,18 @@ public class RecordDriveIn extends SojaActivity {
                 }
             }
         });
+
+
+//        Check if manual
+        if (getIntent() != null) {
+            Bundle bundle = getIntent().getExtras();
+
+            if (bundle.getBoolean("manual")) {
+                manualEdit = true;
+                updateOptions();
+            }
+        }
+
 
 
 //        VISITOR TYPES
@@ -238,6 +274,40 @@ public class RecordDriveIn extends SojaActivity {
         });
     }
 
+    private void updateOptions() {
+        if (manualEdit) {
+            nameLayout.setVisibility(View.VISIBLE);
+            idLayout.setVisibility(View.VISIBLE);
+            genderLayout.setVisibility(View.VISIBLE);
+
+            genderTypes = handler.getTypes("genders", null);
+
+
+            TypeAdapter adapter = new TypeAdapter(RecordDriveIn.this, R.layout.tv, genderTypes);
+
+
+            genderType.setAdapter(adapter);
+            genderType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    TypeObject object = (TypeObject) parent.getSelectedItem();
+                    selectedGender = object;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+        } else {
+            nameLayout.setVisibility(View.GONE);
+            genderLayout.setVisibility(View.GONE);
+            idLayout.setVisibility(View.GONE);
+        }
+    }
+
+
+
     @Override
     protected void onResume() {
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
@@ -266,7 +336,7 @@ public class RecordDriveIn extends SojaActivity {
                     idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
 
                 }
-                 idNumber = idN.substring(2, idN.length() - 1);
+                idNumber = idN.substring(2, idN.length() - 1);
                 Log.d(TAG, "ID Number: " + idNumber);
             } else if (classCode.equals("P")) {
                 scan_id_type = "P";

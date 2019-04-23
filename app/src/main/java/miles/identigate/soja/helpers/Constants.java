@@ -114,7 +114,7 @@ public class Constants {
     }
 
 
-    public static void setDashboardCheckIn(Preferences preferences, ArrayList<String> titles, ArrayList<Integer> drawables, ArrayList<String> descriptions) {
+    public static void setDashboardCheckIn(miles.identigate.soja.helpers.Preferences preferences, ArrayList<String> titles, ArrayList<Integer> drawables, ArrayList<String> descriptions) {
         if (preferences.getBaseURL().contains("casuals")) {
 
             titles.add("Walk In");

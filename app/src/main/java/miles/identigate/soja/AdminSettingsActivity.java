@@ -238,7 +238,7 @@ public class AdminSettingsActivity extends SojaActivity {
                             Log.d("IP", ip);
                             refresh = true;
                             preferences.setBaseURL(ip);
-                            preferences.setResidentsURL(ip);
+                            preferences.setResidentsURL(ip.replace("visits","residents"));
 
 
                             setServerName();
