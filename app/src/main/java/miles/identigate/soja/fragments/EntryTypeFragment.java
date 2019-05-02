@@ -121,47 +121,47 @@ public class EntryTypeFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
 
-        manualBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-
-                bundle.putBoolean("manual", true);
-                switch (TargetActivity) {
-                    case Common.DRIVE_IN:
-                        startActivity(new Intent(getActivity(), RecordDriveIn.class).putExtras(bundle));
-                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
-                        getActivity().finish();
-                        break;
-                    case Common.WALK_IN:
-                        startActivity(new Intent(getActivity(), RecordWalkIn.class).putExtras(bundle));
-                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
-                        getActivity().finish();
-                        break;
-                    case Common.SERVICE_PROVIDER:
-                        startActivity(new Intent(getActivity(), ServiceProvider.class).putExtras(bundle));
-                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
-                        getActivity().finish();
-                        break;
-                    case Common.RESIDENTS:
-                        startActivity(new Intent(getActivity(), RecordResident.class).putExtras(bundle));
-                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
-                        getActivity().finish();
-                        break;
-                    case Common.REGISTER_GUEST:
-                        startActivity(new Intent(getActivity(), RegisterGuest.class).putExtras(bundle));
-                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
-                        getActivity().finish();
-                        break;
-                    case Common.ISSUE_TICKET:
-                        startActivity(new Intent(getActivity(), GuestList.class).putExtras(bundle));
-                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
-                        getActivity().finish();
-                        break;
-
-                }
-            }
-        });
+//        manualBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bundle bundle = new Bundle();
+//
+//                bundle.putBoolean("manual", true);
+//                switch (TargetActivity) {
+//                    case Common.DRIVE_IN:
+//                        startActivity(new Intent(getActivity(), RecordDriveIn.class).putExtras(bundle));
+//                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+//                        getActivity().finish();
+//                        break;
+//                    case Common.WALK_IN:
+//                        startActivity(new Intent(getActivity(), RecordWalkIn.class).putExtras(bundle));
+//                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+//                        getActivity().finish();
+//                        break;
+//                    case Common.SERVICE_PROVIDER:
+//                        startActivity(new Intent(getActivity(), ServiceProvider.class).putExtras(bundle));
+//                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+//                        getActivity().finish();
+//                        break;
+//                    case Common.RESIDENTS:
+//                        startActivity(new Intent(getActivity(), RecordResident.class).putExtras(bundle));
+//                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+//                        getActivity().finish();
+//                        break;
+//                    case Common.REGISTER_GUEST:
+//                        startActivity(new Intent(getActivity(), RegisterGuest.class).putExtras(bundle));
+//                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+//                        getActivity().finish();
+//                        break;
+//                    case Common.ISSUE_TICKET:
+//                        startActivity(new Intent(getActivity(), GuestList.class).putExtras(bundle));
+//                        getActivity().overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+//                        getActivity().finish();
+//                        break;
+//
+//                }
+//            }
+//        });
         return view;
     }
 

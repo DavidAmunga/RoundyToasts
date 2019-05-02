@@ -367,10 +367,12 @@ public class RecordWalkIn extends SojaActivity {
                 }
             });
 
+            documentTypes=new ArrayList<>();
 
             documentTypes.add(new TypeObject("ID", "ID Number"));
             documentTypes.add(new TypeObject("P", "Passport"));
             documentTypes.add(new TypeObject("AC", "Alien ID"));
+
 
 
             TypeAdapter documentAdapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, documentTypes);
@@ -379,7 +381,7 @@ public class RecordWalkIn extends SojaActivity {
 
             documentType.setAdapter(documentAdapter);
 
-            selectedDocument = documentTypes.get(0);
+//            selectedDocument = documentTypes.get(0);
 
             documentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override

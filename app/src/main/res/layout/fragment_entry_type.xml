@@ -59,6 +59,7 @@
         android:layout_marginTop="10dp"
         android:background="?attr/buttonColor"
         android:text="Manual"
+        android:visibility="gone"
         android:textColor="@color/white" />
 
     <RelativeLayout

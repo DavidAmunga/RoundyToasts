@@ -67,6 +67,8 @@ public class NetworkHandler {
             }
             rd.close();
             Log.d(TAG, "executePost: " + response.toString());
+            Log.d(TAG, "executePostURL: " + response.toString());
+
             return response.toString();
 
         } catch (Exception e) {
