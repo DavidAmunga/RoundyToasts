@@ -47,6 +47,7 @@ public class Constants {
                 .title(title)
                 .content(content)
                 .progress(true, 0)
+                .progressIndeterminateStyle(true)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();

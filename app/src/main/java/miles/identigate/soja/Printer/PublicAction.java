@@ -9,8 +9,8 @@ import HPRTAndroidSDK.PublicFunction;
 import miles.identigate.soja.R;
 
 public class PublicAction
-{	
-	private Context context=null;	
+{
+	private Context context=null;
 	public PublicAction()
 	{
 
@@ -19,17 +19,17 @@ public class PublicAction
 	{
 		context = con;
 	}
-	
+
 	public void BeforePrintAction()
 	{
 		try
 		{
 			PublicFunction PFun=new PublicFunction(context);
-			if(PFun.ReadSharedPreferencesData("Cut").equals("1") && PrinterProperty.Cut)    		
+			if(PFun.ReadSharedPreferencesData("Cut").equals("1") && PrinterProperty.Cut)
 				HPRTPrinterHelper.CutPaper(HPRTPrinterHelper.HPRT_PARTIAL_CUT,PrinterProperty.CutSpacing);
-			if(PFun.ReadSharedPreferencesData("Cashdrawer").equals("1") && PrinterProperty.Cashdrawer)    		
+			if(PFun.ReadSharedPreferencesData("Cashdrawer").equals("1") && PrinterProperty.Cashdrawer)
 				HPRTPrinterHelper.OpenCashdrawer(0);
-			if(PFun.ReadSharedPreferencesData("Buzzer").equals("1") && PrinterProperty.Buzzer)    		
+			if(PFun.ReadSharedPreferencesData("Buzzer").equals("1") && PrinterProperty.Buzzer)
 				HPRTPrinterHelper.BeepBuzzer((byte)1,(byte)10,(byte)0);
 		}
 		catch(Exception e)
@@ -55,7 +55,7 @@ public class PublicAction
 			arrFeeds=ArrayAdapter.createFromResource(context, R.array.feeds_list, android.R.layout.simple_spinner_item);
 			arrFeeds.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			iFeed=(Integer.valueOf(arrFeeds.getItem(iFeed).toString().replace("mm", "")));
-			HPRTPrinterHelper.PrintAndFeed(iFeed*4);
+			HPRTPrinterHelper.PrintAndFeed(iFeed*8);
 			if(PFun.ReadSharedPreferencesData("Cut").equals("2") && PrinterProperty.Cut)
 
 				HPRTPrinterHelper.CutPaper(HPRTPrinterHelper.HPRT_PARTIAL_CUT,PrinterProperty.CutSpacing);
@@ -73,20 +73,20 @@ public class PublicAction
 		try
 		{
 			PublicFunction PFun=new PublicFunction(context);
-            String sLanguage = PFun.ReadSharedPreferencesData("Codepage").split(",")[1];
+			String sLanguage = PFun.ReadSharedPreferencesData("Codepage").split(",")[1];
 			String sLEncode="gb2312";
 			int intLanguageNum=0;
 
-            sLEncode = PublicFunction.getLanguageEncode(sLanguage);
-			intLanguageNum= PFun.getCodePageIndex(sLanguage);	
-			
+			sLEncode = PublicFunction.getLanguageEncode(sLanguage);
+			intLanguageNum= PFun.getCodePageIndex(sLanguage);
+
 			HPRTPrinterHelper.SetCharacterSet((byte)intLanguageNum);
 			HPRTPrinterHelper.LanguageEncode=sLEncode;
-			
+
 			return sLEncode;
 		}
 		catch(Exception e)
-		{			
+		{
 			Log.e("HPRTSDKSample", (new StringBuilder("PublicAction --> AfterPrintAction ")).append(e.getMessage()).toString());
 			return "";
 		}

@@ -20,12 +20,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import HPRTAndroidSDK.HPRTPrinterHelper;
 import HPRTAndroidSDK.PublicFunction;
-import miles.identigate.soja.helpers.Constants;
-import miles.identigate.soja.helpers.Preferences;
-import miles.identigate.soja.helpers.SojaActivity;
 import miles.identigate.soja.Printer.DeviceListActivity;
 import miles.identigate.soja.Printer.PrinterProperty;
 import miles.identigate.soja.Printer.PublicAction;
+import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
 
@@ -276,7 +274,7 @@ public class SlipActivity extends SojaActivity {
 //            startActivity(new Intent(getApplicationContext(), Dashboard.class));
 //            finish();
         } catch (Exception e) {
-            Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> PrintSampleReceipt ")).append(e.getMessage()).toString());
+            Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> PrintSampleReceipt")).append(e.getMessage()).toString());
         }
     }
 
