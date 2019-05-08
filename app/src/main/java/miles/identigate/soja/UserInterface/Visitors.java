@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -908,6 +909,9 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
         if (viewHolder instanceof DriveInRecyclerAdapter.DriveInViewHolder) {
             if (driveIns.size() > 0) {
                 final String name = driveIns.get(viewHolder.getAdapterPosition()).getName();
+                final String id = driveIns.get(viewHolder.getAdapterPosition()).getNationalId();
+
+
 
                 final DriveIn deletedDriveIn = driveIns.get(viewHolder.getAdapterPosition());
                 final int deleteIndex = viewHolder.getAdapterPosition();
@@ -916,7 +920,12 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
 
                 Log.d(TAG, "onSwiped: " + deleteIndex + deletedDriveIn.getName());
 
-                Snackbar snackbar = Snackbar.make(rootLayout, name + " checked out", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(rootLayout,
+                        (name == null || TextUtils.isEmpty(name) || name.equals("null") ?
+                                id : name
+                )
+                + " checked out", Snackbar.LENGTH_LONG);
+
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -953,6 +962,8 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
 
             } else if (walkIns.size() > 0) {
                 String name = walkIns.get(viewHolder.getAdapterPosition()).getName();
+                final String id = walkIns.get(viewHolder.getAdapterPosition()).getNationalId();
+
 
                 final DriveIn deletedWalkIn = walkIns.get(viewHolder.getAdapterPosition());
                 final int deleteIndex = viewHolder.getAdapterPosition();
@@ -961,7 +972,13 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
 
                 Log.d(TAG, "onSwiped: " + deleteIndex + deletedWalkIn.getName());
 
-                Snackbar snackbar = Snackbar.make(rootLayout, name + " checked out", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(rootLayout,
+
+                        (name == null || TextUtils.isEmpty(name) || name.equals("null") ?
+                                id : name
+                        )
+                                + " checked out", Snackbar.LENGTH_LONG);
+
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

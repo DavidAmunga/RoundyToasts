@@ -96,7 +96,7 @@
                 android:background="@drawable/border"
                 android:ems="10"
                 android:hint=""
-                android:inputType="text"
+                android:inputType="number"
                 android:padding="10dp"
                 android:singleLine="false"
                 android:text=""

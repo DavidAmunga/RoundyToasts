@@ -498,6 +498,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
             lin_walk_confirm.setVisibility(spinnerTypeOfVisit.getSelectedItem().toString().equals("Walk In") ? View.VISIBLE : View.GONE);
             lin_spinner.setVisibility(View.VISIBLE);
             btnRecord.setVisibility(View.VISIBLE);
+            edtCode.requestFocus();
 //            Restore Button State
             btnConfirm.setEnabled(true);
             btnConfirm.setText("SEND CONFIRMATION CODE");

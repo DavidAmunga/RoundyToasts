@@ -760,6 +760,7 @@ public class RecordWalkIn extends SojaActivity {
                 .title("Please Wait")
                 .content("Confirming Location...")
                 .progress(true, 0)
+                .progressIndeterminateStyle(true)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
@@ -857,6 +858,7 @@ public class RecordWalkIn extends SojaActivity {
                 .title("Walk in")
                 .content("Checking In...")
                 .progress(true, 0)
+                .progressIndeterminateStyle(true)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
@@ -1043,6 +1045,7 @@ public class RecordWalkIn extends SojaActivity {
                 .title("Exit")
                 .content("Removing visitor...")
                 .progress(true, 0)
+                .progressIndeterminateStyle(true)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
@@ -1127,6 +1130,7 @@ public class RecordWalkIn extends SojaActivity {
                 .titleColor(getResources().getColor(R.color.ColorPrimary))
                 .content("Fetching Data")
                 .progress(true, 0)
+                .progressIndeterminateStyle(true)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();

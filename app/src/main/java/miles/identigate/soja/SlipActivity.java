@@ -10,8 +10,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,6 +26,8 @@ import miles.identigate.soja.helpers.SojaActivity;
 import miles.identigate.soja.Printer.DeviceListActivity;
 import miles.identigate.soja.Printer.PrinterProperty;
 import miles.identigate.soja.Printer.PublicAction;
+import miles.identigate.soja.helpers.Preferences;
+import miles.identigate.soja.helpers.SojaActivity;
 
 public class SlipActivity extends SojaActivity {
     private static final int REQUEST_ENABLE_BT = 200;
@@ -193,9 +197,9 @@ public class SlipActivity extends SojaActivity {
             msg += "\n";
             msg += "------------------------------";
             msg += "\n\n";
-            msg += "CHECK_IN_GUEST IN TYPE: " + checkInType.toUpperCase();
+            msg += "CHECK IN TYPE: " + checkInType.toUpperCase();
             msg += "\n";
-            msg += "CHECK_IN_GUEST IN MODE: " + checkInMode.toUpperCase();
+            msg += "CHECK IN MODE: " + checkInMode.toUpperCase();
             msg += "\n";
             if (!checkInMode.equals("SMS")) {
                 msg += "VISITOR NAME: " + firstName;

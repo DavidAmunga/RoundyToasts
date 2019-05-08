@@ -385,6 +385,7 @@ public class Dashboard extends SojaActivity {
                 .titleColor(getResources().getColor(R.color.ColorPrimary))
                 .content("Please wait while we initialize the application.\nThis might take time depending on your internet.")
                 .progress(true, 0)
+                .progressIndeterminateStyle(true)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();

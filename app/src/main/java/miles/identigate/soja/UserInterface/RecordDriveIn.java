@@ -181,10 +181,10 @@ public class RecordDriveIn extends SojaActivity {
         if (getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
 
-            if (bundle.getBoolean("manual")) {
-                manualEdit = true;
-                updateOptions();
-            }
+//            if (bundle.getBoolean("manual")) {
+//                manualEdit = true;
+//                updateOptions();
+//            }
         }
 
 
