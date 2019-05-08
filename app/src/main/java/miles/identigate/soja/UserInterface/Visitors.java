@@ -1147,9 +1147,9 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
             final DriveIn walkIn = (DriveIn) object;
             RetrofitClient.getDataService(this).visitorExit(walkIn.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
                 @Override
-                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                public void onResponse(Call<QueryResponse> call, retrofit2.Response<QueryResponse> response) {
                     Log.d(TAG, "onResponse: " + response.body());
-                    if (response.body() != null) {
+                    if (response .body() != null) {
                         QueryResponse queryResponse = response.body();
 
                         if (queryResponse.getResultCode() != null) {
@@ -1194,7 +1194,7 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
             final ServiceProviderModel model = (ServiceProviderModel) object;
             RetrofitClient.getDataService(this).visitorExit(model.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
                 @Override
-                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                public void onResponse(Call<QueryResponse> call, retrofit2.Response<QueryResponse> response) {
                     Log.d(TAG, "onResponse: " + response.body());
                     if (response.body() != null) {
                         QueryResponse queryResponse = response.body();
@@ -1241,7 +1241,7 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
             final Resident resident = (Resident) object;
             RetrofitClient.getDataService(this).visitorExit(resident.getNationalId(), preferences.getDeviceId(), Constants.getCurrentTimeStamp()).enqueue(new Callback<QueryResponse>() {
                 @Override
-                public void onResponse(Call<QueryResponse> call, Response<QueryResponse> response) {
+                public void onResponse(Call<QueryResponse> call, retrofit2.Response<QueryResponse> response) {
                     Log.d(TAG, "onResponse: " + response.body());
                     if (response.body() != null) {
                         QueryResponse queryResponse = response.body();

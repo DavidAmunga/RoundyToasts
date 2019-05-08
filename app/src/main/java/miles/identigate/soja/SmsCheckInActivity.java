@@ -266,6 +266,9 @@ public class SmsCheckInActivity extends AppCompatActivity {
                 "&organisationID=" + URLEncoder.encode(preferences.getOrganizationId(), "UTF-8")
                 ;
 
+                Log.d(TAG, "sendConfirmationCode: "+urlParameters);
+
+
                 new SMSCheckInAsync().execute(preferences.getBaseURL() + "send_code", urlParameters);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
