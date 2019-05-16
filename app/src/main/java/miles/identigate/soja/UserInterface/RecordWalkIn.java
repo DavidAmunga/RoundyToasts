@@ -178,6 +178,8 @@ public class RecordWalkIn extends SojaActivity {
         record = findViewById(R.id.record);
         spinnerDestination = findViewById(R.id.spinnerDestination);
 
+        Log.d(TAG, "onCreate: Phone Switch "+preferences.isPhoneNumberEnabled());
+        Log.d(TAG, "onCreate: Phone Verification"+preferences.isPhoneVerificationEnabled());
 
         if (preferences.isPhoneNumberEnabled() && preferences.isPhoneVerificationEnabled()) {
             linFields.setVisibility(View.GONE);

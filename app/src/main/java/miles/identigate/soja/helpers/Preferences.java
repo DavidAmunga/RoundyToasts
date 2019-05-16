@@ -154,12 +154,12 @@ public class Preferences {
 
     public void setPhoneNumberEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("verify_phone_number", isEnabled);
+        editor.putBoolean("record_phone_number", isEnabled);
         editor.commit();
     }
 
     public boolean isPhoneVerificationEnabled() {
-        return settings.getBoolean("record_phone_number", false);
+        return settings.getBoolean("verify_phone_number", false);
     }
 
     public void setPhoneVerification(boolean isEnabled) {
