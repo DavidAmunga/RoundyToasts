@@ -33,6 +33,9 @@ import miles.identigate.soja.services.IFCMService;
  * Created by myles on 4/24/16.
  */
 public class Common extends Application {
+    public static final String PREF_CURRENT_DRIVER_PASS = "driverPass";
+    public static final String PREF_CURRENT_VISIT_ID = "current_visit_id";
+    public static final String PREF_CURRENT_PASSENGERS_LIST = "current_passengers";
     Preferences preferences;
 
     private static final String TAG = "Common";
@@ -87,30 +90,30 @@ public class Common extends Application {
         return FCMClient.getClient(fcmURL).create(IFCMService.class);
     }
 
-    public static void updateFirebaseToken(final Preferences preferences) {
-
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-
-        final DatabaseReference tokens = db.getReference(Common.TOKENS);
-
-
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (!task.isSuccessful()) {
-                    Log.w(TAG, "getInstanceId failed", task.getException());
-                    return;
-                }
-// Get new Instance ID token
-//                String token = task.getResult().getToken();
-
-                Token token = new Token(task.getResult().getToken());
-                tokens.child("sentry_" + preferences.getId()).setValue(token);
-            }
-        });
-
-
-    }
+//    public static void updateFirebaseToken(final Preferences preferences) {
+//
+//        FirebaseDatabase db = FirebaseDatabase.getInstance();
+//
+//        final DatabaseReference tokens = db.getReference(Common.TOKENS);
+//
+//
+//        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                if (!task.isSuccessful()) {
+//                    Log.w(TAG, "getInstanceId failed", task.getException());
+//                    return;
+//                }
+//// Get new Instance ID token
+////                String token = task.getResult().getToken();
+//
+//                Token token = new Token(task.getResult().getToken());
+//                tokens.child("sentry_" + preferences.getId()).setValue(token);
+//            }
+//        });
+//
+//
+//    }
 
     public static Map<String, Object> getFieldNamesAndValues(final Object obj, boolean publicOnly)
             throws IllegalArgumentException, IllegalAccessException {
@@ -152,13 +155,13 @@ public class Common extends Application {
 
         String[] splitStr = item.split("\\s+");
 
-        Log.d(TAG, "formatString: String "+splitStr);
-        Log.d(TAG, "formatString: String Length"+splitStr.length);
-        Log.d(TAG, "formatString:  Total String Length "+splitStr[0].length()+splitStr[1].length()+1);
+        Log.d(TAG, "formatString: String " + splitStr);
+        Log.d(TAG, "formatString: String Length" + splitStr.length);
+        Log.d(TAG, "formatString:  Total String Length " + splitStr[0].length() + splitStr[1].length() + 1);
 
         if (splitStr[0].length() < 16) {
 //            Log.d(TAG, "formatString: Less than 16");
-            if (splitStr[1]!=null && splitStr[0].length() + splitStr[1].length() + 1 < 16) {
+            if (splitStr[1] != null && splitStr[0].length() + splitStr[1].length() + 1 < 16) {
 //                Log.d(TAG, "formatString: Less than 16 including second");
 
                 finalText = item + "\n";

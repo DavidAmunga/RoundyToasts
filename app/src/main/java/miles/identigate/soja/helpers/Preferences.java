@@ -15,13 +15,12 @@ public class Preferences {
     SharedPreferences settings;
 
 
-
-
     public Preferences(Context context) {
         _context = context;
         settings = context.getSharedPreferences(PREFS_NAME, 0);
         Paper.init(context);
     }
+
 
     public String getBaseURL() {
         String baseUrl = settings.getString("base_url", "http://test.soja.co.ke/soja-rest/index.php/api/visits/");
@@ -76,6 +75,7 @@ public class Preferences {
         editor.putString("name", name);
         editor.commit();
     }
+
 
     public String getId() {
         return settings.getString("id", "");
@@ -154,7 +154,17 @@ public class Preferences {
 
     public void setPhoneNumberEnabled(boolean isEnabled) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("record_phone_number", isEnabled);
+        editor.putBoolean("verify_phone_number", isEnabled);
+        editor.commit();
+    }
+
+    public boolean isPhoneVerificationEnabled() {
+        return settings.getBoolean("record_phone_number", false);
+    }
+
+    public void setPhoneVerification(boolean isEnabled) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("verify_phone_number", isEnabled);
         editor.commit();
     }
 
@@ -226,7 +236,6 @@ public class Preferences {
     }
 
 
-
     public User getCurrentUser() {
         User user = Paper.book().read("currentUser");
         return user;
@@ -239,7 +248,6 @@ public class Preferences {
     public void clearCurrentUser() {
         Paper.book().delete("currentUser");
     }
-
 
 
     public String getOrganizationId() {

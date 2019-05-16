@@ -68,7 +68,7 @@ public class SlipActivity extends SojaActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setTitle("Print Slip");
         ok = (ImageView) findViewById(R.id.ok);
         cancel = (ImageView) findViewById(R.id.cancel);
         slip = (TextView) findViewById(R.id.title);

@@ -242,6 +242,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="miles.identigate.soja.ScanQRActivity" />
         </activity>
+
         <activity
             android:name=".Printer.DeviceListActivity"
             android:theme="@android:style/Theme.Dialog" />

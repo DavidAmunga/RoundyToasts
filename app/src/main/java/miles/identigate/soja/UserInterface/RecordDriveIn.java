@@ -34,16 +34,20 @@ import org.json.JSONTokener;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.paperdb.Paper;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
 import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.R;
+import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.SlipActivity;
 import miles.identigate.soja.adapters.TypeAdapter;
+import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.EditTextRegular;
 import miles.identigate.soja.font.OpenSansBold;
 import miles.identigate.soja.helpers.CheckConnection;
@@ -53,6 +57,7 @@ import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
 import miles.identigate.soja.models.DriveIn;
+import miles.identigate.soja.models.DriveInPassenger;
 import miles.identigate.soja.models.TypeObject;
 
 public class RecordDriveIn extends SojaActivity {
@@ -66,14 +71,18 @@ public class RecordDriveIn extends SojaActivity {
     String vehicleNo;
     EditText vehicleRegNo;
     EditText numberOfPeople;
-    TypeObject selectedType, selectedDestination, selectedHost,selectedGender;
-    ArrayList<TypeObject> houses, visitorTypes, hosts,genderTypes;
+    TypeObject selectedType, selectedDestination, selectedHost, selectedGender;
+    ArrayList<TypeObject> houses, visitorTypes, hosts, genderTypes;
     Preferences preferences;
     MaterialDialog progressDialog;
     MaterialDialog dialog;
-
     LinearLayout phoneNumberLayout, hostLayout, companyNameLayout;
     EditText phoneNumberEdittext, companyNameEdittext;
+    @BindView(R.id.numberOfPeopleLayout)
+    LinearLayout numberOfPeopleLayout;
+
+    private Boolean doubleBackToExitPressedOnce = true;
+
 
     TextView spinnerDestination, spinnerHost;
 
@@ -81,6 +90,8 @@ public class RecordDriveIn extends SojaActivity {
     String firstName, lastName, idNumber;
     String result_slip = "";
     int visit_id = 0;
+    int driverPassengers = 1;
+
 
     private static final String TAG = "RecordDriveIn";
     @BindView(R.id.txt_first_name)
@@ -103,6 +114,8 @@ public class RecordDriveIn extends SojaActivity {
     boolean manualEdit = false;
 
 
+    DriveInPassenger driveInPassenger;
+
     private IntentFilter receiveFilter;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -116,6 +129,7 @@ public class RecordDriveIn extends SojaActivity {
             }
         }
     };
+    private List<DriveInPassenger> passengersList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +148,7 @@ public class RecordDriveIn extends SojaActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Record Drive In");
+        Paper.init(this);
 
         receiveFilter = new IntentFilter();
         receiveFilter.addAction(Constants.LOGOUT_BROADCAST);
@@ -157,20 +172,22 @@ public class RecordDriveIn extends SojaActivity {
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled() ? View.VISIBLE : View.GONE);
 
 
+//        Initialize Passenger
+        driveInPassenger = new DriveInPassenger();
+
+
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (CheckConnection.check(RecordDriveIn.this)) {
-                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("") || numberOfPeople.getText().toString().equals(null) || numberOfPeople.getText().toString().equals("")) {
-                        Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).show();
+                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("")) {
+                        Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).setActionTextColor(getResources().getColor(R.color.white)).show();
                     } else {
                         recordInternt();
                     }
                 } else {
-                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("") || numberOfPeople.getText().toString().equals(null) || numberOfPeople.getText().toString().equals("")) {
-                        Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        recordOffline();
+                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("")) {
+                        Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).setActionTextColor(getResources().getColor(R.color.white)).show();
                     }
                 }
             }
@@ -178,7 +195,9 @@ public class RecordDriveIn extends SojaActivity {
 
 
 //        Check if manual
-        if (getIntent() != null) {
+        if (
+
+                getIntent() != null) {
             Bundle bundle = getIntent().getExtras();
 
 //            if (bundle.getBoolean("manual")) {
@@ -188,14 +207,14 @@ public class RecordDriveIn extends SojaActivity {
         }
 
 
-
 //        VISITOR TYPES
         visitorTypes = handler.getTypes("visitors", null);
         TypeAdapter adapter = new TypeAdapter(RecordDriveIn.this, R.layout.tv, visitorTypes);
         visitor_type.setAdapter(adapter);
         visitor_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position,
+                                       long id) {
                 TypeObject object = (TypeObject) parent.getSelectedItem();
                 selectedType = object;
             }
@@ -272,6 +291,63 @@ public class RecordDriveIn extends SojaActivity {
                 }
             }
         });
+
+
+//        CHECK IF DRIVER PASS EXISTS
+        if (Paper.book().read(Common.PREF_CURRENT_DRIVER_PASS) != null) {
+            driverPassengers = Paper.book().read(Common.PREF_CURRENT_DRIVER_PASS);
+            Log.d(TAG, "onCreate: Same Driver");
+
+            if (Paper.book().read(Common.PREF_CURRENT_PASSENGERS_LIST) != null) {
+                passengersList = Paper.book().read(Common.PREF_CURRENT_PASSENGERS_LIST);
+                Log.d(TAG, "onCreate: Same Driver ++");
+
+
+                DriveInPassenger lastPassenger = passengersList.get(passengersList.size() - 1);
+                DriveInPassenger firstPassenger = passengersList.get(0);
+
+                for (TypeObject house : houses) {
+                    if (house.getId().equals(lastPassenger.getHouseID())) {
+                        selectedDestination = house;
+                        spinnerDestination.setText(selectedDestination.getName());
+                    }
+                }
+
+                if (preferences.isSelectHostsEnabled()) {
+
+                    if (selectedDestination != null) {
+
+                        hosts = handler.getTypes("hosts", selectedDestination.getId());
+
+
+                        hostLayout.setVisibility(preferences.isSelectHostsEnabled() && hosts.size() > 0 ? View.VISIBLE : View.GONE);
+
+                        if (hosts.size() == 0) {
+                            selectedHost = null;
+                        }
+
+                        for (TypeObject host : hosts) {
+                            if (host.getId().equals(lastPassenger.getHostID())) {
+                                selectedHost = host;
+                                spinnerHost.setText(selectedHost.getName());
+                            }
+                        }
+
+                    }
+
+
+                }
+
+
+                vehicleRegNo.setText(firstPassenger.getVehicleRegNO());
+                companyNameEdittext.setText(lastPassenger.getCompanyName());
+
+                numberOfPeopleLayout.setVisibility(View.GONE);
+
+            }
+        } else {
+            Log.d(TAG, "onCreate: New Driver");
+        }
     }
 
     private void updateOptions() {
@@ -305,7 +381,6 @@ public class RecordDriveIn extends SojaActivity {
             idLayout.setVisibility(View.GONE);
         }
     }
-
 
 
     @Override
@@ -364,33 +439,60 @@ public class RecordDriveIn extends SojaActivity {
             firstName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
             lastName = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n");
 
-            int peopleNo = Integer.parseInt(numberOfPeople.getText().toString());
 
             String gender = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n").contains("M") ? "0" : "1";
             String mrzLines = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
+
+
+            driveInPassenger.setPhone(phoneNumberEdittext.getText().toString());
+            driveInPassenger.setCompanyName(companyNameEdittext.getText().toString());
+            driveInPassenger.setScan_id_type(scan_id_type);
+            driveInPassenger.setVisitType("drive-in");
+            driveInPassenger.setDeviceID(preferences.getDeviceId());
+            driveInPassenger.setPremiseZoneID(preferences.getPremiseZoneId());
+            driveInPassenger.setVisitorTypeID(selectedType.getId());
+            driveInPassenger.setHouseID(selectedDestination.getId());
+            driveInPassenger.setHostID(selectedHost != null ? selectedHost.getHostId() : "");
+            driveInPassenger.setPaxinvehicle(1);
+            driveInPassenger.setEntryTime(Constants.getCurrentTimeStamp());
+            driveInPassenger.setVehicleRegNO(vehicleRegNo.getText().toString());
+            driveInPassenger.setBirthDate(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"));
+            driveInPassenger.setGenderID(gender);
+            driveInPassenger.setFirstName(firstName);
+            driveInPassenger.setLastName(lastName);
+            driveInPassenger.setIdType(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
+            driveInPassenger.setIdNumber(idNumber);
+            driveInPassenger.setNationality(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"));
+            driveInPassenger.setNationCode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"));
+
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
-                            "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
-                            (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
-                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
-                            "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
-                            "&visitType=" + URLEncoder.encode("drive-in", "UTF-8") +
-                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                            "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                            "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
-                            "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
-                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
-                            "&paxinvehicle=" + (peopleNo >= 1 ? peopleNo : 1) +
-                            "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
-                            "&vehicleRegNO=" + URLEncoder.encode(vehicleRegNo.getText().toString(), "UTF-8") +
-                            "&birthDate=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"), "UTF-8") +
-                            "&genderID=" + URLEncoder.encode(gender, "UTF-8") +
-                            "&firstName=" + URLEncoder.encode(firstName, "UTF-8") +
-                            "&lastName=" + URLEncoder.encode(lastName, "UTF-8") +
-                            "&idType=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"), "UTF-8") +
-                            "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
-                            "&nationality=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"), "UTF-8") +
-                            "&nationCode=" + URLEncoder.encode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"), "UTF-8");
+                            "&phone=" + URLEncoder.encode(driveInPassenger.getPhone(), "UTF-8") +
+                            (preferences.isCompanyNameEnabled() && !driveInPassenger.getCompanyName().equals("") ?
+                                    ("&company=" + URLEncoder.encode(driveInPassenger.getCompanyName(), "UTF-8")) : "") +
+                            //Passengers Check   //
+                            (Paper.book().read(Common.PREF_CURRENT_VISIT_ID) != null ?
+                                    ("&driverVisitID=" + Paper.book().read(Common.PREF_CURRENT_VISIT_ID)) : "") +
+//
+                            "&scan_id_type=" + URLEncoder.encode(driveInPassenger.getScan_id_type(), "UTF-8") +
+                            "&visitType=" + URLEncoder.encode(driveInPassenger.getVisitType(), "UTF-8") +
+                            "&deviceID=" + URLEncoder.encode(driveInPassenger.getDeviceID(), "UTF-8") +
+                            "&premiseZoneID=" + URLEncoder.encode(driveInPassenger.getPremiseZoneID(), "UTF-8") +
+                            "&visitorTypeID=" + URLEncoder.encode(driveInPassenger.getVisitorTypeID(), "UTF-8") +
+                            "&houseID=" + URLEncoder.encode(driveInPassenger.getHouseID(), "UTF-8") +
+                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(driveInPassenger.getHostID())) : "") +
+                            "&paxinvehicle=" + (driveInPassenger.getPaxinvehicle() >= 1 ? driveInPassenger.getPaxinvehicle() : 1) +
+                            "&entryTime=" + URLEncoder.encode(driveInPassenger.getEntryTime(), "UTF-8") +
+                            "&vehicleRegNO=" + URLEncoder.encode(driveInPassenger.getVehicleRegNO(), "UTF-8") +
+                            "&birthDate=" + URLEncoder.encode(driveInPassenger.getBirthDate(), "UTF-8") +
+                            "&genderID=" + URLEncoder.encode(driveInPassenger.getGenderID(), "UTF-8") +
+                            "&firstName=" + URLEncoder.encode(driveInPassenger.getFirstName(), "UTF-8") +
+                            "&lastName=" + URLEncoder.encode(driveInPassenger.getLastName(), "UTF-8") +
+                            "&idType=" + URLEncoder.encode(driveInPassenger.getIdType(), "UTF-8") +
+                            "&idNumber=" + URLEncoder.encode(driveInPassenger.getIdNumber(), "UTF-8") +
+                            "&nationality=" + URLEncoder.encode(driveInPassenger.getNationality(), "UTF-8") +
+
+                            "&nationCode=" + URLEncoder.encode(driveInPassenger.getNationCode(), "UTF-8");
             Log.d(TAG, "URL Param: " + urlParameters);
             new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
         } catch (UnsupportedEncodingException e) {
@@ -400,50 +502,6 @@ public class RecordDriveIn extends SojaActivity {
         }
     }
 
-    public void recordOffline() {
-        //Insert to local database
-        String idN = "000000000";
-        String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
-        if (classCode.equals("ID")) {
-            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_IDENTITY_CARD_NUMBER).replace("^", "\n");
-        } else if (classCode.equals("P")) {
-            idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER).replace("^", "\n");
-        }
-        DriveIn driveIn = new DriveIn();
-        vehicleNo = vehicleRegNo.getText().toString();
-        driveIn.setVisitorType(selectedType.getId());
-        driveIn.setCarNumber(vehicleRegNo.getText().toString());
-        driveIn.setImage("NULL");
-        driveIn.setEntryTime(Constants.getCurrentTimeStamp());
-        driveIn.setStatus("IN");
-        driveIn.setRecordType("DRIVE");
-        driveIn.setExitTime("NULL");
-        driveIn.setHouseID(selectedDestination.getId());
-        driveIn.setNationalId(idN);
-        driveIn.setDob(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH).replace("^", "\n"));
-        driveIn.setSex(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SEX).replace("^", "\n"));
-        driveIn.setName(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
-        driveIn.setOtherNames(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES).replace("^", "\n"));
-        driveIn.setIdType(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
-        if (CheckConnection.check(this)) {
-            driveIn.setSynced(true);
-            handler.insertDriveIn(driveIn);
-            return;
-        } else {
-            driveIn.setSynced(false);
-            handler.insertDriveIn(driveIn);
-            MaterialDialog.SingleButtonCallback singleButtonCallback = new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    dialog.dismiss();
-                    startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                    finish();
-                }
-            };
-            dialog = Constants.showDialog(this, "SUCCESS", "Visitor recorded successfully.", "OK", singleButtonCallback);
-            dialog.show();
-        }
-    }
 
     private class DriveinAsync extends AsyncTask<String, Void, String> {
 
@@ -466,7 +524,6 @@ public class RecordDriveIn extends SojaActivity {
                     if (json instanceof JSONObject) {
                         resultHandler(result);
                     } else {
-                        recordOffline();
                         parseResult();
 
                     }
@@ -475,7 +532,6 @@ public class RecordDriveIn extends SojaActivity {
                 }
 
             } else {
-                recordOffline();
             }
 
         }
@@ -504,15 +560,45 @@ public class RecordDriveIn extends SojaActivity {
         } else {
             new MaterialDialog.Builder(RecordDriveIn.this)
                     .title("SUCCESS")
-                    .content("Visitor recorded successfully.")
-                    .positiveText("OK")
+                    .content("Visitor recorded successfully. " +
+                            "Do you want to record another passenger for Car "
+                            + (passengersList.size() > 0 ? passengersList.get(0).getVehicleRegNO() : vehicleRegNo.getText().toString()) +
+                            " under " +
+                            (passengersList.size() > 0 ? passengersList.get(0).getFirstName() : firstName)
+                            + "?"
+                    )
+                    .positiveText("YES")
+                    .negativeText("NO")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
+//                            Go to next Passenger
+                            driverPassengers++;
+                            passengersList.add(driveInPassenger);
+                            Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, driverPassengers);
+
+                            Log.d(TAG, "onPositive: Visit ID " + String.valueOf(visit_id));
+
+                            Paper.book().write(Common.PREF_CURRENT_PASSENGERS_LIST, passengersList);
+
+                            dialog.dismiss();
+                            Intent intent = new Intent(RecordDriveIn.this, ScanActivity.class);
+                            Bundle extras = new Bundle();
+
+                            extras.putInt("TargetActivity", Common.DRIVE_IN);
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
+                            Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, 1);
                             dialog.dismiss();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
                         }
+
                     })
                     .show();
             // Get instance of Vibrator from current Context
@@ -523,15 +609,30 @@ public class RecordDriveIn extends SojaActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            Toast.makeText(this, "Pressing Back again will Exit Recording Passengers for the same car", Toast.LENGTH_SHORT).show();
+            doubleBackToExitPressedOnce = false;
+        } else {
+            super.onBackPressed();
+
+        }
+
+    }
+
     private void resultHandler(String result) throws JSONException {
         JSONObject obj = new JSONObject(result);
         int resultCode = obj.getInt("result_code");
         String resultText = obj.getString("result_text");
         String resultContent = obj.getString("result_content");
+        Log.d(TAG, "resultHandler: " + obj.toString());
         if (resultText.equals("OK") && resultContent.equals("success")) {
             result_slip = obj.getString("result_slip");
             visit_id = obj.getInt("visit_id");
-            recordOffline();
+
+            Paper.book().write(Common.PREF_CURRENT_VISIT_ID, visit_id);
+
             parseResult();
         } else {
             if (resultText.contains("still in")) {

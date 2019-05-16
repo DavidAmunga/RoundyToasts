@@ -19,18 +19,22 @@ import com.regula.documentreader.api.results.DocumentReaderScenario;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import io.paperdb.Paper;
 import miles.identigate.soja.fragments.EntryTypeFragment;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.app.Common;
 
 
-public class ScanActivity extends Activity implements EntryTypeFragment.OnEntrySelectedListener{
+public class ScanActivity extends Activity implements EntryTypeFragment.OnEntrySelectedListener {
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     private boolean isLicenseOk = false;
     Preferences preferences;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
@@ -42,14 +46,16 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_entry_type);
         Constants.fieldItems.clear();
-        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+        Paper.init(this);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         //transaction.setCustomAnimations(R.anim.pull_in_left,R.anim.push_out_left);
-        EntryTypeFragment entryTypeFragment=new EntryTypeFragment();
+        EntryTypeFragment entryTypeFragment = new EntryTypeFragment();
         Bundle args = new Bundle();
         args.putInt("TargetActivity", getIntent().getExtras().getInt("TargetActivity"));
         entryTypeFragment.setArguments(args);
-        transaction.replace(R.id.parent,entryTypeFragment);
+        transaction.replace(R.id.parent, entryTypeFragment);
         transaction.commit();
+
 
     }
 
@@ -67,16 +73,16 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
     @Override
     public void OnEntrySelected(int type) {
         if (isLicenseOk) {
-            if(type== Common.SCAN){
+            if (type == Common.SCAN) {
                 doScan();
-            }else{
+            } else {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
             }
-        }else {
+        } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(ScanActivity.this);
             builder.setTitle(R.string.strError);
             builder.setMessage("Invalid license.");
@@ -92,6 +98,7 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
         }
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -109,22 +116,23 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
                     //initialization successful
                     if (success) {
                         isLicenseOk = true;
-                    }else {
+                    } else {
                         Toast.makeText(ScanActivity.this, "Initializing failed:" + error, Toast.LENGTH_LONG).show();
                     }
                 }
 
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    private void doScan(){
+
+    private void doScan() {
         //getting current processing scenario
         //String currentScenario = DocumentReader.Instance().processParams.scenario;
         ArrayList<String> scenarios = new ArrayList<>();
-        for(DocumentReaderScenario scenario: DocumentReader.Instance().availableScenarios){
+        for (DocumentReaderScenario scenario : DocumentReader.Instance().availableScenarios) {
             scenarios.add(scenario.name);
         }
         DocumentReader.Instance().processParams.scenario = scenarios.get(0);

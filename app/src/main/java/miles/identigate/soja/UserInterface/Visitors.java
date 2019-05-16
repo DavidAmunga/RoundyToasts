@@ -468,11 +468,15 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
                                     Log.d(TAG, "onPostExecute: "+visitorType);
                                     if (visitorType.equals("Resident")) {
 
+
                                         Resident resident = new Resident();
                                         resident.setName(name);
                                         resident.setEntryTime(entry);
                                         resident.setNationalId(id);
                                         resident.setHouse(house);
+
+                                        Log.d(TAG, "onPostExecute: "+resident.getNationalId().toString());
+
 
 //                                        if (!item.isNull("registration")) {
                                         residents.add(resident);

@@ -163,6 +163,28 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/lin_phone_verify"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <Switch
+                        android:id="@+id/phone_verify"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Verify Phone Number"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -189,6 +211,7 @@
 
 
                 </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
@@ -310,14 +333,12 @@
                 android:textSize="20sp" />
 
 
-
-
             <miles.identigate.soja.font.OpenSansRegular
+                android:id="@+id/premiseName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Premise Name"
-                android:id="@+id/premiseName"
                 android:textColor="?attr/textColor"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -326,10 +347,10 @@
                 android:id="@+id/sentryName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_gravity="center"
-                android:text="Sentry Name"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10.0dip"
+                android:text="Sentry Name"
                 android:textColor="?attr/textColor"
                 android:textSize="16sp" />
 

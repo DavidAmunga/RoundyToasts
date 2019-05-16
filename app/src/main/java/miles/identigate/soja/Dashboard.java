@@ -39,6 +39,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.paperdb.Paper;
+import miles.identigate.soja.app.Common;
 import miles.identigate.soja.fragments.CheckIn;
 import miles.identigate.soja.fragments.CheckOut;
 import miles.identigate.soja.fragments.Logs;
@@ -88,6 +90,7 @@ public class Dashboard extends SojaActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
@@ -105,6 +108,12 @@ public class Dashboard extends SojaActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+//        Clear Variables
+        Paper.init(this);
+        Paper.book().delete(Common.PREF_CURRENT_DRIVER_PASS);
+        Paper.book().delete(Common.PREF_CURRENT_VISIT_ID);
+        Paper.book().delete(Common.PREF_CURRENT_PASSENGERS_LIST);
 
 //        Firebase Notifications
         FirebaseMessaging.getInstance().subscribeToTopic("soja-news");
@@ -539,6 +548,9 @@ public class Dashboard extends SojaActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(SyncService.NOTIFICATION));
+        Paper.book().delete(Common.PREF_CURRENT_DRIVER_PASS);
+        Paper.book().delete(Common.PREF_CURRENT_VISIT_ID);
+        Paper.book().delete(Common.PREF_CURRENT_PASSENGERS_LIST);
 
     }
 

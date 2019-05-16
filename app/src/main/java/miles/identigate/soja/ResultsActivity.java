@@ -93,6 +93,7 @@ public class ResultsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

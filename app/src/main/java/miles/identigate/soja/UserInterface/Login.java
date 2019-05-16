@@ -228,7 +228,7 @@ public class Login extends AppCompatActivity {
 
                         preferences.setCurrentUser(user);
 
-                        Common.updateFirebaseToken(preferences);
+//                        Common.updateFirebaseToken(preferences);
 
                         //preferences.setCanPrint(false);
                         logUser();

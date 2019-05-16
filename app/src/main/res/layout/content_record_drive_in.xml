@@ -76,12 +76,12 @@
 
         <LinearLayout
             android:id="@+id/idLayout"
-            android:visibility="gone"
-            android:layout_below="@id/nameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/nameLayout"
             android:layout_marginBottom="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
 
             <miles.identigate.soja.font.OpenSansBold
@@ -133,7 +133,6 @@
                 android:background="@drawable/border" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -268,7 +267,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/numberOfPeopleLayout"
+                android:visibility="gone">
 
                 <miles.identigate.soja.font.OpenSansBold
                     android:id="@+id/numberOfPeopleLabel"

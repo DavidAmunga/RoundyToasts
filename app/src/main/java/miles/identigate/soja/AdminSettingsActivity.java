@@ -25,9 +25,9 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import miles.identigate.soja.UserInterface.Login;
 import miles.identigate.soja.font.OpenSansBold;
 import miles.identigate.soja.font.OpenSansRegular;
-import miles.identigate.soja.UserInterface.Login;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
@@ -69,6 +69,10 @@ public class AdminSettingsActivity extends SojaActivity {
     OpenSansBold sentryName;
     @BindView(R.id.premiseName)
     OpenSansRegular premiseName;
+    @BindView(R.id.phone_verify)
+    Switch phoneVerify;
+    @BindView(R.id.lin_phone_verify)
+    LinearLayout linPhoneVerify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +115,7 @@ public class AdminSettingsActivity extends SojaActivity {
 
 
         printerSwitch.setChecked(preferences.canPrint());
+        phoneVerify.setChecked(preferences.isPhoneVerificationEnabled());
         phoneSwitch.setChecked(preferences.isPhoneNumberEnabled());
         companySwitch.setChecked(preferences.isCompanyNameEnabled());
         host.setChecked(preferences.isSelectHostsEnabled());
@@ -120,6 +125,25 @@ public class AdminSettingsActivity extends SojaActivity {
         premiseName.setText(preferences.getPremiseName());
         sentryName.setText(preferences.getName());
 
+
+        if (phoneSwitch.isChecked()) {
+            linPhoneVerify.setVisibility(View.VISIBLE);
+        } else {
+            phoneVerify.setChecked(false);
+            linPhoneVerify.setVisibility(View.GONE);
+        }
+
+        phoneSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    linPhoneVerify.setVisibility(View.VISIBLE);
+                } else {
+                    phoneVerify.setChecked(false);
+                    linPhoneVerify.setVisibility(View.GONE);
+                }
+            }
+        });
 
         darkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -238,7 +262,7 @@ public class AdminSettingsActivity extends SojaActivity {
                             Log.d("IP", ip);
                             refresh = true;
                             preferences.setBaseURL(ip);
-                            preferences.setResidentsURL(ip.replace("visits","residents"));
+                            preferences.setResidentsURL(ip.replace("visits", "residents"));
 
 
                             setServerName();
@@ -277,6 +301,7 @@ public class AdminSettingsActivity extends SojaActivity {
     private void saveSettings() {
         preferences.setCanPrint(printerSwitch.isChecked());
         preferences.setPhoneNumberEnabled(phoneSwitch.isChecked());
+        preferences.setPhoneVerification(phoneVerify.isChecked());
         preferences.setCompanyNameEnabled(companySwitch.isChecked());
         preferences.setSelectHostsEnabled(host.isChecked());
         preferences.setFingerprintsEnabled(fingerprints.isChecked());
@@ -327,7 +352,7 @@ public class AdminSettingsActivity extends SojaActivity {
             serverName.setText("Test Server");
         } else if (server.contains("casuals")) {
             serverName.setText("Casuals Server");
-        }else if (server.contains("events")) {
+        } else if (server.contains("events")) {
             serverName.setText("Events Server");
         } else if (count > 5) {
             serverName.setText("Custom Server");

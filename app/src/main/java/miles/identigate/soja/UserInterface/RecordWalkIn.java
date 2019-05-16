@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
@@ -17,20 +18,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.hbb20.CountryCodePicker;
 import com.regula.documentreader.api.enums.eVisualFieldType;
 
@@ -51,10 +47,13 @@ import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
 import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.R;
+import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.SlipActivity;
+import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.EditTextRegular;
+import miles.identigate.soja.font.OpenSansBold;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -62,15 +61,8 @@ import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
 import miles.identigate.soja.models.DriveIn;
-import miles.identigate.soja.models.FCMResponse;
-import miles.identigate.soja.models.Notification;
-import miles.identigate.soja.models.Sender;
-import miles.identigate.soja.models.Token;
 import miles.identigate.soja.models.TypeObject;
 import miles.identigate.soja.services.IFCMService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RecordWalkIn extends SojaActivity {
     static {
@@ -82,15 +74,10 @@ public class RecordWalkIn extends SojaActivity {
     private static final String TAG = "RecordWalkIn";
     Spinner visitor_type;
     DatabaseHandler handler;
-    Button record;
     TypeObject selectedDestination, selectedHost, selectedType, selectedGender, selectedDocument;
     ArrayList<TypeObject> houses, visitorTypes, hosts, genderTypes, documentTypes;
     Preferences preferences;
 
-    LinearLayout phoneNumberLayout, companyNameLayout, hostLayout;
-    EditText phoneNumberEdittext, companyNameEdittext;
-
-    TextView spinnerDestination, spinnerHost, hostLabel, visitorLabel;
 
     String firstName, lastName, idNumber;
 
@@ -105,28 +92,49 @@ public class RecordWalkIn extends SojaActivity {
 
     String result_slip = "";
     int visit_id = 0;
-    @BindView(R.id.txt_first_name)
-    EditTextRegular txtFirstName;
-    @BindView(R.id.txt_last_name)
-    EditTextRegular txtLastName;
-    @BindView(R.id.nameLayout)
-    LinearLayout nameLayout;
-    @BindView(R.id.txtID)
-    EditTextRegular txtID;
-    @BindView(R.id.idLayout)
-    LinearLayout idLayout;
-    @BindView(R.id.gender_type)
-    Spinner genderType;
-    @BindView(R.id.genderLayout)
-    LinearLayout genderLayout;
-    @BindView(R.id.document_type)
-    Spinner documentType;
-    @BindView(R.id.documentLayout)
-    LinearLayout documentLayout;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.phoneNumberEdittext)
+    EditTextRegular phoneNumberEdittext;
+    @BindView(R.id.btnConfirm)
+    Button btnConfirm;
+    @BindView(R.id.phone_verification_layout)
+    LinearLayout phoneVerificationLayout;
+    @BindView(R.id.typeLabel2)
+    OpenSansBold typeLabel2;
+    @BindView(R.id.edtCode)
+    EditTextRegular edtCode;
+    @BindView(R.id.lin_verification_code)
+    LinearLayout linVerificationCode;
+    @BindView(R.id.typeLabel)
+    OpenSansBold typeLabel;
+    @BindView(R.id.visitor_type)
+    Spinner visitorType;
+    @BindView(R.id.hostLabel)
+    OpenSansBold hostLabel;
+    @BindView(R.id.spinnerDestination)
+    OpenSansBold spinnerDestination;
+    @BindView(R.id.spinnerHost)
+    OpenSansBold spinnerHost;
+    @BindView(R.id.hostLayout)
+    LinearLayout hostLayout;
     @BindView(R.id.ccp)
     CountryCodePicker ccp;
     @BindView(R.id.countryLayout)
     LinearLayout countryLayout;
+    @BindView(R.id.companyNameEdittext)
+    EditTextRegular companyNameEdittext;
+    @BindView(R.id.companyNameLayout)
+    LinearLayout companyNameLayout;
+    @BindView(R.id.iprn_profile)
+    LinearLayout iprnProfile;
+    @BindView(R.id.record)
+    Button record;
+    @BindView(R.id.car_profile)
+    LinearLayout carProfile;
+    @BindView(R.id.lin_fields)
+    RelativeLayout linFields;
+
     private IntentFilter receiveFilter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -154,7 +162,6 @@ public class RecordWalkIn extends SojaActivity {
         ButterKnife.bind(this);
         if (Constants.documentReaderResults == null)
             finish();
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Record Walk In");
@@ -171,21 +178,24 @@ public class RecordWalkIn extends SojaActivity {
         record = findViewById(R.id.record);
         spinnerDestination = findViewById(R.id.spinnerDestination);
 
-        phoneNumberLayout = findViewById(R.id.phoneNumberLayout);
-        phoneNumberEdittext = findViewById(R.id.phoneNumberEdittext);
-        companyNameLayout = findViewById(R.id.companyNameLayout);
-        companyNameEdittext = findViewById(R.id.companyNameEdittext);
-        hostLayout = findViewById(R.id.hostLayout);
-        spinnerHost = findViewById(R.id.spinnerHost);
-        hostLabel = findViewById(R.id.hostLabel);
-        visitorLabel = findViewById(R.id.typeLabel);
 
-        phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled() ? View.VISIBLE : View.GONE);
+        if (preferences.isPhoneNumberEnabled() && preferences.isPhoneVerificationEnabled()) {
+            linFields.setVisibility(View.GONE);
+            phoneVerificationLayout.setVisibility(View.VISIBLE);
+            linVerificationCode.setVisibility(View.VISIBLE);
+        } else {
+            linFields.setVisibility(View.VISIBLE);
+            phoneVerificationLayout.setVisibility(View.GONE);
+            linVerificationCode.setVisibility(View.GONE);
+
+        }
+
+
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled() ? View.VISIBLE : View.GONE);
         hostLayout.setVisibility(preferences.isSelectHostsEnabled() ? View.VISIBLE : View.GONE);
 
         hostLabel.setText(entity_name.toUpperCase());
-        visitorLabel.setText(entity_owner.toUpperCase());
+//        visitorLabel.setText(entity_owner.toUpperCase());
 
         spinnerDestination.setText("Select " + entity_name);
 
@@ -210,7 +220,6 @@ public class RecordWalkIn extends SojaActivity {
             if (bundle != null) {
                 if (bundle.getBoolean("manual")) {
                     manualEdit = true;
-                    updateOptions();
                 }
             }
 
@@ -262,7 +271,7 @@ public class RecordWalkIn extends SojaActivity {
 
             hostLabel.setText(entity_name.toUpperCase());
             spinnerDestination.setText("Select " + entity_name);
-            visitorLabel.setText(entity_owner.toUpperCase());
+//            typeLabel.setText(entity_owner.toUpperCase());
         }
 
 
@@ -328,79 +337,36 @@ public class RecordWalkIn extends SojaActivity {
                 }
             }
         });
+
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendConfirmationCode();
+
+            }
+        });
     }
 
-    @Override
-    protected void onResume() {
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
-        super.onResume();
-    }
 
-    @Override
-    protected void onPause() {
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
-        super.onPause();
-    }
+    //    Send Verification Code
+    public void sendConfirmationCode() {
+        String urlParameters = null;
+        String phoneNo = phoneNumberEdittext.getText().toString();
+        if (!phoneNo.equals("")) {
+            try {
+                urlParameters =
+                        "phone=" + URLEncoder.encode(phoneNo, "UTF-8") +
+                                "&organisationID=" + URLEncoder.encode(preferences.getOrganizationId(), "UTF-8")
+                ;
 
-    private void updateOptions() {
-        if (manualEdit) {
-            nameLayout.setVisibility(View.VISIBLE);
-            idLayout.setVisibility(View.VISIBLE);
-            genderLayout.setVisibility(View.VISIBLE);
-
-            genderTypes = handler.getTypes("genders", null);
+                Log.d(TAG, "sendConfirmationCode: " + urlParameters);
 
 
-            TypeAdapter adapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, genderTypes);
-
-
-            genderType.setAdapter(adapter);
-            genderType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    TypeObject object = (TypeObject) parent.getSelectedItem();
-                    selectedGender = object;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-
-            documentTypes=new ArrayList<>();
-
-            documentTypes.add(new TypeObject("ID", "ID Number"));
-            documentTypes.add(new TypeObject("P", "Passport"));
-            documentTypes.add(new TypeObject("AC", "Alien ID"));
-
-
-
-            TypeAdapter documentAdapter = new TypeAdapter(RecordWalkIn.this, R.layout.tv, documentTypes);
-
-            documentTypes = new ArrayList<>();
-
-            documentType.setAdapter(documentAdapter);
-
-//            selectedDocument = documentTypes.get(0);
-
-            documentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    TypeObject object = (TypeObject) parent.getSelectedItem();
-                    selectedDocument = object;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
-
-
-        } else {
-            nameLayout.setVisibility(View.GONE);
-            genderLayout.setVisibility(View.GONE);
-            idLayout.setVisibility(View.GONE);
-            documentLayout.setVisibility(View.GONE);
+                new SMSCheckInAsync().execute(preferences.getBaseURL() + "send_code", urlParameters);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
         }
     }
@@ -496,50 +462,6 @@ public class RecordWalkIn extends SojaActivity {
         }
     }
 
-    public void recordCheckInManual() {
-
-        String scan_id_type = String.valueOf(documentType.getId());
-
-
-        String urlParameters = null;
-        try {
-
-            firstName = txtFirstName.getText().toString().trim();
-            lastName = txtLastName.getText().toString().trim();
-            String gender = selectedGender.getName();
-            idNumber = txtID.getText().toString();
-
-            urlParameters =
-                    "mrz=" + URLEncoder.encode("1001", "UTF-8") +
-                            "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
-                            (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
-                                    ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
-                            "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
-                            "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
-                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                            "&premiseZoneID=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                            "&visitorTypeID=" + URLEncoder.encode(selectedType.getId(), "UTF-8") +
-                            (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(selectedHost.getHostId())) : "") +
-                            "&houseID=" + URLEncoder.encode(selectedDestination.getId(), "UTF-8") +
-                            "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
-                            "&birthDate=" + URLEncoder.encode("2031-3-3", "UTF-8") +
-                            "&genderID=" + URLEncoder.encode(gender, "UTF-8") +
-                            "&firstName=" + URLEncoder.encode(firstName, "UTF-8") +
-                            "&lastName=" + URLEncoder.encode(lastName, "UTF-8") +
-                            "&idType=" + URLEncoder.encode(selectedDocument.getId(), "UTF-8") +
-                            "&idNumber=" + URLEncoder.encode(idNumber, "UTF-8") +
-                            "&nationality=" + URLEncoder.encode(ccp.getSelectedCountryEnglishName(), "UTF-8") +
-                            "&nationCode=" + URLEncoder.encode(ccp.getSelectedCountryCode(), "UTF-8");
-
-            Log.d(TAG, "recordInternet: " + preferences.getBaseURL() + "record-visit/" + urlParameters);
-
-            new DriveinAsync().execute(preferences.getBaseURL() + "record-visit", urlParameters);
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     //    Record CheckIn with Base URL changes
     public void recordInternet() {
@@ -549,7 +471,8 @@ public class RecordWalkIn extends SojaActivity {
             String scan_id_type = "ID";
             String classCode = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n");
 
-            Log.d(TAG, "recordInternet: " + Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
+//            Log.d(TAG, "recordInternet: Document Number" + Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE).replace("^", "\n"));
+//            Log.d(TAG, "recordInternet: Class Code" + classCode);
 
 
             if (classCode.equals("ID")) {
@@ -605,6 +528,8 @@ public class RecordWalkIn extends SojaActivity {
                             "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
                             (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
                                     ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
+                            (preferences.isPhoneNumberEnabled() && !edtCode.getText().toString().equals("") ?
+                                    ("&code=" + URLEncoder.encode(edtCode.getText().toString(), "UTF-8")) : "") +
                             "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +
                             "&visitType=" + URLEncoder.encode("walk-in", "UTF-8") +
                             "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
@@ -691,11 +616,24 @@ public class RecordWalkIn extends SojaActivity {
             handler.insertDriveIn(driveIn);
             new MaterialDialog.Builder(RecordWalkIn.this)
                     .title("SUCCESS")
-                    .content("Recorded successfully.")
-                    .positiveText("OK")
+                    .content("Recorded successfully. Do you want to record another visit?")
+                    .positiveText("YES")
+                    .negativeText("NO")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(RecordWalkIn.this, ScanActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putInt("TargetActivity", Common.WALK_IN);
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                            finish();
+
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
                             dialog.dismiss();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
@@ -707,52 +645,52 @@ public class RecordWalkIn extends SojaActivity {
     }
 
     private void pushNotificationToHost() {
-        Log.d(TAG, "pushNotificationToHost: Hre" + String.valueOf(selectedHost.getHostId()));
-        FirebaseDatabase.getInstance().getReference(Common.TOKENS).child("resident_" + selectedHost.getHostId()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Token token = dataSnapshot.getValue(Token.class);
-
-                Log.d(TAG, "onDataChange: Changed");
-
-                if (token != null && token.getToken() != null) {
-                    String tokenResident = token.getToken();
-
-                    Log.d(TAG, "onDataChange: Changed" + tokenResident);
-
-                    Notification data = new Notification("Visitor Arrived", "Your visitor " + firstName + " has arrived", "All");
-//                    Send to Resident app and we will deserialize it again
-                    Sender content = new Sender(data, tokenResident);
-
-                    fcmService.sendMessage(content).enqueue(new Callback<FCMResponse>() {
-                        @Override
-                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
-                            if (response.body().success == 1) {
-//                                Toast.makeText(RecordWalkIn.this, "Notification Sent to Resident", Toast.LENGTH_SHORT).show();
-
-                            } else {
-//                                Log.d(TAG, "onResponse: " + response.toString()
-//                                );
-
-//                                Toast.makeText(RecordWalkIn.this, "Failed !", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<FCMResponse> call, Throwable t) {
-                            Log.e(TAG, "onFailure: Failed", t);
-                        }
-                    });
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        Log.d(TAG, "pushNotificationToHost: Hre" + String.valueOf(selectedHost.getHostId()));
+//        FirebaseDatabase.getInstance().getReference(Common.TOKENS).child("resident_" + selectedHost.getHostId()).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Token token = dataSnapshot.getValue(Token.class);
+//
+//                Log.d(TAG, "onDataChange: Changed");
+//
+//                if (token != null && token.getToken() != null) {
+//                    String tokenResident = token.getToken();
+//
+//                    Log.d(TAG, "onDataChange: Changed" + tokenResident);
+//
+//                    Notification data = new Notification("Visitor Arrived", "Your visitor " + firstName + " has arrived", "All");
+////                    Send to Resident app and we will deserialize it again
+//                    Sender content = new Sender(data, tokenResident);
+//
+//                    fcmService.sendMessage(content).enqueue(new Callback<FCMResponse>() {
+//                        @Override
+//                        public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+//                            if (response.body().success == 1) {
+////                                Toast.makeText(RecordWalkIn.this, "Notification Sent to Resident", Toast.LENGTH_SHORT).show();
+//
+//                            } else {
+////                                Log.d(TAG, "onResponse: " + response.toString()
+////                                );
+//
+////                                Toast.makeText(RecordWalkIn.this, "Failed !", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<FCMResponse> call, Throwable t) {
+//                            Log.e(TAG, "onFailure: Failed", t);
+//                        }
+//                    });
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     private class CheckLocationAsync extends AsyncTask<String, Void, String> {
@@ -925,11 +863,24 @@ public class RecordWalkIn extends SojaActivity {
         } else {
             new MaterialDialog.Builder(RecordWalkIn.this)
                     .title("SUCCESS")
-                    .content("Recorded successfully.")
-                    .positiveText("OK")
+                    .content("Recorded successfully. Do you want to record another visit?")
+                    .positiveText("YES")
+                    .negativeText("NO")
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onPositive(MaterialDialog dialog) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(RecordWalkIn.this, ScanActivity.class);
+                            Bundle extras = new Bundle();
+                            extras.putInt("TargetActivity", Common.WALK_IN);
+                            intent.putExtras(extras);
+                            startActivity(intent);
+                            finish();
+
+                        }
+
+                        @Override
+                        public void onNegative(MaterialDialog dialog) {
                             dialog.dismiss();
                             startActivity(new Intent(getApplicationContext(), Dashboard.class));
                             finish();
@@ -1178,18 +1129,114 @@ public class RecordWalkIn extends SojaActivity {
         }
     }
 
-    private boolean validateDetails() {
-        if (selectedType == null) {
-            Toast.makeText(this, "Please fill Visitor type", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (selectedDestination == null) {
-            Toast.makeText(this, "Please fill Destination type", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (manualEdit && TextUtils.isEmpty(txtFirstName.getText().toString())) {
-            Toast.makeText(this, "Please fill First Name", Toast.LENGTH_SHORT).show();
-            return false;
+
+    private class SMSCheckInAsync extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            btnConfirm.setEnabled(false);
+            btnConfirm.setText("Please wait...");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                btnConfirm.setBackgroundColor(getColor(R.color.colorPrimaryDark));
+            } else {
+                btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+
         }
-        return true;
+
+        @Override
+        protected String doInBackground(String... params) {
+            return NetworkHandler.executePost(params[0], params[1]);
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if (result != null) {
+                if (result.contains("result_code")) {
+                    try {
+                        Object json = new JSONTokener(result).nextValue();
+                        if (json instanceof JSONObject) {
+                            confirmResultHandler(result);
+                            Log.d(TAG, "onPostExecute: " + result);
+                        } else {
+                            Toast.makeText(RecordWalkIn.this, "Ooops! Please try again!", Toast.LENGTH_SHORT).show();
+//
+//                            linFields.setVisibility(View.VISIBLE);
+//                            phoneVerificationLayout.setVisibility(View.GONE);
+//                            linVerificationCode.setVisibility(View.GONE);
+
+                            linFields.setVisibility(View.GONE);
+                            phoneVerificationLayout.setVisibility(View.VISIBLE);
+                            linVerificationCode.setVisibility(View.VISIBLE);
+
+
+                            btnConfirm.setEnabled(true);
+                            btnConfirm.setText("SEND VERIFICATION CODE");
+
+//                            Toast.makeText(SmsCheckInActivity.this, resultText, Toast.LENGTH_SHORT).show();
+                            //TODO remove this.Temporary workaround
+//                            recordOffline();
+//                            parseResult();
+
+                            Log.d(TAG, "onPostExecute: " + result);
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+//                    recordOffline();
+                }
+
+            }
+        }
+
+    }
+
+    //    Confirm Code
+    private void confirmResultHandler(String result) throws JSONException {
+        //Log.d("WALKIN", result);
+        JSONObject obj = new JSONObject(result);
+        int resultCode = obj.getInt("result_code");
+        String resultText = obj.getString("result_text");
+        String resultContent = obj.getString("result_content");
+        if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
+            Toast.makeText(this, "Enter Verification Code", Toast.LENGTH_SHORT).show();
+
+//            Set Visibility of Selected Item
+
+            linFields.setVisibility(View.VISIBLE);
+            phoneVerificationLayout.setVisibility(View.GONE);
+            linVerificationCode.setVisibility(View.VISIBLE);
+
+            edtCode.requestFocus();
+//            Restore Button State
+            btnConfirm.setEnabled(true);
+            btnConfirm.setText("SEND CONFIRMATION CODE");
+            btnConfirm.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+            Log.d(TAG, "confirmResultHandler: " + result);
+        } else {
+            Toast.makeText(RecordWalkIn.this, "Error" + resultText, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver, receiveFilter);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+        super.onPause();
     }
 
 }
