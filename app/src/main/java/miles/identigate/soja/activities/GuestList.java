@@ -142,8 +142,8 @@ public class GuestList extends SojaActivity implements OnItemClick {
         PAct = new PublicAction(GuestList.this);
 
 
-        EnableBluetooth();
-        InitSetting();
+//        EnableBluetooth();
+//        InitSetting();
 
 
     }
@@ -290,7 +290,6 @@ public class GuestList extends SojaActivity implements OnItemClick {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String strIsConnected;
         Log.d(TAG, "onActivityResult: " + String.valueOf(resultCode));
-
         if (data == null || data.getExtras() == null)
             return;
         switch (resultCode) {
@@ -304,29 +303,11 @@ public class GuestList extends SojaActivity implements OnItemClick {
                     doPrint();
                 } else {
 
-
-                    strBTAddress = data.getExtras().getString("BTAddress");
-                    if (strBTAddress == null || !strBTAddress.contains(":") || strBTAddress.length() != 17)
-                        return;
-
-                    HPRTPrinter = new HPRTPrinterHelper(this, "MPT-II");
-
-                    try {
-                        if (HPRTPrinterHelper.PortOpen("Bluetooth," + strBTAddress) != 0) {
-                            Log.d(TAG, "onActivityResult: Connect Error");
-                        } else {
-                            Log.d(TAG, "onActivityResult: Connect Success");
-
-
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                    String PrinterName = "MPT-II";
+                    HPRTPrinter = new HPRTPrinterHelper(GuestList.this, PrinterName);
                     CapturePrinterFunction();
                     GetPrinterProperty();
                     PrintSlip();
-
 
                 }
                 break;
@@ -382,11 +363,11 @@ public class GuestList extends SojaActivity implements OnItemClick {
         setupBT();
         if (!dialog.isShowing())
             dialog.show();
-//        String PrinterName = "MPT-II";
-//        HPRTPrinter = new HPRTPrinterHelper(GuestList.this, PrinterName);
-//        CapturePrinterFunction();
-//        GetPrinterProperty();
-//        PrintSlip();
+        String PrinterName = "MPT-II";
+        HPRTPrinter = new HPRTPrinterHelper(GuestList.this, PrinterName);
+        CapturePrinterFunction();
+        GetPrinterProperty();
+        PrintSlip();
     }
 
     private void setupBT() {
@@ -409,7 +390,7 @@ public class GuestList extends SojaActivity implements OnItemClick {
         try {
             byte[] data = new byte[]{0x1b, 0x40};
             HPRTPrinterHelper.WriteData(data);
-//            PAct.LanguageEncode();
+            PAct.LanguageEncode();
             PAct.BeforePrintAction();
 //            HPRTPrinterHelper.PrintText("\t " + preferences.getPremiseName() + "\n");
 

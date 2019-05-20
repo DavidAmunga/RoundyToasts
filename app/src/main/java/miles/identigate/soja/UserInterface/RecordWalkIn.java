@@ -172,6 +172,7 @@ public class RecordWalkIn extends SojaActivity {
 
         handler = new DatabaseHandler(this);
 
+
         fcmService = Common.getFCMService();
 
         visitor_type = findViewById(R.id.visitor_type);

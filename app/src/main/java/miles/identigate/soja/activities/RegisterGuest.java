@@ -902,44 +902,14 @@ public class RegisterGuest extends AppCompatActivity {
                     if (dialog.isShowing())
                         dialog.dismiss();
                     doPrint();
-//                    Toast.makeText(this, "Bluetooth Error", Toast.LENGTH_SHORT).show();
-//                    doPrint();
-//                    new MaterialDialog.Builder(GuestList.this)
-//                            .title("Bluetooth Disabled")
-//                            .content("Bluetooth must be enabled to print the slip.")
-//                            .positiveText("OK")
-//                            .show();
+
                 } else {
-                    strBTAddress = data.getExtras().getString("BTAddress");
-                    if (strBTAddress == null || !strBTAddress.contains(":") || strBTAddress.length() != 17)
-                        return;
 
-                    HPRTPrinter = new HPRTPrinterHelper(this, "MPT-II");
-
-                    try {
-                        if (HPRTPrinterHelper.PortOpen("Bluetooth," + strBTAddress) != 0) {
-//                            Toast.makeText(this, "Connect Error", Toast.LENGTH_SHORT).show();
-                        } else {
-//                            Toast.makeText(this, "Connect Success", Toast.LENGTH_SHORT).show();
-
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                    String PrinterName = "MPT-II";
+                    HPRTPrinter = new HPRTPrinterHelper(RegisterGuest.this, PrinterName);
                     CapturePrinterFunction();
                     GetPrinterProperty();
-                    PrintSampleReceipt();
-
-                    return;
-
-//                    if (!dialog.isShowing())
-//                        dialog.show();
-//                    String PrinterName = "MPT-II";
-//                    HPRTPrinter = new HPRTPrinterHelper(RegisterGuest.this, PrinterName);
-//                    CapturePrinterFunction();
-//                    GetPrinterProperty();
-//                    PrintSlip();
+                    PrintSlip();
                 }
                 break;
             case REQUEST_ENABLE_LOCATION:
@@ -956,8 +926,11 @@ public class RegisterGuest extends AppCompatActivity {
         setupBT();
         if (!dialog.isShowing())
             dialog.show();
-//
-//        PrintSlip();
+        String PrinterName = "MPT-II";
+        HPRTPrinter = new HPRTPrinterHelper(RegisterGuest.this, PrinterName);
+        CapturePrinterFunction();
+        GetPrinterProperty();
+        PrintSlip();
     }
 
     private void setupBT() {
@@ -983,41 +956,29 @@ public class RegisterGuest extends AppCompatActivity {
 //            HPRTPrinterHelper.WriteData(data);
             PAct.LanguageEncode();
             PAct.BeforePrintAction();
-            String msg = "\t GUEST SLIP\n";
-            msg += "\t " + preferences.getPremiseName() + "\n";
-            msg += "\n";
-            msg += "------------------------------";
-            msg += "\n";
-            msg += firstName + "\n";
-            msg += companyName + "\n";
-            msg += "\n";
+            HPRTPrinterHelper.PrintText(
+                    Common.centerString(18, Common.formatString(firstName))
+                    , 32, 2, 16);
+            String msg = (
 
-            msg += "SCAN QR TO CHECKOUT GUEST";
+                    companyName != null ? companyName + "\n" : ""
 
-            msg += "\n\n";
-
-//            HPRTPrinterHelper.PrintText(msg);
+            );
 
 
+            HPRTPrinterHelper.PrintText(msg, 32, 0, 16);
 //            if(!idNumber.equals("") && idNumber!=null){
 //                Log.d(TAG, "PrintSlip: ID No");
 
 
-//            HPRTPrinterHelper.PrintQRCode(qrCode, 7, (3 + 0x30), 1);
+            HPRTPrinterHelper.PrintQRCode(qrCode, 7, (3 + 0x30), 1);
 
 
+//            HPRTPrinterHelper.PrintText("\n" + Common.centerString(16, "Powered By soja.co.ke"), 0, 1, 0);
             HPRTPrinterHelper.PrintText("\n" + ">>>> Powered By soja.co.ke <<<<", 0, 0, 0);
 
 
-//            }
-//            if(!phoneNo.equals("") && phoneNo!=null)
-//            {
-//                Log.d(TAG, "PrintSlip: SMS");
-//                HPRTPrinterHelper.PrintQRCode(phoneNo.substring(2),7,(3+0x30),1);
-//            }
-            HPRTPrinterHelper.PrintText("\n\n\n", 0, 1, 0);
-            HPRTPrinterHelper.Initialize();
-
+            HPRTPrinterHelper.PrintText("\n", 0, 1, 0);
 
             PAct.AfterPrintAction();
             Log.d(TAG, "PrintSlip: Done");
