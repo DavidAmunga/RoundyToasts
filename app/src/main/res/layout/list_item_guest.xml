@@ -16,7 +16,7 @@
         android:padding="10dp"
         android:weightSum="1">
 
-        <miles.identigate.soja.font.OpenSansRegular
+        <miles.identigate.soja.font.TextViewRegular
             android:id="@+id/txtGuest"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_weight=".4"
             android:orientation="vertical">
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:id="@+id/txtCompany"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

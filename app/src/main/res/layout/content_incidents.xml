@@ -17,7 +17,7 @@
         android:padding="10dp"
         android:id="@+id/brand"
         android:orientation="vertical">
-        <miles.identigate.soja.font.OpenSansBold
+        <miles.identigate.soja.font.TextViewBold
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"

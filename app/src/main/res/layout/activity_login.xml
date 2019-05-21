@@ -54,7 +54,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -79,7 +79,7 @@
                 android:textCursorDrawable="@null" />
 
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"

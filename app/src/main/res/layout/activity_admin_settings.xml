@@ -31,7 +31,7 @@
                 android:orientation="vertical"
                 android:padding="15dp">
 
-                <miles.identigate.soja.font.OpenSansRegular
+                <miles.identigate.soja.font.TextViewRegular
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Select Server"
@@ -39,7 +39,7 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <miles.identigate.soja.font.OpenSansBold
+                <miles.identigate.soja.font.TextViewBold
                     android:id="@+id/serverName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -333,7 +333,7 @@
                 android:textSize="20sp" />
 
 
-            <miles.identigate.soja.font.OpenSansRegular
+            <miles.identigate.soja.font.TextViewRegular
                 android:id="@+id/premiseName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -343,7 +343,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:id="@+id/sentryName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -355,7 +355,7 @@
                 android:textSize="16sp" />
 
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:id="@+id/version_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

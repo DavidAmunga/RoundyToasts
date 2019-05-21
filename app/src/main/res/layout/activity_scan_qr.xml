@@ -11,10 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
-        <miles.identigate.soja.font.OpenSansBold
+        <miles.identigate.soja.font.TextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -36,11 +35,11 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="10dp"
                 android:background="?android:selectableItemBackground"
-                android:src="@drawable/ic_residents_car_scan"
+                android:src="@drawable/drive_in_scan_icon_new"
                 android:tint="?attr/iconColor" />
 
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/scan_icon"
@@ -67,11 +66,11 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="10dp"
                 android:background="?android:selectableItemBackground"
-                android:src="@drawable/ic_residents_id_scan_new"
+                android:src="@drawable/walk_in_scan_icon_new"
                 android:tint="?attr/iconColor" />
 
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/scan_icon_2"

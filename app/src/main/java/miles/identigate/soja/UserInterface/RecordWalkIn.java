@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,11 +48,10 @@ import miles.identigate.soja.Dashboard;
 import miles.identigate.soja.R;
 import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.SlipActivity;
-import miles.identigate.soja.SmsCheckInActivity;
 import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.EditTextRegular;
-import miles.identigate.soja.font.OpenSansBold;
+import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -101,21 +99,21 @@ public class RecordWalkIn extends SojaActivity {
     @BindView(R.id.phone_verification_layout)
     LinearLayout phoneVerificationLayout;
     @BindView(R.id.typeLabel2)
-    OpenSansBold typeLabel2;
+    TextViewBold typeLabel2;
     @BindView(R.id.edtCode)
     EditTextRegular edtCode;
     @BindView(R.id.lin_verification_code)
     LinearLayout linVerificationCode;
     @BindView(R.id.typeLabel)
-    OpenSansBold typeLabel;
+    TextViewBold typeLabel;
     @BindView(R.id.visitor_type)
     Spinner visitorType;
     @BindView(R.id.hostLabel)
-    OpenSansBold hostLabel;
+    TextViewBold hostLabel;
     @BindView(R.id.spinnerDestination)
-    OpenSansBold spinnerDestination;
+    TextViewBold spinnerDestination;
     @BindView(R.id.spinnerHost)
-    OpenSansBold spinnerHost;
+    TextViewBold spinnerHost;
     @BindView(R.id.hostLayout)
     LinearLayout hostLayout;
     @BindView(R.id.ccp)

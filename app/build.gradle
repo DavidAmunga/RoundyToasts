@@ -41,6 +41,8 @@ android {
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
         }
+        flavorDimensions "default"
+
 
     }
     packagingOptions {
@@ -51,7 +53,6 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
     }
-
 
 
     buildTypes {
@@ -66,16 +67,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            versionNameSuffix "-debug"
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        events {
+            versionNameSuffix "-events"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", '"http://events.soja.co.ke"'
+
+        }
+        casuals {
+            versionNameSuffix "-casuals"
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", '"http://casuals.soja.co.ke"'
+
+        }
+
 
     }
     compileOptions {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+
 
     /*sourceSets.main {
         jniLibs.srcDir 'src/main/libs'
@@ -110,6 +126,7 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.hudomju:swipe-to-dismiss-undo:1.0'
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
@@ -150,9 +167,6 @@ dependencies {
 
     implementation 'io.paperdb:paperdb:2.6'
     implementation 'com.hbb20:ccp:2.2.7'
-
-
-
 
 
     implementation 'com.android.support:support-v4:28.0.0'

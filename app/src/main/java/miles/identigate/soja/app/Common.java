@@ -26,8 +26,10 @@ import java.util.Map;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.models.Token;
 import miles.identigate.soja.service.storage.model.Guest;
+import miles.identigate.soja.services.DataService;
 import miles.identigate.soja.services.FCMClient;
 import miles.identigate.soja.services.IFCMService;
+import miles.identigate.soja.services.RetrofitClient;
 
 /**
  * Created by myles on 4/24/16.
@@ -36,6 +38,8 @@ public class Common extends Application {
     public static final String PREF_CURRENT_DRIVER_PASS = "driverPass";
     public static final String PREF_CURRENT_VISIT_ID = "current_visit_id";
     public static final String PREF_CURRENT_PASSENGERS_LIST = "current_passengers";
+    public static final int WALK_IN_INVITEE = 8;
+    public static final int DRIVE_IN_INVITEE = 9;
     Preferences preferences;
 
     private static final String TAG = "Common";
@@ -88,6 +92,16 @@ public class Common extends Application {
 
     public static IFCMService getFCMService() {
         return FCMClient.getClient(fcmURL).create(IFCMService.class);
+    }
+
+    public static DataService getDataService(Context context) {
+
+        return RetrofitClient.getDataService(context);
+    }
+
+    public static DataService getDataObjService(Context context) {
+
+        return RetrofitClient.getDataObjService(context);
     }
 
 //    public static void updateFirebaseToken(final Preferences preferences) {

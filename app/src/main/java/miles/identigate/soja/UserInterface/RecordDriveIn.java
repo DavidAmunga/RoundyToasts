@@ -49,14 +49,13 @@ import miles.identigate.soja.SlipActivity;
 import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.EditTextRegular;
-import miles.identigate.soja.font.OpenSansBold;
+import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
-import miles.identigate.soja.models.DriveIn;
 import miles.identigate.soja.models.DriveInPassenger;
 import miles.identigate.soja.models.TypeObject;
 
@@ -105,7 +104,7 @@ public class RecordDriveIn extends SojaActivity {
     @BindView(R.id.idLayout)
     LinearLayout idLayout;
     @BindView(R.id.typeLabel)
-    OpenSansBold typeLabel;
+    TextViewBold typeLabel;
     @BindView(R.id.gender_type)
     Spinner genderType;
     @BindView(R.id.genderLayout)

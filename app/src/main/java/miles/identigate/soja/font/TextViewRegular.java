@@ -4,16 +4,16 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
-public class OpenSansRegular extends android.support.v7.widget.AppCompatTextView {
-    public OpenSansRegular(Context context) {
+public class TextViewRegular extends android.support.v7.widget.AppCompatTextView {
+    public TextViewRegular(Context context) {
         super(context);
         setFont();
     }
-    public OpenSansRegular(Context context, AttributeSet attrs) {
+    public TextViewRegular(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFont();
     }
-    public OpenSansRegular(Context context, AttributeSet attrs, int defStyle) {
+    public TextViewRegular(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setFont();
     }

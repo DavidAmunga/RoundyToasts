@@ -192,6 +192,7 @@ public class Constants {
     }
 
 
+
     public static void setDashboardCheckOut(Preferences preferences, ArrayList<String> titles, ArrayList<Integer> drawables, ArrayList<String> descriptions) {
         if (preferences.getBaseURL().contains("casuals")) {
             titles.add("Walk Out");

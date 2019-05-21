@@ -103,6 +103,8 @@
         <item>"Customer's payment      $1400.00\n"</item>
         <item>"Change                     $1.40\n"</item>
     </string-array>
+    <string name="title_activity_invitees_list">InviteesList</string>
+    <string name="title_activity_invitee_results">InviteeResults</string>
 
 
 </resources>

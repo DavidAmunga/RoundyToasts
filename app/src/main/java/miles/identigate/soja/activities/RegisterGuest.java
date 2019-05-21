@@ -13,7 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -51,7 +50,7 @@ import miles.identigate.soja.R;
 import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.EditTextRegular;
-import miles.identigate.soja.font.OpenSansBold;
+import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.Preferences;
@@ -87,9 +86,9 @@ public class RegisterGuest extends AppCompatActivity {
     @BindView(R.id.txtCompany)
     EditTextRegular txtCompany;
     @BindView(R.id.hostLabel)
-    OpenSansBold hostLabel;
+    TextViewBold hostLabel;
     @BindView(R.id.spinnerEvent)
-    OpenSansBold spinnerEvent;
+    TextViewBold spinnerEvent;
 
     ArrayList<TypeObject> events, visitorTypes, genderTypes, documentTypes;
     TypeObject selectedEvent, selectedType, selectedGender, selectedDocument;
@@ -109,7 +108,7 @@ public class RegisterGuest extends AppCompatActivity {
     LinearLayout documentLayout;
     private String PrinterName = "";
     @BindView(R.id.typeLabel)
-    OpenSansBold typeLabel;
+    TextViewBold typeLabel;
     @BindView(R.id.visitor_type)
     Spinner visitorType;
 

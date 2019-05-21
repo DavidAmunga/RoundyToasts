@@ -20,7 +20,7 @@
         android:id="@+id/hint_layout"
         android:orientation="horizontal">
 
-        <miles.identigate.soja.font.OpenSansBold
+        <miles.identigate.soja.font.TextViewBold
             android:id="@+id/place_finger"
             android:layout_width="match_parent"
             android:textAlignment="center"
@@ -54,7 +54,7 @@
             app:srcCompat="@drawable/ic_fingerprint" />
 
 
-        <miles.identigate.soja.font.OpenSansBold
+        <miles.identigate.soja.font.TextViewBold
             android:id="@+id/record_type_in"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
             android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_fingerprint" />
 
-        <miles.identigate.soja.font.OpenSansBold
+        <miles.identigate.soja.font.TextViewBold
             android:id="@+id/record_type_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -106,13 +106,13 @@
         android:padding="7dp"
         android:visibility="gone">
 
-        <miles.identigate.soja.font.OpenSansRegular
+        <miles.identigate.soja.font.TextViewRegular
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Soja" />
 
-        <miles.identigate.soja.font.OpenSansRegular
+        <miles.identigate.soja.font.TextViewRegular
             android:id="@+id/idNUmber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

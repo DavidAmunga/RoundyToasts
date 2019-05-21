@@ -43,6 +43,7 @@ import io.paperdb.Paper;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.fragments.CheckIn;
 import miles.identigate.soja.fragments.CheckOut;
+import miles.identigate.soja.fragments.Invitees;
 import miles.identigate.soja.fragments.Logs;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -143,6 +144,10 @@ public class Dashboard extends SojaActivity {
                         customText.setText(adapter.getPageTitle(position));
                         break;
                     case 1:
+                        customText.setTypeface(font);
+                        customText.setText(adapter.getPageTitle(position));
+                        break;
+                    case 2:
                         customText.setTypeface(font);
                         customText.setText(adapter.getPageTitle(position));
                         break;
@@ -358,6 +363,9 @@ public class Dashboard extends SojaActivity {
                 case 1:
                     CheckOut checkOut = new CheckOut();
                     return checkOut;
+                case 2:
+                    Invitees invitees = new Invitees();
+                    return invitees;
 //                case 2:
 //                    Logs logs = new Logs();
 //                    return logs;
@@ -370,7 +378,7 @@ public class Dashboard extends SojaActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
@@ -380,6 +388,8 @@ public class Dashboard extends SojaActivity {
                     return "CHECK IN";
                 case 1:
                     return "CHECK OUT";
+                case 2:
+                    return "INVITEES";
 //                case 2:
 //                    return "LOGS";
             }

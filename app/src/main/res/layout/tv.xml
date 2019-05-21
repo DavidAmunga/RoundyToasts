@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/backgroundColor">
 
-    <miles.identigate.soja.font.OpenSansRegular
+    <miles.identigate.soja.font.TextViewRegular
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,5 +13,5 @@
         android:padding="10dp"
         android:text="Service provider."
         android:textColor="?attr/textColor"
-        android:textSize="20sp"></miles.identigate.soja.font.OpenSansRegular>
+        android:textSize="20sp"></miles.identigate.soja.font.TextViewRegular>
 </LinearLayout>

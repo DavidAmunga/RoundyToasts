@@ -25,7 +25,7 @@
             android:layout_below="@+id/brand"
             android:orientation="vertical">
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:id="@+id/hostLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -140,6 +140,15 @@ public class ResultsActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
+                    case Common.WALK_IN_INVITEE:
+                        startActivity(new Intent(getApplicationContext(), RecordDriveIn.class));
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        finish();
+                    case Common.DRIVE_IN_INVITEE:
+                        startActivity(new Intent(getApplicationContext(), RecordDriveIn.class));
+                        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                        finish();
+                        break;
                 }
             }
         });

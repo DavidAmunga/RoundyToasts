@@ -24,7 +24,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <miles.identigate.soja.font.OpenSansBold
+            <miles.identigate.soja.font.TextViewBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5.0dip"
@@ -74,7 +74,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <miles.identigate.soja.font.OpenSansBold
+                <miles.identigate.soja.font.TextViewBold
                     android:id="@+id/typeLabel2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
                 android:layout_below="@id/lin_verification_code"
                 android:orientation="vertical">
 
-                <miles.identigate.soja.font.OpenSansBold
+                <miles.identigate.soja.font.TextViewBold
                     android:id="@+id/typeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <miles.identigate.soja.font.OpenSansBold
+                    <miles.identigate.soja.font.TextViewBold
                         android:id="@+id/hostLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                         android:textColor="?attr/textColor"
                         android:textSize="16sp" />
 
-                    <miles.identigate.soja.font.OpenSansBold
+                    <miles.identigate.soja.font.TextViewBold
                         android:id="@+id/spinnerDestination"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
                     android:orientation="vertical"
                     android:visibility="visible">
 
-                    <miles.identigate.soja.font.OpenSansBold
+                    <miles.identigate.soja.font.TextViewBold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5.0dip"
@@ -177,7 +177,7 @@
                         android:textColor="?attr/textColor"
                         android:textSize="16sp" />
 
-                    <miles.identigate.soja.font.OpenSansBold
+                    <miles.identigate.soja.font.TextViewBold
                         android:id="@+id/spinnerHost"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -224,7 +224,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <miles.identigate.soja.font.OpenSansBold
+                    <miles.identigate.soja.font.TextViewBold
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5.0dip"

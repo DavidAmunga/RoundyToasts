@@ -17,7 +17,7 @@ import butterknife.Unbinder;
 import io.paperdb.Paper;
 import miles.identigate.soja.R;
 import miles.identigate.soja.app.Common;
-import miles.identigate.soja.font.OpenSansRegular;
+import miles.identigate.soja.font.TextViewRegular;
 
 /**
  * Tpe of entry;manual or scanning
@@ -31,7 +31,7 @@ public class EntryTypeFragment extends Fragment {
     Button manualBtn;
     Unbinder unbinder;
     @BindView(R.id.visit_number)
-    OpenSansRegular visitNumber;
+    TextViewRegular visitNumber;
 
     // TODO: Rename and change types of parameters
     private int TargetActivity;

@@ -13,7 +13,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_slip">
 
-    <miles.identigate.soja.font.OpenSansBold
+    <miles.identigate.soja.font.TextViewBold
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         android:src="@drawable/print"
         android:tint="?attr/iconColor" />
 
-    <miles.identigate.soja.font.OpenSansBold
+    <miles.identigate.soja.font.TextViewBold
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Print Slip?"

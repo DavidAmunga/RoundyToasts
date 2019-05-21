@@ -26,8 +26,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import miles.identigate.soja.UserInterface.Login;
-import miles.identigate.soja.font.OpenSansBold;
-import miles.identigate.soja.font.OpenSansRegular;
+import miles.identigate.soja.font.TextViewBold;
+import miles.identigate.soja.font.TextViewRegular;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
@@ -66,9 +66,9 @@ public class AdminSettingsActivity extends SojaActivity {
 
     boolean customServer = false;
     @BindView(R.id.sentryName)
-    OpenSansBold sentryName;
+    TextViewBold sentryName;
     @BindView(R.id.premiseName)
-    OpenSansRegular premiseName;
+    TextViewRegular premiseName;
     @BindView(R.id.phone_verify)
     Switch phoneVerify;
     @BindView(R.id.lin_phone_verify)

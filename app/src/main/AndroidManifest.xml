@@ -45,7 +45,21 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
-        <activity android:name=".activities.CheckInGuest"></activity>
+        <activity
+            android:name=".activities.InviteeResults"
+            android:label="@string/title_activity_invitee_results"
+            android:parentActivityName=".activities.InviteesList"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="miles.identigate.soja.activities.InviteesList" />
+        </activity>
+        <activity
+            android:name=".activities.InviteesList"
+            android:label="@string/title_activity_invitees_list"
+            android:parentActivityName=".Dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.CheckInGuest" />
         <activity
             android:name=".activities.GuestList"
             android:label="@string/title_activity_guest_list"
@@ -58,9 +72,9 @@
         <activity
             android:name=".activities.RegisterGuest"
             android:label="@string/title_activity_register_guest"
-            android:windowSoftInputMode="adjustPan"
             android:parentActivityName=".Dashboard"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -242,7 +256,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="miles.identigate.soja.ScanQRActivity" />
         </activity>
-
         <activity
             android:name=".Printer.DeviceListActivity"
             android:theme="@android:style/Theme.Dialog" />

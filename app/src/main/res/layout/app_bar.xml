@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/divider">
 
-    <miles.identigate.soja.font.OpenSansBold
+    <miles.identigate.soja.font.TextViewBold
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
