@@ -229,7 +229,7 @@ public class RecordExit extends SojaActivity {
                                             Intent intent = new Intent(getApplicationContext(), Dashboard.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                                            startActivity(intent);
                                             finish();
                                         }
                                     })

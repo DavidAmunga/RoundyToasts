@@ -228,6 +228,18 @@ public class Preferences {
         return settings.getBoolean("darkModeOn", false);
     }
 
+
+    public void setRecordInvitees(boolean recordInvitees) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("recordInvitees", recordInvitees);
+        editor.commit();
+    }
+
+    public boolean isRecordInvitees() {
+        return settings.getBoolean("recordInvitees", false);
+    }
+
+
     public void setOrganizationId(String organizationID) {
 
         SharedPreferences.Editor editor = settings.edit();

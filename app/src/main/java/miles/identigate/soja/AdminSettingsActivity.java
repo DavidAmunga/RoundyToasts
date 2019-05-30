@@ -73,6 +73,10 @@ public class AdminSettingsActivity extends SojaActivity {
     Switch phoneVerify;
     @BindView(R.id.lin_phone_verify)
     LinearLayout linPhoneVerify;
+    @BindView(R.id.record_invitees)
+    Switch recordInvitees;
+    @BindView(R.id.lin_record_invitees)
+    LinearLayout linRecordInvitees;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +124,7 @@ public class AdminSettingsActivity extends SojaActivity {
         companySwitch.setChecked(preferences.isCompanyNameEnabled());
         host.setChecked(preferences.isSelectHostsEnabled());
         fingerprints.setChecked(preferences.isFingerprintsEnabled());
+        recordInvitees.setChecked(preferences.isRecordInvitees());
         sms.setChecked(preferences.isSMSCheckInEnabled());
         darkMode.setChecked(preferences.isDarkModeOn());
         premiseName.setText(preferences.getPremiseName());
@@ -306,6 +311,7 @@ public class AdminSettingsActivity extends SojaActivity {
         preferences.setSelectHostsEnabled(host.isChecked());
         preferences.setFingerprintsEnabled(fingerprints.isChecked());
         preferences.setSMSCheckInEnabled(sms.isChecked());
+        preferences.setRecordInvitees(recordInvitees.isChecked());
 //                preferences.setScanPicture(scan_photo.isChecked());
         preferences.setDarkModeOn(preferences.isDarkModeOn());
 

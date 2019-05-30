@@ -130,6 +130,7 @@ public class Dashboard extends SojaActivity {
 
 
         SmartTabLayout tabLayout = findViewById(R.id.tabs);
+
 //        Custom Font Tab
         tabLayout.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -366,9 +367,6 @@ public class Dashboard extends SojaActivity {
                 case 2:
                     Invitees invitees = new Invitees();
                     return invitees;
-//                case 2:
-//                    Logs logs = new Logs();
-//                    return logs;
 
                 default:
                     return null;
@@ -378,7 +376,12 @@ public class Dashboard extends SojaActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            if (preferences.isRecordInvitees()) {
+                return 3;
+
+            } else {
+                return 2;
+            }
         }
 
         @Override
