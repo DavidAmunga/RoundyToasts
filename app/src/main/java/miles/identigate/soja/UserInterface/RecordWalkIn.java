@@ -177,8 +177,8 @@ public class RecordWalkIn extends SojaActivity {
         record = findViewById(R.id.record);
         spinnerDestination = findViewById(R.id.spinnerDestination);
 
-        Log.d(TAG, "onCreate: Phone Switch "+preferences.isPhoneNumberEnabled());
-        Log.d(TAG, "onCreate: Phone Verification"+preferences.isPhoneVerificationEnabled());
+        Log.d(TAG, "onCreate: Phone Switch " + preferences.isPhoneNumberEnabled());
+        Log.d(TAG, "onCreate: Phone Verification" + preferences.isPhoneVerificationEnabled());
 
         if (preferences.isPhoneNumberEnabled() && preferences.isPhoneVerificationEnabled()) {
             linFields.setVisibility(View.GONE);
@@ -508,7 +508,6 @@ public class RecordWalkIn extends SojaActivity {
                 idN = Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA).replace("^", "\n");
                 idNumber = idN.substring(2, idN.length() - 1);
                 Log.d(TAG, "recordInternet: ID" + idNumber);
-
 
             }
 

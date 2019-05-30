@@ -1,213 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <include layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:padding="10dp"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/app_bar"
-            android:gravity="center_horizontal"
-            android:padding="20dp"
-            android:id="@+id/brand"
-            android:orientation="vertical">
-            <miles.identigate.soja.font.TextViewBold
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:id="@+id/title"
-                android:gravity="center_horizontal"
-                android:layout_alignParentBottom="true"
-                android:text="RECORD RESIDENT"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_below="@+id/brand"
-            android:layout_height="wrap_content"
             android:id="@+id/iprn_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/brand"
             android:orientation="vertical">
+
             <miles.identigate.soja.font.TextViewBold
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:layout_marginBottom="5.0dip"
-                android:text="VEHICLE NUMBER"/>
+                android:text="VEHICLE NUMBER"
+                android:textSize="16sp" />
 
             <EditText
-                android:layout_gravity="center_horizontal"
                 android:id="@+id/car_number"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:hint="Car number"
-                android:textColor="@android:color/black"
-                android:textCursorDrawable="@null"
+                android:layout_gravity="center_horizontal"
                 android:background="@drawable/border"
                 android:ems="10"
+                android:hint="Car number"
+                android:inputType="textCapCharacters"
                 android:padding="10dp"
                 android:singleLine="true"
-                android:inputType="textCapCharacters" />
+                android:textColor="@android:color/black"
+                android:textCursorDrawable="@null" />
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/car_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/iprn_profile"
-            android:id="@+id/car_profile"
-            android:visibility="visible"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/brand"
-                android:paddingBottom="10dp"
-                android:visibility="gone"
                 android:layout_gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+                android:visibility="gone">
+
                 <miles.identigate.soja.font.TextViewBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_marginBottom="10.0dip"
-                    android:text="VEHICLE  MODEL"/>
+                    android:text="VEHICLE  MODEL"
+                    android:textSize="16sp" />
+
                 <Spinner
-                    android:layout_width="match_parent"
                     android:id="@+id/car_model"
-                    android:background="@drawable/border"
-                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_height="50dp"/>
+                    android:background="@drawable/border"
+                    android:padding="10dp" />
+
                 <EditText
-                    android:layout_gravity="center_horizontal"
                     android:id="@+id/car_model_edit"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Model"
-                    android:visibility="gone"
-                    android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null"
+                    android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
                     android:ems="10"
+                    android:hint="Model"
+                    android:inputType="text"
                     android:padding="10dp"
                     android:singleLine="true"
-                    android:inputType="text" />
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null"
+                    android:visibility="gone" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
+
                 <miles.identigate.soja.font.TextViewBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_marginBottom="5.0dip"
-                    android:text="VEHICLE TYPE"/>
+                    android:text="VEHICLE TYPE"
+                    android:textSize="16sp" />
+
                 <Spinner
-                    android:layout_width="match_parent"
                     android:id="@+id/car_type"
-                    android:background="@drawable/border"
-                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_height="50dp"/>
+                    android:background="@drawable/border"
+                    android:padding="10dp" />
+
                 <EditText
-                    android:layout_gravity="center_horizontal"
                     android:id="@+id/car_type_edit"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Type"
-                    android:visibility="gone"
-                    android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null"
+                    android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
                     android:ems="10"
+                    android:hint="Type"
+                    android:inputType="text"
                     android:padding="10dp"
                     android:singleLine="true"
-                    android:inputType="text" />
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null"
+                    android:visibility="gone" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
+
                 <miles.identigate.soja.font.TextViewBold
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_marginBottom="5.0dip"
-                    android:text="OWNER'S HOUSE"/>
+                    android:text="OWNER'S HOUSE"
+                    android:textSize="16sp" />
 
                 <Spinner
-                    android:layout_width="match_parent"
                     android:id="@+id/car_house"
-                    android:background="@drawable/border"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_height="50dp">
-                </Spinner>
+                    android:background="@drawable/border"></Spinner>
 
                 <EditText
-                    android:layout_gravity="center_horizontal"
                     android:id="@+id/car_house_edit"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="House"
-                    android:visibility="gone"
-                    android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null"
+                    android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
                     android:ems="10"
+                    android:hint="House"
+                    android:inputType="text"
                     android:padding="10dp"
                     android:singleLine="true"
-                    android:inputType="text" />
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null"
+                    android:visibility="gone" />
             </LinearLayout>
+
             <LinearLayout
-                android:layout_width="match_parent"
                 android:id="@+id/ownerLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <miles.identigate.soja.font.TextViewBold
+                    android:id="@+id/openSansBold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_marginBottom="5.0dip"
                     android:text="OWNER'S NAME"
-                    android:id="@+id/openSansBold" />
+                    android:textSize="16sp" />
 
                 <EditText
-                    android:layout_gravity="center_horizontal"
                     android:id="@+id/car_owner"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name"
-                    android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null"
+                    android:layout_gravity="center_horizontal"
                     android:background="@drawable/border"
                     android:ems="10"
+                    android:hint="Name"
+                    android:inputType="text"
                     android:padding="10dp"
                     android:singleLine="true"
-                    android:inputType="text" />
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null" />
             </LinearLayout>
+
             <Button
+                android:id="@+id/record"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:visibility="visible"
                 android:layout_marginTop="10dp"
-                android:id="@+id/record"
                 android:background="@color/colorPrimary"
+                android:text="RECORD"
                 android:textColor="@android:color/white"
-                android:text="RECORD"/>
+                android:visibility="visible" />
         </LinearLayout>
     </RelativeLayout>
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

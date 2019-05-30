@@ -264,6 +264,7 @@ public class DriveInRecyclerAdapter extends RecyclerView.Adapter<DriveInRecycler
         return 0;
     }
 
+
     public String formatDate(String date, String type) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 

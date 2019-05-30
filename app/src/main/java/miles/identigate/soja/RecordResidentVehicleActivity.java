@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -24,7 +24,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import miles.identigate.soja.adapters.TypeAdapter;
+import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
@@ -33,104 +36,125 @@ import miles.identigate.soja.models.TypeObject;
 
 public class RecordResidentVehicleActivity extends SojaActivity {
     private static final String TAG = "RecordResidentVehicleAc";
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
-    TextView title;
-    EditText car_number;
 
-    Spinner car_house;
-    EditText car_owner;
-    EditText car_house_edit;
-    Button record;
     String selectedHouse;
     ArrayList<TypeObject> houses;
     DatabaseHandler handler;
     MaterialDialog dialog;
+    @BindView(R.id.title)
+    TextViewBold title;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.car_number)
+    EditText carNumber;
+    @BindView(R.id.iprn_profile)
+    LinearLayout iprnProfile;
+    @BindView(R.id.car_model)
+    Spinner carModel;
+    @BindView(R.id.car_model_edit)
+    EditText carModelEdit;
+    @BindView(R.id.car_type)
+    Spinner carType;
+    @BindView(R.id.car_type_edit)
+    EditText carTypeEdit;
+    @BindView(R.id.car_house)
+    Spinner carHouse;
+    @BindView(R.id.car_house_edit)
+    EditText carHouseEdit;
+    @BindView(R.id.openSansBold)
+    TextViewBold openSansBold;
+    @BindView(R.id.car_owner)
+    EditText carOwner;
+    @BindView(R.id.ownerLayout)
+    LinearLayout ownerLayout;
+    @BindView(R.id.record)
+    Button record;
+    @BindView(R.id.car_profile)
+    LinearLayout carProfile;
     private String token;
     Preferences preferences;
-    private int type=0;
-    LinearLayout ownerLayout;
+    private int type = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_resident_vehicle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        preferences=new Preferences(this);
-        handler=new DatabaseHandler(this);
-        dialog=new MaterialDialog.Builder(RecordResidentVehicleActivity.this)
+        ButterKnife.bind(this);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        preferences = new Preferences(this);
+        handler = new DatabaseHandler(this);
+        dialog = new MaterialDialog.Builder(RecordResidentVehicleActivity.this)
                 .title("Resident")
                 .content("Checking in...")
-                .progress(true,0)
+                .progress(true, 0)
                 .cancelable(false)
                 .widgetColorRes(R.color.colorPrimary)
                 .build();
-        title = findViewById(R.id.title);
-        car_number = findViewById(R.id.car_number);
         ownerLayout = findViewById(R.id.ownerLayout);
 
         houses = handler.getTypes("houses", null);
-        car_house = findViewById(R.id.car_house);
-        car_owner = findViewById(R.id.car_owner);
-        car_house_edit = findViewById(R.id.car_house_edit);
-        record = findViewById(R.id.record);
-        if (getIntent().getExtras()== null){
+        if (getIntent().getExtras() == null) {
             finish();
-        }else {
-            Bundle extras=getIntent().getExtras();
-            type=extras.getInt("Type");
-            token=extras.getString("token");
-            if (type == 0){
+        } else {
+            Bundle extras = getIntent().getExtras();
+            type = extras.getInt("Type");
+            token = extras.getString("token");
+            if (type == 0) {
                 disableUI();
                 title.setText("RECORD RESIDENT");
-                car_number.setText(extras.getString("registration"));
-                car_house_edit.setText(extras.getString("house"));
-                car_owner.setText(extras.getString("name"));
-            }else {
+                carNumber.setText(extras.getString("registration"));
+                carHouseEdit.setText(extras.getString("house"));
+                carOwner.setText(extras.getString("name"));
+            } else {
                 //New vehicle ;Register
                 title.setText("REGISTER VEHICLE");
                 ownerLayout.setVisibility(View.GONE);
             }
         }
-        TypeAdapter housesAdapter =new TypeAdapter(RecordResidentVehicleActivity.this,R.layout.tv,houses);
-        car_house.setAdapter(housesAdapter);
-        car_house.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        TypeAdapter housesAdapter = new TypeAdapter(RecordResidentVehicleActivity.this, R.layout.tv, houses);
+        carHouse.setAdapter(housesAdapter);
+        carHouse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TypeObject object=(TypeObject)parent.getSelectedItem();
-                selectedHouse=object.getId();
+                TypeObject object = (TypeObject) parent.getSelectedItem();
+                selectedHouse = object.getId();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                selectedHouse="1";
+                selectedHouse = "1";
             }
         });
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (car_number.getText().toString()==null){
-                    car_number.setError("Required.");
-                }else{
-                    if (type==0){
-                        String urlParameters =null;
+                if (carNumber.getText().toString() == null) {
+                    carNumber.setError("Required.");
+                } else {
+                    if (type == 0) {
+                        String urlParameters = null;
                         try {
                             urlParameters = "token=" + token +
                                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                                    "&premiseZoneId=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8")+
+                                    "&premiseZoneId=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
                                     "&entry_time=" + URLEncoder.encode(selectedHouse, "UTF-8");
-                            new RecordTask().execute(preferences.getBaseURL()+"qr_checkin", urlParameters);
+                            new RecordTask().execute(preferences.getBaseURL() + "qr_checkin", urlParameters);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
-                    }else {
-                        String urlParameters =null;
+                    } else {
+                        String urlParameters = null;
                         try {
                             urlParameters = "token=" + token +
                                     "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                                    "&premiseID=" + URLEncoder.encode(preferences.getPremise(), "UTF-8")+
-                                    "&regNo=" + URLEncoder.encode(car_number.getText().toString(), "UTF-8")+
+                                    "&premiseID=" + URLEncoder.encode(preferences.getPremise(), "UTF-8") +
+                                    "&regNo=" + URLEncoder.encode(carNumber.getText().toString(), "UTF-8") +
                                     "&houseID=" + URLEncoder.encode(selectedHouse, "UTF-8");
-                            new RecordTask().execute(preferences.getBaseURL()+"qr_register", urlParameters);
+                            new RecordTask().execute(preferences.getBaseURL() + "qr_register", urlParameters);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -140,13 +164,15 @@ public class RecordResidentVehicleActivity extends SojaActivity {
             }
         });
     }
-    private void disableUI(){
-        disableEditText(car_number);
-        disableEditText(car_house_edit);
-        disableEditText(car_owner);
+
+    private void disableUI() {
+        disableEditText(carNumber);
+        disableEditText(carHouseEdit);
+        disableEditText(carOwner);
 
 
     }
+
     private void disableEditText(EditText editText) {
         editText.setFocusable(false);
         editText.setEnabled(false);
@@ -154,6 +180,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
         editText.setKeyListener(null);
         editText.setBackgroundColor(Color.TRANSPARENT);
     }
+
     private class RecordTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
@@ -162,7 +189,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
         }
 
         protected String doInBackground(String... params) {
-            return new NetworkHandler().executePost(params[0],params[1]);
+            return new NetworkHandler().executePost(params[0], params[1]);
         }
 
         protected void onPostExecute(String result) {
@@ -193,7 +220,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                                         }
                                     })
                                     .show();
-                        }else{
+                        } else {
                             new MaterialDialog.Builder(RecordResidentVehicleActivity.this)
                                     .title("Soja")
                                     .content("Invalid QR code.")
@@ -211,7 +238,7 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 //Log.e("RESIDENT","null");
             }
         }

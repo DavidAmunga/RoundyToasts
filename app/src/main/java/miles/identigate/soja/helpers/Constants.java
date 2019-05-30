@@ -192,7 +192,6 @@ public class Constants {
     }
 
 
-
     public static void setDashboardCheckOut(Preferences preferences, ArrayList<String> titles, ArrayList<Integer> drawables, ArrayList<String> descriptions) {
         if (preferences.getBaseURL().contains("casuals")) {
             titles.add("Walk Out");
@@ -228,7 +227,7 @@ public class Constants {
             descriptions.add("Check out a visitor on foot");
             descriptions.add("Check out a resident");
 
-            drawables.add(R.drawable.ic_qr);
+            drawables.add(R.drawable.ic_scan_icon);
             drawables.add(R.drawable.ic_drive_in_new);
             drawables.add(R.drawable.ic_walk_in_new);
             drawables.add(R.drawable.ic_resident_icon_new);

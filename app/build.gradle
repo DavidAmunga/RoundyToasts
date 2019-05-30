@@ -66,6 +66,7 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
         debug {
             versionNameSuffix "-debug"
             minifyEnabled false
@@ -73,13 +74,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         events {
-            versionNameSuffix "-events"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", '"http://events.soja.co.ke"'
 
         }
         casuals {
-            versionNameSuffix "-casuals"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", '"http://casuals.soja.co.ke"'
 
