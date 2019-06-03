@@ -337,7 +337,7 @@
                         android:checked="false"
                         android:gravity="left"
                         android:padding="10dp"
-                        android:text="Record Invitees"
+                        android:text="Record Appointments"
                         android:textColor="?attr/textColor" />
 
                 </LinearLayout>
