@@ -74,6 +74,8 @@ public class Dashboard extends SojaActivity {
     String incidentsResult;
     String houseResult;
     String premiseResidentResult;
+    private String idTypesResult;
+
     Preferences preferences;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -295,6 +297,7 @@ public class Dashboard extends SojaActivity {
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_SERVICE_PROVIDERS_TYPES);
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOUSES);
                             db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
+                            db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_ID_TYPES);
 
                             SharedPreferences getPrefs = PreferenceManager
                                     .getDefaultSharedPreferences(getBaseContext());
@@ -424,6 +427,7 @@ public class Dashboard extends SojaActivity {
             providerResult = NetworkHandler.GET(preferences.getBaseURL() + "service-providers");
             incidentsResult = NetworkHandler.GET(preferences.getBaseURL() + "incident-types");
             genderResult = NetworkHandler.GET(preferences.getBaseURL() + "genders");
+            idTypesResult = NetworkHandler.GET(preferences.getBaseURL() + "id_types");
 
 
 //            TODO : Change Endpoint
@@ -455,6 +459,7 @@ public class Dashboard extends SojaActivity {
                 JSONObject housesObject = new JSONObject(houseResult);
                 JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
                 JSONObject genderObject = new JSONObject(genderResult);
+                JSONObject idTypesObject = new JSONObject(idTypesResult);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
@@ -463,6 +468,7 @@ public class Dashboard extends SojaActivity {
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOUSES);
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_GENDER_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_ID_TYPES);
 
                 db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
                 db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);
@@ -470,6 +476,7 @@ public class Dashboard extends SojaActivity {
                 db.execSQL(handler.CREATE_TABLE_HOUSES);
                 db.execSQL(handler.CREATE_PREMISE_RESIDENTS_TABLE);
                 db.execSQL(handler.CREATE_GENDER_TYPES_TABLE);
+                db.execSQL(handler.CREATE_ID_TYPES_TABLE);
 
                 /*db.execSQL(handler.CREATE_TABLE_DRIVE_IN);
                 db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS);
@@ -486,6 +493,19 @@ public class Dashboard extends SojaActivity {
                     }
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve gender types", Toast.LENGTH_SHORT).show();
+                }
+
+//                ID Types
+
+                if (idTypesObject.getInt("result_code") == 0 && idTypesObject.getString("result_text").equals("OK")) {
+                    JSONArray idTypesObjectJSONArray = idTypesObject.getJSONArray("result_content");
+                    for (int i = 0; i < idTypesObjectJSONArray.length(); i++) {
+                        JSONObject idType = idTypesObjectJSONArray.getJSONObject(i);
+                        Log.d(TAG, "getAllData: ID Types" + idType);
+                        handler.insertIDTypes(idType.getString("id"), idType.getString("description"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve ID types", Toast.LENGTH_SHORT).show();
                 }
                 //Visitor types
                 if (visitorObject.getInt("result_code") == 0 && visitorObject.getString("result_text").equals("OK")) {

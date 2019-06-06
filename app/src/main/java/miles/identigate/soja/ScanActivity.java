@@ -2,16 +2,23 @@ package miles.identigate.soja;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.widget.Toast;
 
 
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.enums.DocReaderAction;
+import com.regula.documentreader.api.enums.DocReaderFrame;
 import com.regula.documentreader.api.enums.DocReaderOrientation;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 import com.regula.documentreader.api.results.DocumentReaderScenario;
@@ -31,8 +38,14 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    private static final String TAG = "ScanActivity";
+
     private boolean isLicenseOk = false;
     Preferences preferences;
+
+    private Camera mCamera;
+    private Camera.Parameters parameters;
+    private CameraManager camManager;
 
 
     @Override
@@ -122,6 +135,7 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
                 }
 
             });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,6 +150,7 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
             scenarios.add(scenario.name);
         }
         DocumentReader.Instance().processParams.scenario = scenarios.get(0);
+
 
         //starting video processing
         DocumentReader.Instance().showScanner(new DocumentReader.DocumentReaderCompletion() {
@@ -161,8 +176,54 @@ public class ScanActivity extends Activity implements EntryTypeFragment.OnEntryS
             }
         });
         DocumentReader.Instance().functionality.orientation = DocReaderOrientation.LANDSCAPE;
+        DocumentReader.Instance().functionality.cameraFrame = DocReaderFrame.MAX;
+
 
     }
+
+
+    private void turnFlashlightOn() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+                String cameraId = null; // Usually front camera is at 0 position.
+                if (camManager != null) {
+                    cameraId = camManager.getCameraIdList()[0];
+                    camManager.setTorchMode(cameraId, true);
+                }
+            } catch (CameraAccessException e) {
+                Log.e(TAG, e.toString());
+            }
+        } else {
+            mCamera = Camera.open();
+            parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            mCamera.setParameters(parameters);
+            mCamera.startPreview();
+        }
+    }
+
+    private void turnFlashlightOff() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                String cameraId;
+                camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+                if (camManager != null) {
+                    cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+                    camManager.setTorchMode(cameraId, false);
+                }
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+        } else {
+            mCamera = Camera.open();
+            parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            mCamera.setParameters(parameters);
+            mCamera.stopPreview();
+        }
+    }
+
 
 }
 

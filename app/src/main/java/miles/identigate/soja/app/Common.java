@@ -19,6 +19,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,9 @@ public class Common extends Application {
     public static final int WALK_IN_INVITEE = 8;
     public static final int DRIVE_IN_INVITEE = 9;
     Preferences preferences;
+
+    public static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public static SecureRandom rnd = new SecureRandom();
 
     private static final String TAG = "Common";
     public static final String TOKENS = "TOKENS";
@@ -212,6 +216,13 @@ public class Common extends Application {
         }
         return sb.toString();
 
+    }
+
+    public static String randomString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
     }
 
 

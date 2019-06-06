@@ -113,10 +113,7 @@ public class RegisterGuest extends AppCompatActivity {
     Spinner visitorType;
 
     boolean manualEdit = false;
-    @BindView(R.id.txtID)
-    EditTextRegular txtID;
-    @BindView(R.id.idLayout)
-    LinearLayout idLayout;
+
     @BindView(R.id.txt_first_name)
     EditTextRegular txtFirstName;
     @BindView(R.id.txt_last_name)
@@ -276,6 +273,7 @@ public class RegisterGuest extends AppCompatActivity {
             public void onClick(View v) {
                 if (validateDetails()) {
                     if (manualEdit) {
+                        Log.d(TAG, "onClick: Manual");
                         recordCheckInManual();
                     } else {
                         recordCheckIn();
@@ -540,7 +538,7 @@ public class RegisterGuest extends AppCompatActivity {
 
 
         String scan_id_type = selectedDocument.getId();
-        idNumber = txtID.getText().toString();
+        idNumber = Common.randomString(11);
 
 
         firstName = txtFirstName.getText().toString().trim();
@@ -811,9 +809,8 @@ public class RegisterGuest extends AppCompatActivity {
     private void updateOptions() {
         if (manualEdit) {
             nameLayout.setVisibility(View.VISIBLE);
-            idLayout.setVisibility(View.VISIBLE);
             genderLayout.setVisibility(View.VISIBLE);
-            documentLayout.setVisibility(View.VISIBLE);
+//            documentLayout.setVisibility(View.VISIBLE);
             countryLayout.setVisibility(View.VISIBLE);
 
 
@@ -839,12 +836,15 @@ public class RegisterGuest extends AppCompatActivity {
 
             documentTypes = new ArrayList<>();
 
-            documentTypes.add(new TypeObject("ID", "ID Number"));
-            documentTypes.add(new TypeObject("P", "Passport"));
-            documentTypes.add(new TypeObject("AC", "Alien ID"));
+
+            documentTypes = handler.getTypes("idTypes", "");
 
 
-            selectedDocument = documentTypes.get(0);
+            for (TypeObject document : documentTypes) {
+                if (document.getName().toLowerCase().contains("auto")) {
+                    selectedDocument = document;
+                }
+            }
 
 
             TypeAdapter documentAdapter = new TypeAdapter(RegisterGuest.this, R.layout.tv, documentTypes);
@@ -880,9 +880,8 @@ public class RegisterGuest extends AppCompatActivity {
         } else {
             nameLayout.setVisibility(View.GONE);
             genderLayout.setVisibility(View.GONE);
-            idLayout.setVisibility(View.GONE);
             countryLayout.setVisibility(View.GONE);
-            documentLayout.setVisibility(View.GONE);
+//            documentLayout.setVisibility(View.GONE);
 
         }
     }

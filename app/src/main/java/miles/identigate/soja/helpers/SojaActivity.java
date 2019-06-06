@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,7 +36,6 @@ public class SojaActivity extends AppCompatActivity implements
     InternetAvailabilityChecker mInternetAvailabilityChecker;
 
 
-
     private static final String TAG = "SojaActivity";
     private static final int MY_PERMISSION_REQUEST_CODE = 7000;
     private static final int PLAY_SERVICE_RES_REQUEST = 7001;
@@ -48,7 +48,6 @@ public class SojaActivity extends AppCompatActivity implements
     private static int UPDATE_INTERVAL = 5000;
     private static int FASTEST_INTERVAL = 3000;
     private static int DISPLACEMENT = 10;
-
 
 
     @Override
@@ -66,6 +65,24 @@ public class SojaActivity extends AppCompatActivity implements
         mInternetAvailabilityChecker.addInternetConnectivityListener(this);
 
 
+////        int nightModeFlags =
+////                getResources().getConfiguration().uiMode &
+////                        Configuration.UI_MODE_NIGHT_MASK;
+////        switch (nightModeFlags) {
+////            case Configuration.UI_MODE_NIGHT_YES:
+////                settings.setDarkModeOn(true);
+////                break;
+////
+////            case Configuration.UI_MODE_NIGHT_NO:
+////                settings.setDarkModeOn(false);
+////                break;
+////
+////            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+//////                doStuff();
+////                break;
+//
+//        }
+
     }
 
 
@@ -76,9 +93,9 @@ public class SojaActivity extends AppCompatActivity implements
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         } else {
-            if(settings.getBaseURL().contains("casuals")){
+            if (settings.getBaseURL().contains("casuals")) {
                 setupLocation();
-            }else{
+            } else {
                 Log.d(TAG, "isLoggedin: Not Casuals");
             }
         }
@@ -210,7 +227,7 @@ public class SojaActivity extends AppCompatActivity implements
 
     @Override
     public void onInternetConnectivityChanged(boolean isConnected) {
-        if(!isConnected){
+        if (!isConnected) {
             Toast.makeText(this, "Please make sure you have an active Internet Connection", Toast.LENGTH_LONG).show();
         }
     }

@@ -135,38 +135,6 @@
                     android:textCursorDrawable="@null" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/idLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-
-                <miles.identigate.soja.font.TextViewBold
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5.0dip"
-                    android:text="ID"
-                    android:textColor="?attr/textColor"
-                    android:textSize="16sp" />
-
-                <miles.identigate.soja.font.EditTextRegular
-                    android:id="@+id/txtID"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:background="@drawable/border"
-                    android:hint="Enter ID (07123123)"
-                    android:inputType="text"
-                    android:padding="10dp"
-                    android:singleLine="true"
-                    android:textColor="?attr/textColor"
-                    android:textColorHint="?attr/textColorHint"
-                    android:textCursorDrawable="@null" />
-            </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/genderLayout"
@@ -206,9 +174,9 @@
 
                 <com.hbb20.CountryCodePicker
                     android:id="@+id/ccp"
-                    app:ccp_autoDetectCountry="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:ccp_autoDetectCountry="true"
                     app:ccp_showFullName="true"
                     app:ccp_showNameCode="false"
                     app:ccp_showPhoneCode="false" />

@@ -33,6 +33,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_SERVICE_PROVIDERS_TYPES = "serviceProviderTypes";
     public static final String TABLE_HOUSES = "houses";
     public static final String TABLE_PREMISE_RESIDENTS = "premiseResidents";
+    public static final String TABLE_ID_TYPES = "idTypes";
 
 
     public static final String VEHICLE_COLORS = "vehicleColors";
@@ -71,6 +72,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String synced = "synced";
     private static final String houseID = "houseId";
 
+
+//    ID TYPE
+
     public static final int DB_VERSION = 13;
 
     public final String CREATE_TABLE_DRIVE_IN = "CREATE TABLE "
@@ -102,6 +106,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public final String CREATE_GENDER_TYPES_TABLE = "CREATE TABLE "
             + TABLE_GENDER_TYPES + "(" + id + " TEXT, " + name + " TEXT " + ");";
 
+    public final String CREATE_ID_TYPES_TABLE = "CREATE TABLE "
+            + TABLE_ID_TYPES + "(" + id + " TEXT, " + description + " TEXT " + ");";
+
     public DatabaseHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -118,6 +125,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_HOUSES);
         db.execSQL(CREATE_PREMISE_RESIDENTS_TABLE);
         db.execSQL(CREATE_GENDER_TYPES_TABLE);
+        db.execSQL(CREATE_ID_TYPES_TABLE);
 
     }
 
@@ -138,10 +146,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + VEHICLE_COLORS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PREMISE_RESIDENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GENDER_TYPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ID_TYPES);
 
         onCreate(db);
 
     }
+
 
     public void insertPremiseVisitor(String _id, String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -637,6 +647,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void insertIDTypes(String id, String description) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHandler.description, description);
+        values.put(DatabaseHandler.id, id);
+        db.insert(TABLE_ID_TYPES, null, values);
+        db.close();
+    }
+
     public void insertServiceProviderType(String id, String name, String description) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -688,6 +707,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (!hashMap.isEmpty())
                 hashMap.clear();
             String selectQuery = "SELECT  * FROM " + TABLE_GENDER_TYPES;
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    Log.d(TAG, "getTypes: " + cursor.getString(1));
+                    TypeObject typeObject = new TypeObject();
+                    typeObject.setId(cursor.getString(0));
+                    typeObject.setName(cursor.getString(1));
+                    hashMap.add(typeObject);
+                } while (cursor.moveToNext());
+            }
+            return hashMap;
+        } else if (type.equals("idTypes")) {
+            if (!hashMap.isEmpty())
+                hashMap.clear();
+            String selectQuery = "SELECT  * FROM " + TABLE_ID_TYPES;
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToFirst()) {
                 do {
