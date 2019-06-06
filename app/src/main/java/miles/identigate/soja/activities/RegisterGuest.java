@@ -291,8 +291,6 @@ public class RegisterGuest extends AppCompatActivity {
         PFun = new PublicFunction(RegisterGuest.this);
         PAct = new PublicAction(RegisterGuest.this);
 
-        EnableBluetooth();
-        InitSetting();
 
         ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
             @Override
@@ -1043,53 +1041,45 @@ public class RegisterGuest extends AppCompatActivity {
             if (iRtn != 0)
                 return;
             PrinterProperty.Cut = (Value[0] == 0 ? false : true);
-//            btnCut.setVisibility((PrinterProperty.Cut?View.VISIBLE:View.GONE));
+            //btnCut.setVisibility((PrinterProperty.Cut?View.VISIBLE:View.GONE));
 
             iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_DRAWER, propType, Value, DataLen);
             if (iRtn != 0)
                 return;
             PrinterProperty.Cashdrawer = (Value[0] == 0 ? false : true);
-//            btnOpenCashDrawer.setVisibility((PrinterProperty.Cashdrawer?View.VISIBLE:View.GONE));
+            //btnOpenCashDrawer.setVisibility((PrinterProperty.Cashdrawer?View.VISIBLE:View.GONE));
 
             iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BARCODE, propType, Value, DataLen);
             if (iRtn != 0)
                 return;
             PrinterProperty.Barcode = new String(Value);
             isCheck = PrinterProperty.Barcode.replace("QRCODE", "").replace("PDF417", "").replace(",,", ",").replace(",,", ",").length() > 0;
-//            btn1DBarcodes.setVisibility((isCheck?View.VISIBLE:View.GONE));
+            //btn1DBarcodes.setVisibility((isCheck?View.VISIBLE:View.GONE));
             isCheck = PrinterProperty.Barcode.contains("QRCODE");
-//            btnQRCode.setVisibility((isCheck?View.VISIBLE:View.GONE));
-//            btnPDF417.setVisibility((PrinterProperty.Barcode.indexOf("PDF417") != -1?View.VISIBLE:View.GONE));
+            //btnQRCode.setVisibility((isCheck?View.VISIBLE:View.GONE));
+            //btnPDF417.setVisibility((isCheck?View.VISIBLE:View.GONE));
 
             iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE, propType, Value, DataLen);
             if (iRtn != 0)
                 return;
             PrinterProperty.Pagemode = (Value[0] == 0 ? false : true);
-//            if (PrinterName.equals("MLP2")) {
-//                btnPageMode.setVisibility(View.VISIBLE);
-//            }else {
-//                btnPageMode.setVisibility((PrinterProperty.Pagemode?View.VISIBLE:View.GONE));
-//            }
 
             iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_GET_REMAINING_POWER, propType, Value, DataLen);
             if (iRtn != 0)
                 return;
             PrinterProperty.GetRemainingPower = (Value[0] == 0 ? false : true);
-//            btnGetRemainingPower.setVisibility((PrinterProperty.GetRemainingPower?View.VISIBLE:View.GONE));
+            //btnGetRemainingPower.setVisibility((PrinterProperty.GetRemainingPower?View.VISIBLE:View.GONE));
 
             iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_CONNECT_TYPE, propType, Value, DataLen);
             if (iRtn != 0)
                 return;
             PrinterProperty.ConnectType = (Value[1] << 8) + Value[0];
-//            btnWIFI.setVisibility(((PrinterProperty.ConnectType&1)==0?View.GONE:View.VISIBLE));
-//            btnUSB.setVisibility(((PrinterProperty.ConnectType&16)==0?View.GONE:View.VISIBLE));
-//            btnBT.setVisibility(((PrinterProperty.ConnectType&32)==0?View.GONE:View.VISIBLE));
 
             iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PRINT_RECEIPT, propType, Value, DataLen);
             if (iRtn != 0)
                 return;
             PrinterProperty.SampleReceipt = (Value[0] == 0 ? false : true);
-//            btnSampleReceipt.setVisibility((PrinterProperty.SampleReceipt?View.VISIBLE:View.GONE));
+            //btnSampleReceipt.setVisibility((PrinterProperty.SampleReceipt?View.VISIBLE:View.GONE));
         } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
         }
@@ -1134,53 +1124,6 @@ public class RegisterGuest extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
         }
-    }
-
-
-    private boolean EnableBluetooth() {
-        boolean bRet = false;
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter != null) {
-            if (mBluetoothAdapter.isEnabled())
-                return true;
-            mBluetoothAdapter.enable();
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (!mBluetoothAdapter.isEnabled()) {
-                bRet = true;
-                Log.d("PRTLIB", "BTO_EnableBluetooth --> Open OK");
-            }
-        } else {
-            Log.d("HPRTSDKSample", (new StringBuilder("Activity_Main --> EnableBluetooth ").append("Bluetooth Adapter is null.")).toString());
-        }
-        return bRet;
-    }
-
-
-    private void InitSetting() {
-        String SettingValue = "";
-        SettingValue = PFun.ReadSharedPreferencesData("Codepage");
-        if (SettingValue.equals(""))
-            PFun.WriteSharedPreferencesData("Codepage", "0,PC437(USA:Standard Europe)");
-
-        SettingValue = PFun.ReadSharedPreferencesData("Cut");
-        if (SettingValue.equals(""))
-            PFun.WriteSharedPreferencesData("Cut", "0");    //0:��ֹ,1:��ӡǰ,2:��ӡ��
-
-        SettingValue = PFun.ReadSharedPreferencesData("Cashdrawer");
-        if (SettingValue.equals(""))
-            PFun.WriteSharedPreferencesData("Cashdrawer", "0");
-
-        SettingValue = PFun.ReadSharedPreferencesData("Buzzer");
-        if (SettingValue.equals(""))
-            PFun.WriteSharedPreferencesData("Buzzer", "0");
-
-        SettingValue = PFun.ReadSharedPreferencesData("Feeds");
-        if (SettingValue.equals(""))
-            PFun.WriteSharedPreferencesData("Feeds", "0");
     }
 
 

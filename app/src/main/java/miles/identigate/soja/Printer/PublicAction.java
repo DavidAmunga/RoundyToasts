@@ -73,11 +73,11 @@ public class PublicAction
 		try
 		{
 			PublicFunction PFun=new PublicFunction(context);
-			String sLanguage = PFun.ReadSharedPreferencesData("Codepage").split(",")[1];
+			String sLanguage=PFun.ReadSharedPreferencesData("Codepage").split(",")[1].toString();
 			String sLEncode="gb2312";
 			int intLanguageNum=0;
 
-			sLEncode = PublicFunction.getLanguageEncode(sLanguage);
+			sLEncode=PFun.getLanguageEncode(sLanguage);
 			intLanguageNum= PFun.getCodePageIndex(sLanguage);
 
 			HPRTPrinterHelper.SetCharacterSet((byte)intLanguageNum);

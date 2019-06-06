@@ -568,6 +568,7 @@ public class GuestList extends SojaActivity implements OnItemClick {
         }
     }
 
+
     private boolean EnableBluetooth() {
         boolean bRet = false;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
