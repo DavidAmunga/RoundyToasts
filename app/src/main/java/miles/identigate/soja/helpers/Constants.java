@@ -162,7 +162,8 @@ public class Constants {
 
             descriptions.add("Record driving visitor");
             descriptions.add("Record walking visitor");
-            descriptions.add("Check in a resident");
+            descriptions.add("Check In a Resident");
+
 
             drawables.add(R.drawable.ic_drive_in_new);
             drawables.add(R.drawable.ic_walk_in_new);
@@ -183,6 +184,11 @@ public class Constants {
                 descriptions.add("Check in using biometrics");
                 drawables.add(R.drawable.fingerprint);
             }
+
+            titles.add("Tickets");
+            descriptions.add("Scan an Event Ticket");
+            drawables.add(R.drawable.ic_scan_icon);
+
 
 
 //            Temp Events

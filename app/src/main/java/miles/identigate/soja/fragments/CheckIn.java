@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import miles.identigate.soja.activities.CheckInGuest;
 import miles.identigate.soja.activities.GuestList;
+import miles.identigate.soja.activities.ScanTicket;
 import miles.identigate.soja.adapters.CheckInAdapter;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -143,6 +144,9 @@ public class CheckIn extends Fragment {
                         break;
                     case "Check In":
                         startActivity(new Intent(getActivity(), CheckInGuest.class));
+                        break;
+                    case "Tickets":
+                        startActivity(new Intent(getActivity(), ScanTicket.class));
                         break;
                     case "Residents":
 

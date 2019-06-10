@@ -61,8 +61,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static java.security.AccessController.getContext;
-
 public class GuestList extends SojaActivity implements OnItemClick {
 
     private static final String TAG = "GuestList";

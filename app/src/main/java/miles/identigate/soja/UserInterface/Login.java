@@ -248,7 +248,7 @@ public class Login extends AppCompatActivity {
                                     .cancelable(false)
                                     .positiveText("Ok")
                                     .show();
-                        } else if (text.contains("Validation")) {
+                        }  else if (text.contains("Validation")) {
                             new MaterialDialog.Builder(Login.this)
                                     .title("Invalid device")
                                     .content("This device is not authorized to access this service.\nContinued access will lead to remote wiping of the device.")
