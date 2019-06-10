@@ -154,7 +154,8 @@ public class Constants {
             drawables.add(R.drawable.ic_qr);
 
 
-        } else {
+        } else
+            {
             titles.add("Drive In");
             titles.add("Walk In");
             titles.add("Residents");
@@ -185,9 +186,9 @@ public class Constants {
                 drawables.add(R.drawable.fingerprint);
             }
 
-            titles.add("Tickets");
-            descriptions.add("Scan an Event Ticket");
-            drawables.add(R.drawable.ic_scan_icon);
+//            titles.add("Tickets");
+//            descriptions.add("Scan an Event Ticket");
+//            drawables.add(R.drawable.ic_scan_icon);
 
 
 

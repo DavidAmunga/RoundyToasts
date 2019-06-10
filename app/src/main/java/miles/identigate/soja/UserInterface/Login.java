@@ -29,7 +29,9 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import miles.identigate.soja.BuildConfig;
 import miles.identigate.soja.Dashboard;
+import miles.identigate.soja.activities.ScanTicket;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.NetworkHandler;
@@ -232,7 +234,11 @@ public class Login extends AppCompatActivity {
 
                         //preferences.setCanPrint(false);
                         logUser();
-                        startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                        if (preferences.getBaseURL().toLowerCase().contains("sportpesa")) {
+                            startActivity(new Intent(getApplicationContext(), ScanTicket.class));
+                        } else {
+                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                        }
                         finish();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -248,7 +254,7 @@ public class Login extends AppCompatActivity {
                                     .cancelable(false)
                                     .positiveText("Ok")
                                     .show();
-                        }  else if (text.contains("Validation")) {
+                        } else if (text.contains("Validation")) {
                             new MaterialDialog.Builder(Login.this)
                                     .title("Invalid device")
                                     .content("This device is not authorized to access this service.\nContinued access will lead to remote wiping of the device.")

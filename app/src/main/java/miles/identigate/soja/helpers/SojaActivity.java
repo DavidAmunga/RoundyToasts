@@ -20,6 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.FirebaseDatabase;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
@@ -49,6 +50,8 @@ public class SojaActivity extends AppCompatActivity implements
     private static int FASTEST_INTERVAL = 3000;
     private static int DISPLACEMENT = 10;
 
+    private static FirebaseDatabase firebaseDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,11 @@ public class SojaActivity extends AppCompatActivity implements
         mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
         mInternetAvailabilityChecker.addInternetConnectivityListener(this);
 
+
+        if (firebaseDatabase == null) {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
+        }
 
 ////        int nightModeFlags =
 ////                getResources().getConfiguration().uiMode &

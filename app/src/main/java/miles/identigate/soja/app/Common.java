@@ -41,6 +41,7 @@ public class Common extends Application {
     public static final String PREF_CURRENT_PASSENGERS_LIST = "current_passengers";
     public static final int WALK_IN_INVITEE = 8;
     public static final int DRIVE_IN_INVITEE = 9;
+    public static final String TICKETS = "TICKETS";
     Preferences preferences;
 
     public static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

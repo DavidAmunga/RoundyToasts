@@ -358,6 +358,8 @@ public class AdminSettingsActivity extends SojaActivity {
             serverName.setText("Test Server");
         } else if (server.contains("casuals")) {
             serverName.setText("Casuals Server");
+        } else if (server.contains("sportpesa")) {
+            serverName.setText("SportPesa Server");
         } else if (server.contains("events")) {
             serverName.setText("Events Server");
         } else if (count > 5) {

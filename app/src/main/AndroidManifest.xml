@@ -46,7 +46,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
-        <activity android:name=".activities.ScanTicket"></activity>
+        <activity android:name=".activities.TicketList"></activity>
+        <activity android:name=".activities.ScanTicket" />
         <activity
             android:name=".activities.InviteeResults"
             android:label="@string/title_activity_invitee_results"
