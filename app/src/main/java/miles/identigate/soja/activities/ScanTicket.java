@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
@@ -49,6 +50,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.paperdb.Paper;
 import miles.identigate.soja.AdminSettingsActivity;
 import miles.identigate.soja.R;
 import miles.identigate.soja.UserInterface.Login;
@@ -104,6 +106,8 @@ public class ScanTicket extends AppCompatActivity {
     String houseResult;
     String premiseResidentResult;
     private String idTypesResult;
+    DatabaseReference mDatabase;
+    private boolean offline = false;
 
 
     @Override
@@ -127,6 +131,9 @@ public class ScanTicket extends AppCompatActivity {
         handler = new DatabaseHandler(this);
 
 
+        Paper.init(this);
+
+
         scanIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +143,7 @@ public class ScanTicket extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
 
+        mDatabase = FirebaseDatabase.getInstance().getReference(Common.TICKETS);
 
         dialog = new MaterialDialog.Builder(ScanTicket.this)
                 .title("QR")
@@ -150,15 +158,20 @@ public class ScanTicket extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addTickets();
                 startActivity(new Intent(ScanTicket.this, TicketList.class));
 
             }
         });
+
+        checkOffline();
+
+
     }
+
 
     private void addTickets() {
 
+        Log.d(TAG, "addTickets: Start");
 //        FirebaseDatabase.getInstance().getReference(Common.TICKETS).setValue(null);
 
         APIClient.getClient(preferences, "").getGuests(
@@ -246,6 +259,7 @@ public class ScanTicket extends AppCompatActivity {
 
                 checkInFB(qr_token);
 
+
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -253,13 +267,64 @@ public class ScanTicket extends AppCompatActivity {
         }
     }
 
+    private void checkInOffline() {
+        Log.d(TAG, "checkInOffline: Checkin");
+
+
+        Log.d(TAG, "checkInOffline: " + offline);
+        if (!offline) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+
+            Toast.makeText(this, "Offline. Will Check In Later", Toast.LENGTH_SHORT).show();
+
+            showSuccess();
+        } else {
+            progressDialog.setMessage("Checking in...");
+            progressDialog.show();
+        }
+
+    }
+
+    private void checkOffline() {
+
+        Log.d(TAG, "onDataChange: Check Offline ");
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+
+                if (connected) {
+                    Log.d(TAG, "connected");
+                } else {
+                    Log.d(TAG, "not connected");
+                }
+
+                offline = connected;
+//                Toast.makeText(ScanTicket.this, "Connected", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "onDataChange: " + offline);
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "Listener was cancelled");
+            }
+        });
+    }
+
 
     private void checkInFB(String token) {
-        progressDialog.setMessage("Checking in...");
-        progressDialog.show();
+
+
+        checkInOffline();
 
         Log.d(TAG, "checkInFB: " + token);
-        FirebaseDatabase.getInstance().getReference(Common.TICKETS).orderByKey().equalTo(token).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.orderByKey().equalTo(token).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -297,6 +362,7 @@ public class ScanTicket extends AppCompatActivity {
 
             }
 
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -307,7 +373,7 @@ public class ScanTicket extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        getMenuInflater().inflate(R.menu.menu_scan_ticket, menu);
         return true;
     }
 
@@ -367,7 +433,12 @@ public class ScanTicket extends AppCompatActivity {
             dialog.show();
             return true;
         } else if (id == R.id.settings) {
+
             startActivity(new Intent(getApplicationContext(), AdminSettingsActivity.class));
+            return true;
+        } else if (id == R.id.ticket_list) {
+//            addTickets();
+            startActivity(new Intent(getApplicationContext(), TicketList.class));
             return true;
         } else if (id == R.id.refresh) {
             if (new CheckConnection().check(this)) {

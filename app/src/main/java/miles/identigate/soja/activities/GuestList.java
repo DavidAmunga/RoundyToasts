@@ -395,11 +395,9 @@ public class GuestList extends SojaActivity implements OnItemClick {
             HPRTPrinterHelper.PrintText(
                     Common.centerString(18, Common.formatString(selectedGuest.getFirstName() + " " + (selectedGuest.getLastName() != null ? selectedGuest.getLastName() : "")))
                     , 32, 2, 16);
-            String msg = (
 
-                    selectedGuest.getCompany() != null ? selectedGuest.getCompany() + "\n" : ""
 
-            );
+            String msg = Common.centerString(18, selectedGuest.getCompany() != null ? selectedGuest.getCompany() + "\n" : "");
 
 
             HPRTPrinterHelper.PrintText(msg, 32, 0, 16);

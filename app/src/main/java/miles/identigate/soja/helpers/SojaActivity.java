@@ -20,11 +20,17 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
+import io.paperdb.Paper;
 import miles.identigate.soja.UserInterface.Login;
+import miles.identigate.soja.activities.ScanTicket;
 
 /**
  * Created by myles on 2/2/16.
@@ -52,6 +58,9 @@ public class SojaActivity extends AppCompatActivity implements
 
     private static FirebaseDatabase firebaseDatabase;
 
+    private ValueEventListener listener;
+    private DatabaseReference ref;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +81,7 @@ public class SojaActivity extends AppCompatActivity implements
             firebaseDatabase = FirebaseDatabase.getInstance();
             firebaseDatabase.setPersistenceEnabled(true);
         }
+
 
 ////        int nightModeFlags =
 ////                getResources().getConfiguration().uiMode &
@@ -235,6 +245,10 @@ public class SojaActivity extends AppCompatActivity implements
 
     @Override
     public void onInternetConnectivityChanged(boolean isConnected) {
+        Log.d(TAG, "onInternetConnectivityChanged: " + isConnected);
+
+        Paper.book().read("offline", isConnected);
+
         if (!isConnected) {
             Toast.makeText(this, "Please make sure you have an active Internet Connection", Toast.LENGTH_LONG).show();
         }
