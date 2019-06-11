@@ -104,6 +104,9 @@ public class Login extends AppCompatActivity {
                         Utils.getIPAddress(true); // IPv4
                         Utils.getIPAddress(false); // IPv6 */
                         String s = preferences.getBaseURL();
+
+                        Log.d(TAG, "Base URL: " + s.toString());
+
                         String url = s.substring(0, s.length() - 11) + "api/auth/get-access-token";
                         String urlParameters = null;
                         try {

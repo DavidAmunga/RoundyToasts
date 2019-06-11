@@ -77,10 +77,10 @@ public class SojaActivity extends AppCompatActivity implements
         mInternetAvailabilityChecker.addInternetConnectivityListener(this);
 
 
-        if (firebaseDatabase == null) {
-            firebaseDatabase = FirebaseDatabase.getInstance();
-            firebaseDatabase.setPersistenceEnabled(true);
-        }
+//        if (firebaseDatabase == null) {
+//            firebaseDatabase = FirebaseDatabase.getInstance();
+//            firebaseDatabase.setPersistenceEnabled(true);
+//        }
 
 
 ////        int nightModeFlags =

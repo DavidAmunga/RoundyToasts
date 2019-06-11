@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,12 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +38,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -75,22 +76,24 @@ public class ScanTicket extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
-    @BindView(R.id.record_type)
-    TextViewBold recordType;
     @BindView(R.id.scan_icon)
     ImageView scanIcon;
     @BindView(R.id.scan_id_text)
     TextViewBold scanIdText;
 
-    @BindView(R.id.rel_id)
-    RelativeLayout relId;
 
     String qr_token;
     ProgressDialog progressDialog;
     @BindView(R.id.btnList)
     Button btnList;
+    @BindView(R.id.root_layout)
+    CoordinatorLayout rootLayout;
+    @BindView(R.id.rel1)
+    RelativeLayout rel1;
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
+    @BindView(R.id.frame1)
+    FrameLayout frame1;
 
 
     private MaterialDialog dialog;
@@ -162,8 +165,6 @@ public class ScanTicket extends AppCompatActivity {
 
             }
         });
-
-        checkOffline();
 
 
     }
@@ -257,7 +258,15 @@ public class ScanTicket extends AppCompatActivity {
 
                 Log.d(TAG, "onActivityResult: Here ");
 
-                checkInFB(qr_token);
+                if (new CheckConnection().check(this)) {
+
+                    checkInFB(qr_token);
+                } else {
+                    showSuccess("offline");
+
+
+                    checkInAsync(qr_token);
+                }
 
 
             }
@@ -267,61 +276,64 @@ public class ScanTicket extends AppCompatActivity {
         }
     }
 
-    private void checkInOffline() {
-        Log.d(TAG, "checkInOffline: Checkin");
 
+    private void checkInAsync(String token) {
+        Log.d(TAG, "checkInAsync: Start");
 
-        Log.d(TAG, "checkInOffline: " + offline);
-        if (!offline) {
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-
-            Toast.makeText(this, "Offline. Will Check In Later", Toast.LENGTH_SHORT).show();
-
-            showSuccess();
-        } else {
-            progressDialog.setMessage("Checking in...");
-            progressDialog.show();
-        }
-
-    }
-
-    private void checkOffline() {
-
-        Log.d(TAG, "onDataChange: Check Offline ");
-
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
+        mDatabase.orderByKey().equalTo(token).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    if (postSnapshot.hasChild("ticketId")) {
+//                      Add Entry Time
+                        if (postSnapshot.hasChild("entryTime")) {
+                            Snackbar snackbar = Snackbar.make(frame1,
+                                    "Already Checked In"
+                                    , Snackbar.LENGTH_LONG);
 
-                if (connected) {
-                    Log.d(TAG, "connected");
-                } else {
-                    Log.d(TAG, "not connected");
+
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+//                            Toast.makeText(ScanTicket.this, "Already Checked In", Toast.LENGTH_SHORT).show();
+
+                        } else {
+//                        New Checked In User
+                            Map<String, Object> updateInfo = new HashMap<>();
+                            updateInfo.put("entryTime", Constants.getCurrentTimeStamp());
+
+                            FirebaseDatabase.getInstance().getReference(Common.TICKETS).child(token).updateChildren(updateInfo).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+
+                                        recordCheckInAsync(token);
+//                                    Toast.makeText(ScanTicket.this, "Checked In", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        progressDialog.dismiss();
+
+                        Toast.makeText(ScanTicket.this, "Ticket Not Available", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
-                offline = connected;
-//                Toast.makeText(ScanTicket.this, "Connected", Toast.LENGTH_SHORT).show();
-//                Log.d(TAG, "onDataChange: " + offline);
-
             }
 
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w(TAG, "Listener was cancelled");
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+
     }
 
 
     private void checkInFB(String token) {
 
-
-        checkInOffline();
 
         Log.d(TAG, "checkInFB: " + token);
         mDatabase.orderByKey().equalTo(token).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -333,7 +345,16 @@ public class ScanTicket extends AppCompatActivity {
                         if (postSnapshot.hasChild("entryTime")) {
                             progressDialog.dismiss();
 
-                            Toast.makeText(ScanTicket.this, "Already Checked In", Toast.LENGTH_SHORT).show();
+                            Snackbar snackbar = Snackbar.make(frame1,
+                                    "Already Checked In"
+                                    , Snackbar.LENGTH_LONG);
+
+
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+//                            Toast.makeText(ScanTicket.this, "Already Checked In", Toast.LENGTH_SHORT).show();
 
                         } else {
 //                        New Checked In User
@@ -440,83 +461,9 @@ public class ScanTicket extends AppCompatActivity {
 //            addTickets();
             startActivity(new Intent(getApplicationContext(), TicketList.class));
             return true;
-        } else if (id == R.id.refresh) {
-            if (new CheckConnection().check(this)) {
-                new FetchDetails().execute();
-            } else {
-                dialog = new MaterialDialog.Builder(ScanTicket.this)
-                        .title("Soja")
-                        .titleGravity(GravityEnum.CENTER)
-                        .titleColor(getResources().getColor(R.color.ColorPrimary))
-                        .content("It seems you have a poor internet connection.Please try again later.")
-                        .cancelable(true)
-                        .positiveText("EXIT")
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                super.onPositive(dialog);
-                                preferences.setIsLoggedin(false);
-                                SharedPreferences getPrefs = PreferenceManager
-                                        .getDefaultSharedPreferences(getBaseContext());
-                                SharedPreferences.Editor e = getPrefs.edit();
-                                e.putBoolean("firstStart", true);
-                                e.apply();
-                                dialog.dismiss();
-                                finish();
-                            }
-                        })
-                        .widgetColorRes(R.color.colorPrimary)
-                        .build();
-                dialog.show();
-            }
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private class FetchDetails extends AsyncTask<Void, String, String> {
-        MaterialDialog builder = new MaterialDialog.Builder(ScanTicket.this)
-                .title("Soja")
-                .titleGravity(GravityEnum.CENTER)
-                .titleColor(getResources().getColor(R.color.ColorPrimary))
-                .content("Please wait while we initialize the application.\nThis might take time depending on your internet.")
-                .progress(true, 0)
-                .progressIndeterminateStyle(true)
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            builder.show();
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            visitorResult = NetworkHandler.GET(preferences.getBaseURL() + "visitor-types");
-            providerResult = NetworkHandler.GET(preferences.getBaseURL() + "service-providers");
-            incidentsResult = NetworkHandler.GET(preferences.getBaseURL() + "incident-types");
-            genderResult = NetworkHandler.GET(preferences.getBaseURL() + "genders");
-            idTypesResult = NetworkHandler.GET(preferences.getBaseURL() + "id_types");
-
-
-//            TODO : Change Endpoint
-            if (preferences.getBaseURL().contains("casuals")) {
-                houseResult = NetworkHandler.GET(preferences.getBaseURL() + "active_events");
-            } else {
-                houseResult = NetworkHandler.GET(preferences.getBaseURL() + "houses-blocks/zone/" + preferences.getPremiseZoneId());
-            }
-
-            premiseResidentResult = NetworkHandler.GET(preferences.getBaseURL() + "houses-residents/?premise=" + preferences.getPremise());
-            return "success";
-        }
-
-        protected void onPostExecute(String result) {
-            builder.dismiss();
-            getAllData();
-
-        }
     }
 
 
@@ -532,6 +479,26 @@ public class ScanTicket extends AppCompatActivity {
 
 
             new RecordQRCheckin().execute(preferences.getBaseURL().replace("visits", "residents") + "qr_checkin", urlParameters);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void recordCheckInAsync(String qr_token) {
+        String urlParameters = null;
+        try {
+            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getCurrentUser().getDeviceId(), "UTF-8") +
+                    "&premise_zone_id=" + URLEncoder.encode(preferences.getCurrentUser().getPremiseZoneId(), "UTF-8") +
+                    "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
+                    "&qr=" + URLEncoder.encode(qr_token, "UTF-8");
+
+            Log.d(TAG, "onActivityResult: " + preferences.getCurrentUser().getPremiseZoneId());
+
+
+            new RecordQRCheckinAsync().execute(preferences.getBaseURL().replace("visits", "residents") + "qr_checkin", urlParameters);
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -540,7 +507,8 @@ public class ScanTicket extends AppCompatActivity {
     private class RecordQRCheckin extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            if (dialog != null && !dialog.isShowing())
+
+            if (dialog != null && !dialog.isShowing() && !offline)
                 dialog.show();
         }
 
@@ -564,8 +532,8 @@ public class ScanTicket extends AppCompatActivity {
                         String result_text = object.getString("result_text");
                         if (result_code == 0) {
 
-//                            recordCheckIn(qr_token);
-                            showSuccess();
+                            showSuccess("online");
+
 
                             Log.d(TAG, "onPostExecute: SUCCESS");
 
@@ -607,256 +575,121 @@ public class ScanTicket extends AppCompatActivity {
         }
     }
 
-    private void recordCheckOut() {
-        if (!progressDialog.isShowing()) {
-            progressDialog.setMessage("Checking Out");
-            progressDialog.show();
-        }
-//        Log.d(TAG, "recordCheckOut: "+idNumber+","+preferences.getDeviceId());
 
-        String urlParameters = null;
-        try {
-            urlParameters = "qr=" + qr_token +
-                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                    "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                    "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+    private class RecordQRCheckinAsync extends AsyncTask<String, Void, String> {
 
 
-            Log.d(TAG, "onNegative: " + preferences.getResidentsURL() + "qr_checkout?" + urlParameters);
-            new RecordQRCheckOut().execute(preferences.getResidentsURL() + "qr_checkout", urlParameters);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    void showSuccess() {
-        Log.d(TAG, "showSuccess: Yes");
-        progressDialog.dismiss();
-        dialog.dismiss();
-
-
-        dialog = new MaterialDialog.Builder(this)
-                .title("CHECKED IN")
-                .titleGravity(GravityEnum.CENTER)
-                .customView(R.layout.success_dialog, true)
-                .positiveText("OK")
-                .negativeText(" CANCEL")
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        dialog.dismiss();
-//                        finish();
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        dialog.dismiss();
-//                        finish();
-                    }
-                })
-                .build();
-        View view = dialog.getCustomView();
-        TextView messageText = view.findViewById(R.id.message);
-        messageText.setText("Checked In");
-        dialog.show();
-    }
-
-    private class RecordQRCheckOut extends AsyncTask<String, Void, String> {
-        MaterialDialog builder = new MaterialDialog.Builder(ScanTicket.this)
-                .title("Exit")
-                .content("Removing Guest...")
-                .progress(true, 0)
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            builder.show();
-
-        }
-
-        @Override
         protected String doInBackground(String... params) {
             return NetworkHandler.executePost(params[0], params[1]);
         }
 
-        @Override
         protected void onPostExecute(String result) {
-            builder.dismiss();
-            if (result != null) {
-                try {
-                    if (result.contains("result_code")) {
-                        JSONObject obj = new JSONObject(result);
-                        int resultCode = obj.getInt("result_code");
-                        String resultText = obj.getString("result_text");
-                        String resultContent = obj.getString("result_content");
-                        if (resultText.equals("OK") && resultContent.equals("success")) {
 
-                            recordCheckIn(qr_token);
+            Log.d(TAG, "onPostExecute: Result" + result);
+//            if (dialog != null && dialog.isShowing())
+//                dialog.dismiss();
+            if (result != null) {
+                //Toast.makeText(ExpressCheckoutActivity.this,result, Toast.LENGTH_LONG).show();
+                Object json = null;
+                try {
+                    json = new JSONTokener(result).nextValue();
+                    if (json instanceof JSONObject) {
+                        JSONObject object = new JSONObject(result);
+                        int result_code = object.getInt("result_code");
+                        String result_text = object.getString("result_text");
+                        if (result_code == 0) {
+
+                            Snackbar snackbar = Snackbar.make(frame1,
+                                    "Ticket Checked In "
+                                    , Snackbar.LENGTH_LONG);
+
+
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+                            Toast.makeText(ScanTicket.this, "Offline Ticket Checked In", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "onPostExecute: SUCCESS");
+
 
                         } else {
-                            new MaterialDialog.Builder(ScanTicket.this)
-                                    .title("Notice")
-                                    .content(resultText)
-                                    .positiveText("OK")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
-                                            //finish();
-                                        }
-                                    })
-                                    .show();
-                            Log.d(TAG, "Error: " + result);
+
+                            Snackbar snackbar = Snackbar.make(frame1,
+                                    "Ticket already Checked in "
+                                    , Snackbar.LENGTH_LONG);
+
+
+                            TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+                            textView.setTextColor(getResources().getColor(R.color.white));
+                            snackbar.show();
+
+                            Toast.makeText(ScanTicket.this, "Ticket already Checked In", Toast.LENGTH_SHORT).show();
+
+//                            new MaterialDialog.Builder(ScanTicket.this)
+//                                    .title("Notice")
+//                                    .content(result_text)
+//                                    .positiveText("Ok")
+////                                    .negativeText("Check Out")
+//                                    .callback(new MaterialDialog.ButtonCallback() {
+//                                        @Override
+//                                        public void onPositive(MaterialDialog dialog) {
+//                                            dialog.dismiss();
+////                                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+////                                            finish();
+//                                        }
+//
+////                                        @Override
+////                                        public void onNegative(MaterialDialog dialog) {
+////                                            dialog.dismiss();
+////
+////
+////                                            recordCheckOut();
+////
+////                                        }
+//                                    })
+//                                    .show();
                         }
-                    } else {
-                        new MaterialDialog.Builder(ScanTicket.this)
-                                .title("Notice")
-                                .content("Poor internet connection.")
-                                .positiveText("Ok")
-                                .show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            } else {
+                Toast.makeText(getApplicationContext(), "No network connection", Toast.LENGTH_LONG).show();
             }
+
         }
     }
 
 
-    public void getAllData() {
-        if (visitorResult == null || providerResult == null || incidentsResult == null || houseResult == null || premiseResidentResult == null || genderResult == null) {
-            Toast.makeText(getApplicationContext(), "An error occurred", Toast.LENGTH_LONG).show();
+    private void showSuccess(String option) {
+        Log.d(TAG, "showSuccess: Yes");
+
+        if (dialog.isShowing() && dialog != null) {
+            dialog.dismiss();
+        }
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+
+        Snackbar snackbar;
+        if (option.equals("offline")) {
+            Toast.makeText(this, "Currently Offline. Will Check In later", Toast.LENGTH_SHORT).show();
+
+            snackbar = Snackbar.make(frame1,
+                    "Ticket Checked In Offline "
+                    , Snackbar.LENGTH_LONG);
         } else {
-            try {
-                JSONObject visitorObject = new JSONObject(visitorResult);
-                JSONObject providerObject = new JSONObject(providerResult);
-                JSONObject incidentsObject = new JSONObject(incidentsResult);
-                JSONObject housesObject = new JSONObject(houseResult);
-                JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
-                JSONObject genderObject = new JSONObject(genderResult);
-                JSONObject idTypesObject = new JSONObject(idTypesResult);
-
-                SQLiteDatabase db = handler.getWritableDatabase();
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_INCIDENT_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_SERVICE_PROVIDERS_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOUSES);
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_GENDER_TYPES);
-                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_ID_TYPES);
-
-                db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
-                db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);
-                db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS_TYPES);
-                db.execSQL(handler.CREATE_TABLE_HOUSES);
-                db.execSQL(handler.CREATE_PREMISE_RESIDENTS_TABLE);
-                db.execSQL(handler.CREATE_GENDER_TYPES_TABLE);
-                db.execSQL(handler.CREATE_ID_TYPES_TABLE);
-
-                /*db.execSQL(handler.CREATE_TABLE_DRIVE_IN);
-                db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS);
-                db.execSQL(handler.CREATE_TABLE_RESIDENTS);
-                db.execSQL(handler.CREATE_TABLE_INCIDENTS);*/
-
-                //Gender types
-                if (genderObject.getInt("result_code") == 0 && genderObject.getString("result_text").equals("OK")) {
-                    JSONArray genderArray = genderObject.getJSONArray("result_content");
-                    for (int i = 0; i < genderArray.length(); i++) {
-                        JSONObject genderType = genderArray.getJSONObject(i);
-                        Log.d(TAG, "getAllData: Gender Types" + genderType);
-                        handler.insertGenderTypes(genderType.getString("id"), genderType.getString("description"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve gender types", Toast.LENGTH_SHORT).show();
-                }
-
-//                ID Types
-
-                if (idTypesObject.getInt("result_code") == 0 && idTypesObject.getString("result_text").equals("OK")) {
-                    JSONArray idTypesObjectJSONArray = idTypesObject.getJSONArray("result_content");
-                    for (int i = 0; i < idTypesObjectJSONArray.length(); i++) {
-                        JSONObject idType = idTypesObjectJSONArray.getJSONObject(i);
-                        Log.d(TAG, "getAllData: ID Types" + idType);
-                        handler.insertIDTypes(idType.getString("id"), idType.getString("description"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve ID types", Toast.LENGTH_SHORT).show();
-                }
-                //Visitor types
-                if (visitorObject.getInt("result_code") == 0 && visitorObject.getString("result_text").equals("OK")) {
-                    JSONArray visitorArray = visitorObject.getJSONArray("result_content");
-                    for (int i = 0; i < visitorArray.length(); i++) {
-                        JSONObject visitorType = visitorArray.getJSONObject(i);
-                        Log.d(TAG, "getAllData: visitorType" + visitorType);
-                        handler.insertVisitorType(visitorType.getString("id"), visitorType.getString("name"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve visitor types", Toast.LENGTH_SHORT).show();
-                }
-                //Provider Types
-                if (providerObject.getInt("result_code") == 0 && providerObject.getString("result_text").equals("OK")) {
-                    JSONArray providerArray = providerObject.getJSONArray("result_content");
-                    for (int i = 0; i < providerArray.length(); i++) {
-                        JSONObject provider = providerArray.getJSONObject(i);
-                        handler.insertServiceProviderType(provider.getString("id"), provider.getString("name"), provider.getString("Description"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve service providers", Toast.LENGTH_SHORT).show();
-                }
-                //INCIDENTS
-                if (incidentsObject.getInt("result_code") == 0 && incidentsObject.getString("result_text").equals("OK")) {
-                    JSONArray incidentsArray = incidentsObject.getJSONArray("result_content");
-                    for (int i = 0; i < incidentsArray.length(); i++) {
-                        JSONObject incident = incidentsArray.getJSONObject(i);
-                        handler.insertIncidentTypes(incident.getString("id"), incident.getString("description"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve incident types", Toast.LENGTH_SHORT).show();
-                }
-
-                //Houses
-                if (housesObject.getInt("result_code") == 0 && housesObject.getString("result_text").equals("OK")) {
-                    JSONArray housesArray = housesObject.getJSONArray("result_content");
-                    for (int i = 0; i < housesArray.length(); i++) {
-                        JSONObject house = housesArray.getJSONObject(i);
-                        handler.insertHouse(house.getString("house_id"), house.getString("house_description"), house.getString("block_description"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve houses", Toast.LENGTH_SHORT).show();
-                }
-
-                if (premiseResidentObject.getInt("result_code") == 0 && premiseResidentObject.getString("result_text").equals("OK")) {
-                    JSONArray residentsArray = premiseResidentObject.getJSONArray("result_content");
-                    for (int i = 0; i < residentsArray.length(); i++) {
-                        JSONObject resident = residentsArray.getJSONObject(i);
-                        int length = 0;
-                        if (resident.getString("length") != "null") {
-                            length = Integer.valueOf(resident.getString("length"));
-                        }
-                        String fingerPrint = resident.get("fingerprint") == null ? null : resident.getString("fingerprint");
-                        if (fingerPrint == "0")
-                            fingerPrint = null;
-                        fingerPrint = fingerPrint.replaceAll("\\n", "");
-                        fingerPrint = fingerPrint.replace("\\r", "");
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"), resident.getString("firstname"), resident.getString("lastname"), fingerPrint, length, resident.getString("house_id"), resident.getString("host_id"));
-                    }
-                } else {
-                    Toast.makeText(ScanTicket.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();
-                }
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            snackbar = Snackbar.make(frame1,
+                    "Ticket Checked In "
+                    , Snackbar.LENGTH_LONG);
         }
+
+
+        TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(getResources().getColor(R.color.white));
+        snackbar.show();
+
     }
+
 
 }

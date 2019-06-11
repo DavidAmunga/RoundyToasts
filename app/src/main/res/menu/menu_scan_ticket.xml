@@ -2,13 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="miles.identigate.soja.Dashboard">
-    <item
-        android:id="@+id/refresh"
-        android:icon="@drawable/ic_refresh_white_24dp"
-        android:orderInCategory="100"
-        android:title="Refresh"
-        android:visible="false"
-        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/ticket_list"
         android:orderInCategory="100"

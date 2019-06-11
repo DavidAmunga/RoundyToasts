@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -30,6 +31,8 @@ public class SplashScreen extends Activity {
     Animation scale_up, slide_up, fade_in;
     TextView soja_name, soja_slogan;
     Preferences preferences;
+
+    private static final String TAG = "SplashScreen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,18 +80,17 @@ public class SplashScreen extends Activity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-                if (preferences.getBaseURL().toLowerCase().contains("sportpesa")) {
 
+                Log.d(TAG, "run: Base URL " + preferences.getBaseURL());
+
+                if (preferences.getBaseURL().toLowerCase().contains("sportpesa")) {
                     Intent i = new Intent(SplashScreen.this, ScanTicket.class);
                     startActivity(i);
                     finish();
-
                 } else {
-
                     Intent i = new Intent(SplashScreen.this, Dashboard.class);
                     startActivity(i);
                     finish();
-
                 }
 
                 // close this activity

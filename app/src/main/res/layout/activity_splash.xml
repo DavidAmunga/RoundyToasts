@@ -10,7 +10,7 @@
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         android:layout_margin="25dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         android:src="@drawable/soja_logo_only" />
 
     <miles.identigate.soja.font.BrandonGrotesqueBold
