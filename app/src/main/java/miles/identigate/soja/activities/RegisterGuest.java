@@ -953,13 +953,9 @@ public class RegisterGuest extends AppCompatActivity {
             PAct.LanguageEncode();
             PAct.BeforePrintAction();
             HPRTPrinterHelper.PrintText(
-                    Common.centerString(18, Common.formatString(firstName))
+                    Common.centerString(18, Common.formatString(firstName.toLowerCase()))
                     , 32, 2, 16);
-            String msg = (
-
-                    companyName != null ? companyName + "\n" : ""
-
-            );
+            String msg = Common.centerString(18, companyName != null ? companyName + "\n" : "");
 
 
             HPRTPrinterHelper.PrintText(msg, 32, 0, 16);

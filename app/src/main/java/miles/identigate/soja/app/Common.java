@@ -180,7 +180,9 @@ public class Common extends Application {
 
         if (splitStr[0].length() < 16) {
 //            Log.d(TAG, "formatString: Less than 16");
-            if (splitStr[1] != null && splitStr[0].length() + splitStr[1].length() + 1 < 16) {
+            if ((splitStr[1] != null && (splitStr[0].length() + splitStr[1].length() + 1 < 16)) &&
+                    (splitStr[2] != null && (splitStr[0].length() + splitStr[1].length() + splitStr[1].length() + 1 < 16))
+            ) {
 //                Log.d(TAG, "formatString: Less than 16 including second");
 
                 finalText = item + "\n";
