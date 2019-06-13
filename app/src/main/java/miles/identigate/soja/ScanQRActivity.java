@@ -181,6 +181,9 @@ public class ScanQRActivity extends AppCompatActivity {
                         String resultText = obj.getString("result_text");
                         String resultContent = obj.getString("result_content");
 
+                        String residentName = obj.optString("visitor_name", "Resident");
+
+
                         Log.d(TAG, "onPostExecute: " + resultText);
 
                         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
@@ -199,7 +202,7 @@ public class ScanQRActivity extends AppCompatActivity {
                             Log.d(TAG, "onPostExecute: Show Dialog");
 
 
-                            dialog = Constants.showDialog(ScanQRActivity.this, "SUCCESS", "Resident recorded successfully.", "OK", singleButtonCallback);
+                            dialog = Constants.showDialog(ScanQRActivity.this, "SUCCESS", "A Match for " + residentName + " has been found ." + " Resident recorded successfully.", "OK", singleButtonCallback);
 
                             dialog.show();
                         } else {

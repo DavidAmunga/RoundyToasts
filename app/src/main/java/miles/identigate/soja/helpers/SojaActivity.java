@@ -250,7 +250,7 @@ public class SojaActivity extends AppCompatActivity implements
         Paper.book().read("offline", isConnected);
 
         if (!isConnected) {
-            Toast.makeText(this, "Please make sure you have an active Internet Connection", Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "Please make sure you have an active Internet Connection", Toast.LENGTH_LONG).show();
         }
     }
 

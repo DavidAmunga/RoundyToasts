@@ -174,19 +174,20 @@ public class Common extends Application {
 
         String[] splitStr = item.split("\\s+");
 
-        Log.d(TAG, "formatString: String " + splitStr);
-        Log.d(TAG, "formatString: String Length" + splitStr.length);
-        Log.d(TAG, "formatString:  Total String Length " + splitStr[0].length() + splitStr[1].length() + 1);
+//        Log.d(TAG, "formatString: String " + splitStr);
+//        Log.d(TAG, "formatString: String Length" + splitStr.length);
+//        Log.d(TAG, "formatString:  Total String Length " + splitStr[0].length() + splitStr[1].length() + 1);
 
         if (splitStr[0].length() < 16) {
 //            Log.d(TAG, "formatString: Less than 16");
-            if ((splitStr[1] != null && (splitStr[0].length() + splitStr[1].length() + 1 < 16)) &&
-                    (splitStr[2] != null && (splitStr[0].length() + splitStr[1].length() + splitStr[1].length() + 1 < 16))
+            if ((splitStr[1] != null && (splitStr[0].length() + splitStr[1].length() + 1 < 16))
             ) {
 //                Log.d(TAG, "formatString: Less than 16 including second");
 
                 finalText = item + "\n";
                 finalText = Common.centerString(16, finalText);
+
+                Log.d(TAG, "formatString: "+finalText);
 
                 return finalText;
             } else {
@@ -197,9 +198,14 @@ public class Common extends Application {
                     finalText = Common.centerString(16, finalText);
                 }
 
+                Log.d(TAG, "formatString: "+finalText);
+
+
                 return finalText;
             }
         }
+
+        Log.d(TAG, "formatString: "+finalText);
 
 
         return finalText;

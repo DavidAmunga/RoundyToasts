@@ -147,6 +147,7 @@ public class ScanTicket extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
 
         mDatabase = FirebaseDatabase.getInstance().getReference(Common.TICKETS);
+        mDatabase.keepSynced(true);
 
         dialog = new MaterialDialog.Builder(ScanTicket.this)
                 .title("QR")
@@ -262,7 +263,7 @@ public class ScanTicket extends AppCompatActivity {
 
                     checkInFB(qr_token);
                 } else {
-                    showSuccess("offline");
+//                    showSuccess("offline");
 
 
                     checkInAsync(qr_token);
@@ -279,6 +280,7 @@ public class ScanTicket extends AppCompatActivity {
 
     private void checkInAsync(String token) {
         Log.d(TAG, "checkInAsync: Start");
+
 
         mDatabase.orderByKey().equalTo(token).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -298,6 +300,9 @@ public class ScanTicket extends AppCompatActivity {
 //                            Toast.makeText(ScanTicket.this, "Already Checked In", Toast.LENGTH_SHORT).show();
 
                         } else {
+
+                            Toast.makeText(ScanTicket.this, "Currently Offline. Will Check In later", Toast.LENGTH_SHORT).show();
+
 //                        New Checked In User
                             Map<String, Object> updateInfo = new HashMap<>();
                             updateInfo.put("entryTime", Constants.getCurrentTimeStamp());
@@ -317,6 +322,11 @@ public class ScanTicket extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         Toast.makeText(ScanTicket.this, "Ticket Not Available", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (dataSnapshot.getChildrenCount() == 0) {
+                        Toast.makeText(ScanTicket.this, "Incorrect QR", Toast.LENGTH_SHORT).show();
+
                     }
                 }
 
@@ -378,6 +388,11 @@ public class ScanTicket extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         Toast.makeText(ScanTicket.this, "Ticket Not Available", Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (dataSnapshot.getChildrenCount() == 0) {
+                        Toast.makeText(ScanTicket.this, "Incorrect QR", Toast.LENGTH_SHORT).show();
+
                     }
                 }
 
@@ -458,7 +473,7 @@ public class ScanTicket extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), AdminSettingsActivity.class));
             return true;
         } else if (id == R.id.ticket_list) {
-//            addTickets();
+            addTickets();
             startActivity(new Intent(getApplicationContext(), TicketList.class));
             return true;
         }
@@ -518,7 +533,7 @@ public class ScanTicket extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
 
-            Log.d(TAG, "onPostExecute: Result" + result);
+            Log.d(TAG, "onPostExecute: Result" + result.toString());
 //            if (dialog != null && dialog.isShowing())
 //                dialog.dismiss();
             if (result != null) {
@@ -603,7 +618,6 @@ public class ScanTicket extends AppCompatActivity {
                                     "Ticket Checked In "
                                     , Snackbar.LENGTH_LONG);
 
-
                             TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
                             textView.setTextColor(getResources().getColor(R.color.white));
                             snackbar.show();
@@ -671,18 +685,17 @@ public class ScanTicket extends AppCompatActivity {
             progressDialog.dismiss();
         }
 
-        Snackbar snackbar;
         if (option.equals("offline")) {
             Toast.makeText(this, "Currently Offline. Will Check In later", Toast.LENGTH_SHORT).show();
 
-            snackbar = Snackbar.make(frame1,
-                    "Ticket Checked In Offline "
-                    , Snackbar.LENGTH_LONG);
-        } else {
-            snackbar = Snackbar.make(frame1,
-                    "Ticket Checked In "
-                    , Snackbar.LENGTH_LONG);
+//            snackbar = Snackbar.make(frame1,
+//                    "Ticket Checked In Offline "
+//                    , Snackbar.LENGTH_LONG);
         }
+
+        Snackbar snackbar = Snackbar.make(frame1,
+                "Ticket Checked In "
+                , Snackbar.LENGTH_LONG);
 
 
         TextView textView = (TextView) snackbar.getView().findViewById(android.support.design.R.id.snackbar_text);
