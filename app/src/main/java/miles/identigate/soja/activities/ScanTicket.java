@@ -256,20 +256,27 @@ public class ScanTicket extends AppCompatActivity {
                 //Log.v("QR",result.getContents());
                 qr_token = result.getContents();
 
-                Log.d(TAG, "onActivityResult: Here ");
+                Log.d(TAG, "onActivityResult: Here " + qr_token);
 
-                if (validatePremise(qr_token)) {
+                String[] tokenString = qr_token.split("-");
 
-                }
+                String premiseZoneID = tokenString[1];
+                String qr = tokenString[0];
 
-                if (new CheckConnection().check(this)) {
+                if (validatePremise(premiseZoneID)) {
 
-                    checkInFB(qr_token);
-                } else {
+                    if (new CheckConnection().check(this)) {
+
+                        checkInFB(qr_token);
+                    } else {
 //                    showSuccess("offline");
 
+                        checkInAsync(qr_token);
+                    }
 
-                    checkInAsync(qr_token);
+
+                } else {
+                    Toast.makeText(this, "This Ticket is not valid for this queue", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -280,7 +287,11 @@ public class ScanTicket extends AppCompatActivity {
         }
     }
 
-    private boolean validatePremise(String qr_token) {
+    private boolean validatePremise(String premiseZoneID) {
+
+        if (premiseZoneID.equals(preferences.getCurrentUser().getPremiseZoneId())) {
+            return true;
+        }
 
         return false;
     }
@@ -320,7 +331,12 @@ public class ScanTicket extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
 
-                                        recordCheckInAsync(token);
+                                        String[] tokenString = token.split("-");
+
+                                        String qr = tokenString[0];
+
+
+                                        recordCheckInAsync(qr);
 //                                    Toast.makeText(ScanTicket.this, "Checked In", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -384,7 +400,12 @@ public class ScanTicket extends AppCompatActivity {
                                         progressDialog.dismiss();
 
 
-                                        recordCheckIn(token);
+                                        String[] tokenString = token.split("-");
+
+                                        String qr = tokenString[0];
+
+
+                                        recordCheckIn(qr);
 //                                    Toast.makeText(ScanTicket.this, "Checked In", Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -561,6 +582,10 @@ public class ScanTicket extends AppCompatActivity {
 
                         } else {
 
+                            if (dialog.isShowing()) {
+                                dialog.dismiss();
+                            }
+
                             new MaterialDialog.Builder(ScanTicket.this)
                                     .title("Notice")
                                     .content(result_text)
@@ -584,6 +609,7 @@ public class ScanTicket extends AppCompatActivity {
 //                                        }
                                     })
                                     .show();
+
                         }
                     }
                 } catch (JSONException e) {

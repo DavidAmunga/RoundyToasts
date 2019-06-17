@@ -85,17 +85,26 @@ public class SplashScreen extends Activity {
 
                 Log.d(TAG, "run: Base URL " + preferences.getBaseURL());
 
-                if (preferences.getBaseURL().toLowerCase().contains("sportpesa")) {
-                    FirebaseDatabase.getInstance().getReference(Common.TICKETS).keepSynced(true);
 
-                    Intent i = new Intent(SplashScreen.this, ScanTicket.class);
-                    startActivity(i);
-                    finish();
+                if (preferences.getCurrentUser() != null) {
+                    if (preferences.getBaseURL().toLowerCase().contains("sportpesa")) {
+                        FirebaseDatabase.getInstance().getReference(Common.TICKETS).keepSynced(true);
+
+                        Intent i = new Intent(SplashScreen.this, ScanTicket.class);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Intent i = new Intent(SplashScreen.this, Dashboard.class);
+                        startActivity(i);
+                        finish();
+                    }
+
                 } else {
-                    Intent i = new Intent(SplashScreen.this, Dashboard.class);
+                    Intent i = new Intent(SplashScreen.this, Login.class);
                     startActivity(i);
                     finish();
                 }
+
 
                 // close this activity
             }

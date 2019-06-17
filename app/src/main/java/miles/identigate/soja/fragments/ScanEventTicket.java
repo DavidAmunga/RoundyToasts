@@ -1,13 +1,9 @@
 package miles.identigate.soja.fragments;
 
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +24,6 @@ import com.journeyapps.barcodescanner.DefaultDecoderFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -71,7 +65,8 @@ public class ScanEventTicket extends Fragment {
     Unbinder unbinder;
 
     private BeepManager beepManager;
-    DataService mService;
+    DataService mResidentsService;
+    DataService mEventsService;
     String lastText;
     Animation scale_up;
 
@@ -79,7 +74,9 @@ public class ScanEventTicket extends Fragment {
     Preferences preferences;
 
     ServiceAdapter serviceAdapter;
-    String eventID, eventName, serviceID;
+    String eventID, eventName, serviceID, serviceName;
+
+    Boolean direct = false;
 
 
     public ScanEventTicket() {
@@ -97,7 +94,12 @@ public class ScanEventTicket extends Fragment {
             lastText = result.getText();
 //            barcodeView.setStatusText(result.getText());
 
-            checkInTicket(result.getText());
+            if (!direct) {
+                checkInTicketManagedService(result.getText());
+            } else {
+                checkInTicket(result.getText());
+
+            }
 
 //            Toast.makeText(ScanTicket.this, "QR is " + result.getText(), Toast.LENGTH_SHORT).show();
 
@@ -130,12 +132,23 @@ public class ScanEventTicket extends Fragment {
 
         Bundle bundle = getArguments();
 
-        eventID = bundle.getString("eventID");
-        eventName = bundle.getString("eventName");
-        serviceID = bundle.getString("serviceID");
+
+        if (bundle.getString("eventID") != null) {
+            eventID = bundle.getString("eventID");
+            eventName = bundle.getString("eventName");
+            serviceID = bundle.getString("serviceID");
+            serviceName = bundle.getString("serviceName");
+
+            ((CheckInGuest) getActivity()).getSupportActionBar().setTitle("Scan " + serviceName + " Ticket");
+        }
+
+        if (bundle.getBoolean("direct")) {
+            direct = bundle.getBoolean("direct");
+        }
 
 
-        mService = Common.getResidentsDataService(getActivity());
+        mResidentsService = Common.getResidentsDataService(getActivity());
+        mEventsService = Common.getEventsDataService(getActivity());
 
 
         if (preferences.isDarkModeOn()) {
@@ -146,14 +159,12 @@ public class ScanEventTicket extends Fragment {
         return view;
     }
 
-
-    private void checkInTicket(String text) {
+    private void checkInTicketManagedService(String text) {
         changeUIState(Common.STATE_LOADING, "Checking In");
 
-        mService.checkInQR(
+        mEventsService.checkInQRManagedService(
                 preferences.getCurrentUser().getDeviceId(),
                 preferences.getCurrentUser().getPremiseZoneId(),
-                Constants.getCurrentTimeStamp(),
                 text,
                 serviceID,
                 eventID
@@ -203,10 +214,64 @@ public class ScanEventTicket extends Fragment {
     }
 
 
+    private void checkInTicket(String text) {
+        changeUIState(Common.STATE_LOADING, "Checking In");
+
+        mResidentsService.checkInQR(
+                preferences.getCurrentUser().getDeviceId(),
+                preferences.getCurrentUser().getPremiseZoneId(),
+                Constants.getCurrentTimeStamp(),
+                text
+        ).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject object = new JSONObject(response.body().toString());
+                        int result_code = object.getInt("result_code");
+                        String result_text = object.getString("result_text");
+
+                        if (result_code == 0) {
+                            changeUIState(Common.STATE_SUCCESS, "Success. Ticket Checked In");
+                        } else {
+                            if (result_text.contains("still in")) {
+                                changeUIState(Common.STATE_INFO, "Ticket Already Checked In");
+
+                                checkOutTicket();
+                            } else {
+                                changeUIState(Common.STATE_INFO, result_text);
+
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    Log.d(TAG, "onResponse: " + response.toString());
+                    Log.d(TAG, "onResponse: " + "No Internet Connection");
+                    changeUIState(Common.STATE_FAILURE, "There was a problem");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                changeUIState(Common.STATE_FAILURE, "No Internet Connection");
+
+
+            }
+        });
+
+    }
+
+
     private void checkOutTicket() {
         changeUIState(Common.STATE_LOADING, "Checking Out");
 
-        mService.checkOutQR(
+        mResidentsService.checkOutQR(
                 preferences.getCurrentUser().getDeviceId(),
                 preferences.getCurrentUser().getPremiseZoneId(),
                 Constants.getCurrentTimeStamp(),

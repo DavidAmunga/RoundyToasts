@@ -32,6 +32,7 @@ public interface DataService {
             @Query("eventsID") String eventsID,
             @Query("premiseZoneID") String premiseZoneID);
 
+
     @FormUrlEncoded
     @POST("record_invite")
     Call<String> recordInvite(
@@ -95,10 +96,17 @@ public interface DataService {
             @Field("deviceID") String deviceID,
             @Field("premise_zone_id") String premiseZoneID,
             @Field("entryTime") String entryTime,
-            @Field("qr") String qr,
-            @Field("serviceID") String serviceID,
-            @Field("entryID") String entryID
+            @Field("qr") String qr
     );
 
+    @FormUrlEncoded
+    @POST("record_managed_service")
+    Call<String> checkInQRManagedService(
+            @Field("deviceID") String deviceID,
+            @Field("premiseZoneID") String premiseZoneID,
+            @Field("qr") String qr,
+            @Field("serviceID") String serviceID,
+            @Field("eventID") String eventID
+    );
 
 }

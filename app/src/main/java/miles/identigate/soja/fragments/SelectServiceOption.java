@@ -7,21 +7,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -31,13 +20,11 @@ import miles.identigate.soja.R;
 import miles.identigate.soja.activities.CheckInGuest;
 import miles.identigate.soja.adapters.ServiceAdapter;
 import miles.identigate.soja.app.Common;
+import miles.identigate.soja.font.TextViewRegular;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.interfaces.OnServiceOptionClick;
 import miles.identigate.soja.models.ServiceOption;
 import miles.identigate.soja.services.DataService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,6 +40,8 @@ public class SelectServiceOption extends Fragment implements OnServiceOptionClic
     ServiceAdapter serviceAdapter;
     ArrayList<ServiceOption> serviceOptions = new ArrayList<>();
     DataService mService;
+    @BindView(R.id.direct_scan_qr)
+    TextViewRegular directScanQr;
 
     public SelectServiceOption() {
         // Required empty public constructor
@@ -60,7 +49,6 @@ public class SelectServiceOption extends Fragment implements OnServiceOptionClic
 
     String eventID, eventName;
     Preferences preferences;
-
 
 
     @Override
@@ -94,6 +82,15 @@ public class SelectServiceOption extends Fragment implements OnServiceOptionClic
             recyclerView.setAdapter(serviceAdapter);
         }
 
+        directScanQr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bundle.putBoolean("direct", true);
+
+                ((CheckInGuest) getActivity()).displaySelectedScreen(R.id.nav_scan_event_ticket, bundle);
+            }
+        });
+
 
         return view;
     }
@@ -113,6 +110,7 @@ public class SelectServiceOption extends Fragment implements OnServiceOptionClic
         bundle.putString("eventID", eventID);
         bundle.putString("eventName", eventName);
         bundle.putString("serviceID", serviceOption.getServiceId());
+        bundle.putString("serviceName", serviceOption.getDescription());
 
         ((CheckInGuest) getActivity()).displaySelectedScreen(R.id.nav_scan_event_ticket, bundle);
 

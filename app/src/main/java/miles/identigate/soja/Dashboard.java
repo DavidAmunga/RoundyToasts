@@ -289,6 +289,7 @@ public class Dashboard extends SojaActivity {
                             preferences.setId("");
                             preferences.setCanPrint(false);
                             preferences.setFingerprintsEnabled(false);
+                            preferences.clearCurrentUser();
 
 
                             SQLiteDatabase db = handler.getWritableDatabase();
