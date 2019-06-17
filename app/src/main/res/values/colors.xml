@@ -18,6 +18,8 @@
     <color name="black">#000</color>
     <color name="grey">#BDBDBD</color>
     <color name="colorGreyLight3">#E5E5E5</color>
+    <color name="colorGreyBackground">#fafafa</color>
+
 
     <!--<color name="searchDialogResultColor">?attr/backgroundColor</color>-->
     <!--<color name="searchDialogResultHighlightColor">?attr/textColor</color>-->

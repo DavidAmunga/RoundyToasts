@@ -7,11 +7,13 @@
         android:id="@+id/ticket_list"
         android:orderInCategory="100"
         android:title="Ticket List"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/settings"
         android:orderInCategory="200"
         android:title="Settings"
+        android:visible="false"
         app:showAsAction="never" />
     <item
         android:id="@+id/logout"

@@ -216,6 +216,48 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/phone_number_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <miles.identigate.soja.font.TextViewBold
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5.0dip"
+                        android:text="Enter the Phone Number"
+                        android:textColor="?attr/textColor"
+                        android:textSize="16sp" />
+
+                    <miles.identigate.soja.font.EditTextRegular
+                        android:id="@+id/txt_phone_number"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/border"
+                        android:ems="10"
+                        android:hint="Enter phone number (07XX-XXX-XX)"
+                        android:inputType="phone"
+                        android:maxLength="10"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="?attr/textColor"
+                        android:textColorHint="?attr/textColorHint"
+                        android:textCursorDrawable="@null" />
+
+                    <Button
+                        android:id="@+id/btnConfirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/colorPrimary"
+                        android:text="SEND VERIFICATION CODE"
+                        android:textColor="@android:color/white"
+                        android:visibility="visible" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/companyNameLayout"

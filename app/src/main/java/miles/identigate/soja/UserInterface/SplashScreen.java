@@ -87,7 +87,6 @@ public class SplashScreen extends Activity {
 
                 if (preferences.getBaseURL().toLowerCase().contains("sportpesa")) {
                     FirebaseDatabase.getInstance().getReference(Common.TICKETS).keepSynced(true);
-                    FirebaseDatabase.getInstance().getReference(Common.TICKETS).keepSynced(true);
 
                     Intent i = new Intent(SplashScreen.this, ScanTicket.class);
                     startActivity(i);

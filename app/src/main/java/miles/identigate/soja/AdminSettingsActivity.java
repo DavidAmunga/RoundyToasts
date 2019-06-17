@@ -78,6 +78,9 @@ public class AdminSettingsActivity extends SojaActivity {
     @BindView(R.id.lin_record_invitees)
     LinearLayout linRecordInvitees;
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);

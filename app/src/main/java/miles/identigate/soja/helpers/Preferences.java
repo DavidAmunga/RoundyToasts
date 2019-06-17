@@ -23,7 +23,7 @@ public class Preferences {
 
 
     public String getBaseURL() {
-        String baseUrl = settings.getString("base_url", "https://soja.co.ke/soja-rest/index.php/api/visits/");
+        String baseUrl = settings.getString("base_url", "http://events.soja.co.ke/soja-rest/index.php/api/visits/");
         Constants.URL = baseUrl;
         return baseUrl;
     }
@@ -35,7 +35,7 @@ public class Preferences {
     }
 
     public String getResidentsURL() {
-        String residents_url = settings.getString("residents_url", "https://soja.co.ke/soja-rest/index.php/api/residents/");
+        String residents_url = settings.getString("residents_url", "http://events.soja.co.ke/soja-rest/index.php/api/residents/");
         Constants.URL = residents_url;
         return residents_url;
     }

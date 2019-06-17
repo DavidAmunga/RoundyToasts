@@ -161,7 +161,6 @@ public class ScanTicket extends AppCompatActivity {
         btnList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 startActivity(new Intent(ScanTicket.this, TicketList.class));
 
             }
@@ -259,6 +258,10 @@ public class ScanTicket extends AppCompatActivity {
 
                 Log.d(TAG, "onActivityResult: Here ");
 
+                if (validatePremise(qr_token)) {
+
+                }
+
                 if (new CheckConnection().check(this)) {
 
                     checkInFB(qr_token);
@@ -275,6 +278,11 @@ public class ScanTicket extends AppCompatActivity {
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private boolean validatePremise(String qr_token) {
+
+        return false;
     }
 
 
@@ -343,8 +351,6 @@ public class ScanTicket extends AppCompatActivity {
 
 
     private void checkInFB(String token) {
-
-
         Log.d(TAG, "checkInFB: " + token);
         mDatabase.orderByKey().equalTo(token).limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

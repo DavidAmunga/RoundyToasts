@@ -1,42 +1,29 @@
 package miles.identigate.soja.activities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.widget.FrameLayout;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
+import com.google.zxing.client.android.BeepManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import miles.identigate.soja.Dashboard;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import miles.identigate.soja.R;
-import miles.identigate.soja.ScanQRActivity;
-import miles.identigate.soja.helpers.Constants;
-import miles.identigate.soja.helpers.NetworkHandler;
+import miles.identigate.soja.adapters.ServiceAdapter;
+import miles.identigate.soja.fragments.ScanEventTicket;
+import miles.identigate.soja.fragments.SelectEvent;
+import miles.identigate.soja.fragments.SelectServiceOption;
 import miles.identigate.soja.helpers.Preferences;
-import miles.identigate.soja.helpers.ZxingHelperActivity;
-import miles.identigate.soja.models.QueryResponse;
-import miles.identigate.soja.service.network.api.APIClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import miles.identigate.soja.services.DataService;
 
 public class CheckInGuest extends AppCompatActivity {
 
@@ -48,6 +35,23 @@ public class CheckInGuest extends AppCompatActivity {
 
 
     private static final String TAG = "CheckInGuest";
+    @BindView(R.id.container)
+    FrameLayout container;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+
+    private BeepManager beepManager;
+
+    DataService mService;
+
+
+    String lastText;
+    Animation scale_up;
+
+    ServiceAdapter serviceAdapter;
+
+    Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,249 +64,187 @@ public class CheckInGuest extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_in_guest);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
 
 
-        ImageView scan_icon = findViewById(R.id.scan_icon);
-        scan_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new IntentIntegrator(CheckInGuest.this).setCaptureActivity(ZxingHelperActivity.class).addExtra("PROMPT_MESSAGE","Place QR Here to scan it").initiateScan();
+        displaySelectedScreen(R.id.nav_select_event, bundle);
+
+
+    }
+
+    public void displaySelectedScreen(int itemId, Bundle bundle) {
+        // Handle navigation view item clicks here.
+
+        // Navigation drawer item selection logic goes here
+        Fragment fragment = null;
+        Class fragmentClass = null;
+        String title = null;
+
+
+        //initializing the fragment object which is selected
+        switch (itemId) {
+            case R.id.nav_select_event:
+                fragmentClass = SelectEvent.class;
+                title = "Select Event";
+                break;
+            case R.id.nav_scan_event_ticket:
+                fragmentClass = ScanEventTicket.class;
+                title = "Scan Event Ticket";
+                break;
+            case R.id.nav_select_service:
+                fragmentClass = SelectServiceOption.class;
+                title = "Select Service";
+                break;
+
+        }
+
+        try {
+            if (fragmentClass != null) {
+                fragment = (Fragment) fragmentClass.newInstance();
             }
-        });
-
-        progressDialog = new ProgressDialog(this);
-
-
-        dialog = new MaterialDialog.Builder(CheckInGuest.this)
-                .title("QR")
-                .content("Checking QR...")
-                .progress(true, 0)
-                .cancelable(true)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Insert the fragment by replacing any existing fragment
+        if (fragment != null) {
+            replaceFragment(fragment, title, bundle);
+        }
     }
 
 
-    public void recordCheckIn(String qr_token) {
-        String urlParameters = null;
-        try {
-            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getCurrentUser().getDeviceId(), "UTF-8") +
-                    "&premise_zone_id=" + URLEncoder.encode(preferences.getCurrentUser().getPremiseZoneId(), "UTF-8") +
-                    "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
-                    "&qr=" + URLEncoder.encode(qr_token, "UTF-8");
+    public void replaceFragment(Fragment fragment, String title, Bundle bundle) {
+        FragmentManager ft = getSupportFragmentManager();
 
-            Log.d(TAG, "onActivityResult: " + preferences.getCurrentUser().getPremiseZoneId());
+        fragment.setArguments(bundle);
+
+        ft.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left, R.anim.slide_out_right, R.anim.slide_in_right)
+                .replace(R.id.container, fragment, title)
+                // Add this transaction to the back stack
+                .addToBackStack(title)
+                .commit();
+
+        // Set the title in the action bar.
+        getSupportActionBar().setTitle(fragment.getTag());
+        resolveBackStack();
+
+        showUpButton(true);
 
 
-            new RecordQRCheckin().execute(preferences.getBaseURL().replace("visits", "residents") + "qr_checkin", urlParameters);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+    }
+
+    private void resolveBackStack() {
+        // Update your UI here
+        getSupportFragmentManager().addOnBackStackChangedListener(this::updateUI);
+    }
+
+    private void updateUI() {
+        int lastBackStackEntryCount = getSupportFragmentManager().getBackStackEntryCount() - 1;
+        if (lastBackStackEntryCount >= 0) {
+            FragmentManager.BackStackEntry lastBackStackEntry = getSupportFragmentManager().getBackStackEntryAt(lastBackStackEntryCount);
+            // Check if we are the Home fragment if so, show hamburger icon.
+            if (lastBackStackEntry.getName().equalsIgnoreCase("Select Event")) {
+                showUpButton(false);
+            } else {
+                // Show the <- (up arrow)
+                showUpButton(true);
+            }
+            getSupportActionBar().setTitle(lastBackStackEntry.getName());
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+
+            int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackCount >= 1) {
+                Log.d(TAG, "onBackPressed: " + backStackCount);
+                getSupportFragmentManager().popBackStack();
+                // Check if backStackCount is 1, means we are at HOME page.
+                // Therefore when user press back at this point, close the app.
+                if (backStackCount == 1) {
+                    super.onBackPressed();
+                }
             } else {
-                //Log.v("QR",result.getContents());
-                qr_token = result.getContents();
+                super.onBackPressed();
 
-                recordCheckIn(qr_token);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    private void resolveUpButtonWithFragmentStack() {
+        showUpButton(getSupportFragmentManager().getBackStackEntryCount() > 0);
+        resolveBackStack();
+    }
+
+    private void showUpButton(boolean show) {
+        // To keep states of ActionBar and ActionBarDrawerToggle synchronized,
+        // when you enable on one, you disable on the other.
+        // And as you may notice, the order for this operation is disable first, then enable - VERY VERY IMPORTANT.
+        if (show) {
+            // Remove hamburger
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            // when DrawerToggle is disabled i.e. setDrawerIndicatorEnabled(false), navigation icon
+            // clicks are disabled i.e. the UP button will not work.
+            // We need to add a listener, as in below, so DrawerToggle will forward
+            // click events to this listener.
+
+        } else {
+            // Remove back button
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Get the current title before change in device configuration from the action bar.
+        CharSequence titleBeforeOrientation = getSupportActionBar().getTitle();
+        outState.putString("actionBarTitle", String.valueOf(titleBeforeOrientation));
+
+        //Save the fragment's state here
+        Log.e("Main: SaveInstanceState", "Triggered onSaveInstanceState!");
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.e("Restore Instance State", "I am back " +
+                savedInstanceState.getString("actionBarTitle"));
+        getSupportActionBar().setTitle(savedInstanceState.getString("actionBarTitle"));
+        resolveUpButtonWithFragmentStack();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackCount >= 1) {
+            Log.d(TAG, "onBackPressed: " + backStackCount);
+            getSupportFragmentManager().popBackStack();
+            // Check if backStackCount is 1, means we are at HOME page.
+            // Therefore when user press back at this point, close the app.
+            if (backStackCount == 1) {
+                super.onBackPressed();
             }
         } else {
-            // This is important, otherwise the result will not be passed to the fragment
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private class RecordQRCheckin extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            if (dialog != null && !dialog.isShowing())
-                dialog.show();
-        }
-
-        protected String doInBackground(String... params) {
-            return NetworkHandler.executePost(params[0], params[1]);
-        }
-
-        protected void onPostExecute(String result) {
-
-            Log.d(TAG, "onPostExecute: Result" + result);
-            if (dialog != null && dialog.isShowing())
-                dialog.dismiss();
-            if (result != null) {
-                //Toast.makeText(ExpressCheckoutActivity.this,result, Toast.LENGTH_LONG).show();
-                Object json = null;
-                try {
-                    json = new JSONTokener(result).nextValue();
-                    if (json instanceof JSONObject) {
-                        JSONObject object = new JSONObject(result);
-                        int result_code = object.getInt("result_code");
-                        String result_text = object.getString("result_text");
-                        if (result_code == 0) {
-                            showSuccess();
-
-                        } else {
-
-                            new MaterialDialog.Builder(CheckInGuest.this)
-                                    .title("Notice")
-                                    .content(result_text)
-                                    .positiveText("Ok")
-                                    .negativeText("Check Out")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
-                                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                                            finish();
-                                        }
-
-                                        @Override
-                                        public void onNegative(MaterialDialog dialog) {
-                                            dialog.dismiss();
-
-
-                                            recordCheckOut();
-
-                                        }
-                                    })
-                                    .show();
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(getApplicationContext(), "No network connection", Toast.LENGTH_LONG).show();
-            }
+            super.onBackPressed();
 
         }
     }
-
-    private void recordCheckOut() {
-        if (!progressDialog.isShowing()) {
-            progressDialog.setMessage("Checking Out");
-            progressDialog.show();
-        }
-//        Log.d(TAG, "recordCheckOut: "+idNumber+","+preferences.getDeviceId());
-
-        String urlParameters = null;
-        try {
-            urlParameters = "qr=" + qr_token +
-                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                    "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                    "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
-
-
-            Log.d(TAG, "onNegative: " + preferences.getResidentsURL() + "qr_checkout?" + urlParameters);
-            new RecordQRCheckOut().execute(preferences.getResidentsURL() + "qr_checkout", urlParameters);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    void showSuccess() {
-        progressDialog.dismiss();
-        dialog.dismiss();
-        dialog = new MaterialDialog.Builder(this)
-                .title("CHECKED IN")
-                .titleGravity(GravityEnum.CENTER)
-                .customView(R.layout.success_dialog, true)
-                .positiveText("OK")
-                .negativeText(" CANCEL")
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        dialog.dismiss();
-//                        finish();
-                    }
-
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        dialog.dismiss();
-//                        finish();
-                    }
-                })
-                .build();
-        View view = dialog.getCustomView();
-        TextView messageText = view.findViewById(R.id.message);
-        messageText.setText("Checked In");
-        dialog.show();
-    }
-
-    private class RecordQRCheckOut extends AsyncTask<String, Void, String> {
-        MaterialDialog builder = new MaterialDialog.Builder(CheckInGuest.this)
-                .title("Exit")
-                .content("Removing Guest...")
-                .progress(true, 0)
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            builder.show();
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            return NetworkHandler.executePost(params[0], params[1]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            builder.dismiss();
-            if (result != null) {
-                try {
-                    if (result.contains("result_code")) {
-                        JSONObject obj = new JSONObject(result);
-                        int resultCode = obj.getInt("result_code");
-                        String resultText = obj.getString("result_text");
-                        String resultContent = obj.getString("result_content");
-                        if (resultText.equals("OK") && resultContent.equals("success")) {
-
-                            recordCheckIn(qr_token);
-
-                        } else {
-                            new MaterialDialog.Builder(CheckInGuest.this)
-                                    .title("Notice")
-                                    .content(resultText)
-                                    .positiveText("OK")
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog dialog) {
-                                            dialog.dismiss();
-                                            //finish();
-                                        }
-                                    })
-                                    .show();
-                            Log.d(TAG, "Error: " + result);
-                        }
-                    } else {
-                        new MaterialDialog.Builder(CheckInGuest.this)
-                                .title("Notice")
-                                .content("Poor internet connection.")
-                                .positiveText("Ok")
-                                .show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-
 }

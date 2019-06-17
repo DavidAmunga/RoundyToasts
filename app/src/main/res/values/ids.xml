@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="nav_select_event" type="id" />
+    <item name="nav_scan_event_ticket" type="id" />
+    <item name="nav_select_service" type="id" />
+</resources>

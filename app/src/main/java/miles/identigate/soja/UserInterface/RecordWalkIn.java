@@ -132,6 +132,10 @@ public class RecordWalkIn extends SojaActivity {
     LinearLayout carProfile;
     @BindView(R.id.lin_fields)
     RelativeLayout linFields;
+    @BindView(R.id.txt_phone_number)
+    EditTextRegular txtPhoneNumber;
+    @BindView(R.id.phone_number_layout)
+    LinearLayout phoneNumberLayout;
 
     private IntentFilter receiveFilter;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -191,6 +195,11 @@ public class RecordWalkIn extends SojaActivity {
 
         }
 
+        if (preferences.isPhoneNumberEnabled()) {
+            phoneNumberLayout.setVisibility(View.VISIBLE);
+        } else {
+            phoneNumberLayout.setVisibility(View.GONE);
+        }
 
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled() ? View.VISIBLE : View.GONE);
         hostLayout.setVisibility(preferences.isSelectHostsEnabled() ? View.VISIBLE : View.GONE);
@@ -347,6 +356,7 @@ public class RecordWalkIn extends SojaActivity {
 
             }
         });
+
     }
 
 
@@ -431,10 +441,21 @@ public class RecordWalkIn extends SojaActivity {
 
 
             Log.d(TAG, "recordInternet: " + selectedDestination.getId());
+            String phoneNo = "";
+
+            if (preferences.isPhoneNumberEnabled()) {
+                if (preferences.isPhoneVerificationEnabled()) {
+                    phoneNo = phoneNumberEdittext.getText().toString();
+                } else {
+                    phoneNo = txtPhoneNumber.getText().toString();
+
+                }
+            }
+
 
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
-                            "&phone=" + URLEncoder.encode(phoneNumberEdittext.getText().toString(), "UTF-8") +
+                            "&phone=" + URLEncoder.encode(phoneNo, "UTF-8") +
                             (preferences.isCompanyNameEnabled() && !companyNameEdittext.getText().toString().equals("") ?
                                     ("&company=" + URLEncoder.encode(companyNameEdittext.getText().toString(), "UTF-8")) : "") +
                             "&scan_id_type=" + URLEncoder.encode(scan_id_type, "UTF-8") +

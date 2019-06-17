@@ -27,6 +27,11 @@ public interface DataService {
             @Query("pageSize") Integer pageSize
     );
 
+    @GET("get_managed_service")
+    Call<String> getManagedServices(
+            @Query("eventsID") String eventsID,
+            @Query("premiseZoneID") String premiseZoneID);
+
     @FormUrlEncoded
     @POST("record_invite")
     Call<String> recordInvite(
@@ -71,6 +76,28 @@ public interface DataService {
             @Field("deviceID") String deviceID,
             @Field("premiseZoneID") String premiseZoneID,
             @Field("visitorTypeID") String visitorTypeID
+    );
+
+    @FormUrlEncoded
+    @POST("qr_checkout")
+    Call<String> checkOutQR(
+            @Field("deviceID") String deviceID,
+            @Field("premise_zone_id") String premiseZoneID,
+            @Field("entryTime") String entryTime,
+            @Field("qr") String qr
+
+    );
+
+
+    @FormUrlEncoded
+    @POST("qr_checkin")
+    Call<String> checkInQR(
+            @Field("deviceID") String deviceID,
+            @Field("premise_zone_id") String premiseZoneID,
+            @Field("entryTime") String entryTime,
+            @Field("qr") String qr,
+            @Field("serviceID") String serviceID,
+            @Field("entryID") String entryID
     );
 
 

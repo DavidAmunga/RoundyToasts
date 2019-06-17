@@ -84,6 +84,14 @@ public class Common extends Application {
     public static final String ID_TYPE = "ID_TYPE";
     public static final String ID_NUMBER = "ID_NUMBER";
 
+    public static final String STATE_ENABLED = "STATE_ENABLED";
+    public static final String STATE_DISABLED = "STATE_DISABLED";
+    public static final String STATE_LOADING = "STATE_LOADING";
+    public static final String STATE_SUCCESS = "STATE_SUCCESS";
+    public static final String STATE_FAILURE = "STATE_FAILURE";
+    public static final String STATE_INFO = "STATE_INFO";
+
+
     public static final String fcmURL = "https://fcm.googleapis.com/";
 
 
@@ -102,6 +110,16 @@ public class Common extends Application {
     public static DataService getDataService(Context context) {
 
         return RetrofitClient.getDataService(context);
+    }
+
+    public static DataService getResidentsDataService(Context context) {
+
+        return RetrofitClient.getResidentsDataService(context);
+    }
+
+    public static DataService getEventsDataService(Context context) {
+
+        return RetrofitClient.getEventsService(context);
     }
 
     public static DataService getDataObjService(Context context) {
@@ -187,7 +205,7 @@ public class Common extends Application {
                 finalText = item + "\n";
                 finalText = Common.centerString(16, finalText);
 
-                Log.d(TAG, "formatString: "+finalText);
+                Log.d(TAG, "formatString: " + finalText);
 
                 return finalText;
             } else {
@@ -198,19 +216,20 @@ public class Common extends Application {
                     finalText = Common.centerString(16, finalText);
                 }
 
-                Log.d(TAG, "formatString: "+finalText);
+                Log.d(TAG, "formatString: " + finalText);
 
 
                 return finalText;
             }
         }
 
-        Log.d(TAG, "formatString: "+finalText);
+        Log.d(TAG, "formatString: " + finalText);
 
 
         return finalText;
 
     }
+
 
     public static String capitalizer(String word) {
 
