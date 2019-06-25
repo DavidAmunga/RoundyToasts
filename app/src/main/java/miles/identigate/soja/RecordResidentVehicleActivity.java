@@ -96,6 +96,10 @@ public class RecordResidentVehicleActivity extends SojaActivity {
                 .build();
         ownerLayout = findViewById(R.id.ownerLayout);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         houses = handler.getTypes("houses", null);
         if (getIntent().getExtras() == null) {
             finish();
@@ -105,13 +109,13 @@ public class RecordResidentVehicleActivity extends SojaActivity {
             token = extras.getString("token");
             if (type == 0) {
                 disableUI();
-                title.setText("RECORD RESIDENT");
+                title.setText("Record Resident");
                 carNumber.setText(extras.getString("registration"));
                 carHouseEdit.setText(extras.getString("house"));
                 carOwner.setText(extras.getString("name"));
             } else {
                 //New vehicle ;Register
-                title.setText("REGISTER VEHICLE");
+                title.setText("Register Vehicle");
                 ownerLayout.setVisibility(View.GONE);
             }
         }

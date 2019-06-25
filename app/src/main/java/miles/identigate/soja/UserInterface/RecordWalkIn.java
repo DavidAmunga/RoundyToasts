@@ -187,8 +187,10 @@ public class RecordWalkIn extends SojaActivity {
         if (preferences.isPhoneNumberEnabled() && preferences.isPhoneVerificationEnabled()) {
             linFields.setVisibility(View.GONE);
             phoneVerificationLayout.setVisibility(View.VISIBLE);
+
             linVerificationCode.setVisibility(View.VISIBLE);
         } else {
+
             linFields.setVisibility(View.VISIBLE);
             phoneVerificationLayout.setVisibility(View.GONE);
             linVerificationCode.setVisibility(View.GONE);

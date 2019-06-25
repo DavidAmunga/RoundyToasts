@@ -500,7 +500,7 @@ public class ScanTicket extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), AdminSettingsActivity.class));
             return true;
         } else if (id == R.id.ticket_list) {
-            addTickets();
+//            addTickets();
             startActivity(new Intent(getApplicationContext(), TicketList.class));
             return true;
         }
@@ -661,7 +661,7 @@ public class ScanTicket extends AppCompatActivity {
                         } else {
 
                             Snackbar snackbar = Snackbar.make(frame1,
-                                    "Ticket already Checked in "
+                                    "Ticket already used"
                                     , Snackbar.LENGTH_LONG);
 
 
@@ -669,7 +669,7 @@ public class ScanTicket extends AppCompatActivity {
                             textView.setTextColor(getResources().getColor(R.color.white));
                             snackbar.show();
 
-                            Toast.makeText(ScanTicket.this, "Ticket already Checked In", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ScanTicket.this, "Ticket already used", Toast.LENGTH_SHORT).show();
 
 //                            new MaterialDialog.Builder(ScanTicket.this)
 //                                    .title("Notice")

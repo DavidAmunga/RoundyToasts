@@ -181,7 +181,7 @@ public class ScanEventTicket extends Fragment {
                             changeUIState(Common.STATE_SUCCESS, "Success. Ticket Checked In");
                         } else {
                             if (result_text.contains("still in")) {
-                                changeUIState(Common.STATE_INFO, "Ticket Already Checked In");
+                                changeUIState(Common.STATE_INFO, "Ticket already used");
 
                                 checkOutTicket();
                             } else {
@@ -235,7 +235,7 @@ public class ScanEventTicket extends Fragment {
                             changeUIState(Common.STATE_SUCCESS, "Success. Ticket Checked In");
                         } else {
                             if (result_text.contains("still in")) {
-                                changeUIState(Common.STATE_INFO, "Ticket Already Checked In");
+                                changeUIState(Common.STATE_INFO, "Ticket already used");
 
                                 checkOutTicket();
                             } else {

@@ -2,20 +2,34 @@ package miles.identigate.soja;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.ResultPoint;
+import com.google.zxing.client.android.BeepManager;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.journeyapps.barcodescanner.BarcodeCallback;
+import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
+import com.journeyapps.barcodescanner.DefaultDecoderFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +37,14 @@ import org.json.JSONTokener;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import miles.identigate.soja.app.Common;
+import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
@@ -38,6 +59,67 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    private static final String TAG = "ExpressCheckoutActivity";
+
+
+    String option = "";
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.toolbar_title)
+    TextViewBold toolbarTitle;
+    @BindView(R.id.check_out_switch)
+    Switch checkOutSwitch;
+    @BindView(R.id.qr_scanner)
+    DecoratedBarcodeView qrScanner;
+    @BindView(R.id.info_image)
+    ImageView infoImage;
+    @BindView(R.id.pb)
+    ProgressBar pb;
+    @BindView(R.id.info_text)
+    TextView infoText;
+    @BindView(R.id.info_layout)
+    LinearLayout infoLayout;
+    @BindView(R.id.info_help)
+    TextView infoHelp;
+    @BindView(R.id.options_layout)
+    LinearLayout optionsLayout;
+
+    private BeepManager beepManager;
+
+    String lastText;
+    Animation scale_up;
+
+
+    private BarcodeCallback callback = new BarcodeCallback() {
+        @Override
+        public void barcodeResult(BarcodeResult result) {
+            if (result.getText() == null || result.getText().equals(lastText)) {
+                // Prevent duplicate scans
+                return;
+            }
+
+            lastText = result.getText();
+//            barcodeView.setStatusText(result.getText());
+
+            if (checkOutSwitch.isChecked()) {
+                checkOutResident(lastText);
+            } else {
+                checkOutVisitor(lastText);
+            }
+
+
+//            Toast.makeText(ScanTicket.this, "QR is " + result.getText(), Toast.LENGTH_SHORT).show();
+
+            beepManager.playBeepSoundAndVibrate();
+
+        }
+
+        @Override
+        public void possibleResultPoints(List<ResultPoint> resultPoints) {
+        }
+    };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         preferences = new Preferences(this);
@@ -49,58 +131,97 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_express_checkout);
+        ButterKnife.bind(this);
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setTitle("Express Checkout");
-        ImageView scan_icon = findViewById(R.id.scan_icon);
-        scan_icon.setOnClickListener(new View.OnClickListener() {
+
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Collection<BarcodeFormat> formats = Arrays.asList(BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39);
+        qrScanner.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(formats));
+        qrScanner.initializeFromIntent(getIntent());
+        qrScanner.decodeContinuous(callback);
+
+        beepManager = new BeepManager(this);
+        qrScanner.setStatusText("");
+
+
+        if (checkOutSwitch.isChecked()) {
+            toolbarTitle.setText("Resident Check Out");
+        } else {
+            toolbarTitle.setText("Visitor Check Out");
+        }
+
+
+        checkOutSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                new IntentIntegrator(ExpressCheckoutActivity.this).setCaptureActivity(ZxingHelperActivity.class).initiateScan();
-            }
-        });
-//        new IntentIntegrator(ExpressCheckoutActivity.this).setCaptureActivity(ZxingHelperActivity.class).initiateScan();
-        dialog = new MaterialDialog.Builder(ExpressCheckoutActivity.this)
-                .title("QR")
-                .content("Checking QR...")
-                .progress(true, 0)
-                .cancelable(true)
-                .widgetColorRes(R.color.colorPrimary)
-                .build();
-    }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                lastText = "";
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-            } else {
-                //Log.v("QR",result.getContents());
-                visit_id = result.getContents();
-
-
-                String urlParameters = null;
-                try {
-                    urlParameters = "idNumber=" + URLEncoder.encode(visit_id, "UTF-8") +
-                            "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                            "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
-
-                    new CheckoutService().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                if (isChecked) {
+                    toolbarTitle.setText("Resident Check Out");
+                } else {
+                    toolbarTitle.setText("Visitor Check Out");
                 }
             }
-        } else {
-            // This is important, otherwise the result will not be passed to the fragment
-            super.onActivityResult(requestCode, resultCode, data);
+        });
+
+        optionsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lastText = "";
+                triggerScan();
+            }
+        });
+
+
+        if (preferences.isDarkModeOn()) {
+            qrScanner.setTorchOn();
         }
+    }
+
+
+    private void checkOutResident(String qr_code) {
+
+        String urlParameters = null;
+        try {
+            urlParameters = "qr=" + qr_code +
+                    "&device_id=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                    "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                    "&exit_time=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+
+
+            Log.d(TAG, "onNegative: " + preferences.getResidentsURL() + "qr_checkout?" + urlParameters);
+            new RecordQRCheckOut().execute(preferences.getResidentsURL() + "qr_checkout", urlParameters);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void checkOutVisitor(String qr_code) {
+
+        String urlParameters = null;
+
+        try {
+            urlParameters = "idNumber=" + URLEncoder.encode(qr_code, "UTF-8") +
+                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                    "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+
+            new CheckoutService().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private class CheckoutService extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            if (dialog != null && !dialog.isShowing())
-                dialog.show();
+            changeUIState(Common.STATE_LOADING, "Checking Out");
+
         }
 
         protected String doInBackground(String... params) {
@@ -119,61 +240,141 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                         JSONObject object = new JSONObject(result);
                         int result_code = object.getInt("result_code");
                         if (result_code == 0) {
-                            showSuccess();
-
+                            changeUIState(Common.STATE_SUCCESS, "Success. Pass Checked Out");
                         } else {
-                            MaterialDialog.SingleButtonCallback callback = new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            };
+
+                            changeUIState(Common.STATE_INFO, "Visitor Already Checked Out or Unknown Visitor");
 
 
-                            dialog = Constants.showDialog(ExpressCheckoutActivity.this, "Attention", "Visitor Already Checked Out or Unknown Visitor", "OK", callback);
-                            dialog.show();
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "No network connection", Toast.LENGTH_LONG).show();
+                changeUIState(Common.STATE_FAILURE, "No network Connection");
+
             }
 
         }
     }
 
-    void showSuccess() {
-        dialog.dismiss();
-        dialog = new MaterialDialog.Builder(this)
-                .title("CHECKED OUT")
-                .titleGravity(GravityEnum.CENTER)
-                .customView(R.layout.success_dialog, true)
-                .positiveText("OK")
-                .negativeText("CANCEL")
-                .cancelable(false)
-                .widgetColorRes(R.color.colorPrimary)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        dialog.dismiss();
-                        finish();
-                    }
+    private class RecordQRCheckOut extends AsyncTask<String, Void, String> {
 
-                    @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        super.onPositive(dialog);
-                        dialog.dismiss();
-                        finish();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            changeUIState(Common.STATE_LOADING, "Checking Out");
+
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            return NetworkHandler.executePost(params[0], params[1]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                try {
+                    if (result.contains("result_code")) {
+                        JSONObject obj = new JSONObject(result);
+                        int resultCode = obj.getInt("result_code");
+                        String resultText = obj.getString("result_text");
+                        String resultContent = obj.getString("result_content");
+                        if (resultText.equals("OK") && resultContent.equals("success")) {
+
+                            changeUIState(Common.STATE_SUCCESS, "Success. Pass Checked Out");
+
+                        } else {
+
+                            changeUIState(Common.STATE_FAILURE, resultText);
+
+                        }
+                    } else {
+                        changeUIState(Common.STATE_FAILURE, "Poor Internet Connection");
+
+
                     }
-                })
-                .build();
-        View view = dialog.getCustomView();
-        TextView messageText = view.findViewById(R.id.message);
-        messageText.setText("Visitor successfully checked out.");
-        dialog.show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
+
+
+    private void changeUIState(String option, String message) {
+
+        Log.d(TAG, "changeUIState: " + option);
+        switch (option) {
+            case Common.STATE_LOADING:
+                infoText.setVisibility(View.VISIBLE);
+                infoText.setText(message);
+                pb.setVisibility(View.VISIBLE);
+                infoImage.setVisibility(View.GONE);
+                infoHelp.setVisibility(View.GONE);
+                break;
+            case Common.STATE_SUCCESS:
+                infoText.setVisibility(View.VISIBLE);
+                infoText.setText(message);
+                pb.setVisibility(View.GONE);
+                infoImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_checked));
+                infoImage.setAnimation(scale_up);
+                infoImage.setVisibility(View.VISIBLE);
+                infoHelp.setVisibility(View.GONE);
+                break;
+            case Common.STATE_FAILURE:
+                infoText.setVisibility(View.VISIBLE);
+                infoText.setText(message);
+                pb.setVisibility(View.GONE);
+                infoImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_cancel));
+                infoImage.setAnimation(scale_up);
+                infoImage.setVisibility(View.VISIBLE);
+                infoHelp.setVisibility(View.GONE);
+                break;
+            case Common.STATE_INFO:
+                infoText.setVisibility(View.VISIBLE);
+                infoText.setText(message);
+                pb.setVisibility(View.GONE);
+                infoImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_warning));
+                infoImage.setAnimation(scale_up);
+                infoImage.setVisibility(View.VISIBLE);
+                infoHelp.setVisibility(View.GONE);
+
+                break;
+            default:
+                pb.setVisibility(View.GONE);
+                infoImage.setVisibility(View.GONE);
+                infoText.setText("");
+                infoHelp.setVisibility(View.VISIBLE);
+
+                infoHelp.setText("Place your Pass within the square to scan");
+        }
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        qrScanner.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        qrScanner.pause();
+    }
+
+    public void triggerScan() {
+        qrScanner.decodeSingle(callback);
+    }
+
+
 }

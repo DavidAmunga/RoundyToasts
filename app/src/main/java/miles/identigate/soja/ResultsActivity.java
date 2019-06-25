@@ -278,12 +278,13 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
     public String formatDate(String date) {
+        Log.d(TAG, "formatDate: " + date);
         SimpleDateFormat format = new SimpleDateFormat("mm/dd/yy");
 
         try {
             Date oldDate = format.parse(date);
             String newDate;
-            newDate = new SimpleDateFormat("EEE dd, MMM YYYY").format(oldDate);
+            newDate = new SimpleDateFormat("EEE dd, MMM yyyy").format(oldDate);
             return newDate;
         } catch (ParseException e) {
             e.printStackTrace();

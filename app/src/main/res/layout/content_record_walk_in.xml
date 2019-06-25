@@ -247,15 +247,6 @@
                         android:textColorHint="?attr/textColorHint"
                         android:textCursorDrawable="@null" />
 
-                    <Button
-                        android:id="@+id/btnConfirm"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/colorPrimary"
-                        android:text="SEND VERIFICATION CODE"
-                        android:textColor="@android:color/white"
-                        android:visibility="visible" />
                 </LinearLayout>
 
 

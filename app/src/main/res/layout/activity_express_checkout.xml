@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,68 +8,122 @@
     android:orientation="vertical"
     tools:context="miles.identigate.soja.fragments.EntryTypeFragment">
 
-    <miles.identigate.soja.font.TextViewBold
-        android:id="@+id/record_type"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:gravity="center_horizontal"
-        android:text="EXPRESS CHECKOUT"
-        android:textColor="?attr/textColor"
-        android:textSize="18dp"
-        android:textStyle="bold" />
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+            <miles.identigate.soja.font.TextViewBold
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Visitor Check Out"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <Switch
+                android:id="@+id/check_out_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="@color/black"
+                android:trackTint="@color/black" />
+
+        </RelativeLayout>
+    </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:layout_height="match_parent"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+        tools:context=".ExpressCheckoutActivity">
 
-        <ImageView
-            android:id="@+id/scan_icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="10dp"
-            android:background="?android:selectableItemBackground"
-            android:src="@drawable/ic_express_check_out_new"
-            android:tint="?attr/iconColor" />
+        <com.journeyapps.barcodescanner.DecoratedBarcodeView
+            android:id="@+id/qr_scanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true">
 
-        <miles.identigate.soja.font.TextViewBold
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/scan_icon"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="Tap here to scan QR code."
-            android:textColor="?attr/textColor"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        </com.journeyapps.barcodescanner.DecoratedBarcodeView>
+
+        <LinearLayout
+            android:id="@+id/options_layout"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_card_rounded_top_background"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/info_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_checked"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/pb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/colorPrimary"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/info_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Checking In"
+                    android:textAlignment="center"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/info_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_marginTop="10dp"
+                android:text="Place your Pass within the square to scan"
+                android:textAlignment="center"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+
     </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/manual_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_manual" />
-
-        <miles.identigate.soja.font.TextViewBold
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/manual_icon"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="@string/manual_entry"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
