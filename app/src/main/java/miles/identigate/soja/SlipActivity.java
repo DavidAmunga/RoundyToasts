@@ -248,15 +248,7 @@ public class SlipActivity extends SojaActivity {
 //                Log.d(TAG, "PrintSlip: ID No");
 
 
-            if (checkInMode.equals("SMS")) {
-                Log.d(TAG, "PrintSlip: SMS");
-
-                HPRTPrinterHelper.PrintQRCode(phoneNo, 7, (3 + 0x30), 1);
-
-            } else {
-                Log.d(TAG, "PrintSlip: IDNumber");
-                HPRTPrinterHelper.PrintQRCode(idNumber, 7, (3 + 0x30), 1);
-            }
+            HPRTPrinterHelper.PrintQRCode(String.valueOf(visit_id), 7, (3 + 0x30), 1);
 
 
 //            }
@@ -313,115 +305,104 @@ public class SlipActivity extends SojaActivity {
         dialog.show();
     }
 
-    private void CapturePrinterFunction()
-    {
-        try
-        {
-            int[] propType=new int[1];
-            byte[] Value=new byte[500];
-            int[] DataLen=new int[1];
-            String strValue="";
-            boolean isCheck=false;
+    private void CapturePrinterFunction() {
+        try {
+            int[] propType = new int[1];
+            byte[] Value = new byte[500];
+            int[] DataLen = new int[1];
+            String strValue = "";
+            boolean isCheck = false;
 
-            int iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value,DataLen);
-            if(iRtn!=0)
+            int iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BEEP, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Buzzer=(Value[0]==0?false:true);
+            PrinterProperty.Buzzer = (Value[0] == 0 ? false : true);
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Cut=(Value[0]==0?false:true);
+            PrinterProperty.Cut = (Value[0] == 0 ? false : true);
             //btnCut.setVisibility((PrinterProperty.Cut?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_DRAWER, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_DRAWER, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Cashdrawer=(Value[0]==0?false:true);
+            PrinterProperty.Cashdrawer = (Value[0] == 0 ? false : true);
             //btnOpenCashDrawer.setVisibility((PrinterProperty.Cashdrawer?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BARCODE, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_BARCODE, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Barcode=new String(Value);
-            isCheck=PrinterProperty.Barcode.replace("QRCODE", "").replace("PDF417", "").replace(",,", ",").replace(",,", ",").length()>0;
+            PrinterProperty.Barcode = new String(Value);
+            isCheck = PrinterProperty.Barcode.replace("QRCODE", "").replace("PDF417", "").replace(",,", ",").replace(",,", ",").length() > 0;
             //btn1DBarcodes.setVisibility((isCheck?View.VISIBLE:View.GONE));
             isCheck = PrinterProperty.Barcode.contains("QRCODE");
             //btnQRCode.setVisibility((isCheck?View.VISIBLE:View.GONE));
             //btnPDF417.setVisibility((isCheck?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.Pagemode=(Value[0]==0?false:true);
+            PrinterProperty.Pagemode = (Value[0] == 0 ? false : true);
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_GET_REMAINING_POWER, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_GET_REMAINING_POWER, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.GetRemainingPower=(Value[0]==0?false:true);
+            PrinterProperty.GetRemainingPower = (Value[0] == 0 ? false : true);
             //btnGetRemainingPower.setVisibility((PrinterProperty.GetRemainingPower?View.VISIBLE:View.GONE));
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_CONNECT_TYPE, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_CONNECT_TYPE, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.ConnectType=(Value[1]<<8)+Value[0];
+            PrinterProperty.ConnectType = (Value[1] << 8) + Value[0];
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PRINT_RECEIPT, propType, Value,DataLen);
-            if(iRtn!=0)
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PRINT_RECEIPT, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.SampleReceipt=(Value[0]==0?false:true);
+            PrinterProperty.SampleReceipt = (Value[0] == 0 ? false : true);
             //btnSampleReceipt.setVisibility((PrinterProperty.SampleReceipt?View.VISIBLE:View.GONE));
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
         }
     }
-    private void GetPrinterProperty()
-    {
-        try
-        {
-            int[] propType=new int[1];
-            byte[] Value=new byte[500];
-            int[] DataLen=new int[1];
-            String strValue="";
-            int iRtn=0;
 
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_STATUS_MODEL, propType, Value,DataLen);
-            if(iRtn!=0)
+    private void GetPrinterProperty() {
+        try {
+            int[] propType = new int[1];
+            byte[] Value = new byte[500];
+            int[] DataLen = new int[1];
+            String strValue = "";
+            int iRtn = 0;
+
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_STATUS_MODEL, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.StatusMode=Value[0];
+            PrinterProperty.StatusMode = Value[0];
 
-            if(PrinterProperty.Cut)
-            {
-                iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT_SPACING, propType, Value,DataLen);
-                if(iRtn!=0)
+            if (PrinterProperty.Cut) {
+                iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_CUT_SPACING, propType, Value, DataLen);
+                if (iRtn != 0)
                     return;
-                PrinterProperty.CutSpacing=Value[0];
-            }
-            else
-            {
-                iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_TEAR_SPACING, propType, Value,DataLen);
-                if(iRtn!=0)
+                PrinterProperty.CutSpacing = Value[0];
+            } else {
+                iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_TEAR_SPACING, propType, Value, DataLen);
+                if (iRtn != 0)
                     return;
-                PrinterProperty.TearSpacing=Value[0];
+                PrinterProperty.TearSpacing = Value[0];
             }
 
-            if(PrinterProperty.Pagemode)
-            {
-                iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE_AREA, propType, Value,DataLen);
-                if(iRtn!=0)
+            if (PrinterProperty.Pagemode) {
+                iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_PAGEMODE_AREA, propType, Value, DataLen);
+                if (iRtn != 0)
                     return;
-                PrinterProperty.PagemodeArea=new String(Value).trim();
+                PrinterProperty.PagemodeArea = new String(Value).trim();
             }
-            Value=new byte[500];
-            iRtn=HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_WIDTH, propType, Value,DataLen);
-            if(iRtn!=0)
+            Value = new byte[500];
+            iRtn = HPRTPrinterHelper.CapturePrinterFunction(HPRTPrinterHelper.HPRT_MODEL_PROPERTY_KEY_WIDTH, propType, Value, DataLen);
+            if (iRtn != 0)
                 return;
-            PrinterProperty.PrintableWidth=(int)(Value[0] & 0xFF | ((Value[1] & 0xFF) <<8));
-        }
-        catch(Exception e)
-        {
+            PrinterProperty.PrintableWidth = (int) (Value[0] & 0xFF | ((Value[1] & 0xFF) << 8));
+        } catch (Exception e) {
             Log.e("HPRTSDKSample", (new StringBuilder("Activity_Main --> CapturePrinterFunction ")).append(e.getMessage()).toString());
         }
     }

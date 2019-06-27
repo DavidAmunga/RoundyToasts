@@ -762,19 +762,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
             return hashMap;
         } else if (type.equals("houses")) {
-            if (!hashMap.isEmpty())
-                hashMap.clear();
-            String selectQuery = "SELECT  * FROM " + TABLE_HOUSES;
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    TypeObject typeObject = new TypeObject();
-                    typeObject.setId(cursor.getString(0));
-                    typeObject.setName(cursor.getString(1));
-                    typeObject.setHostId(cursor.getString(2));
-                    hashMap.add(typeObject);
-                } while (cursor.moveToNext());
+            if (id != null) {
+                if (!hashMap.isEmpty())
+                    hashMap.clear();
+                String selectQuery = "SELECT  * FROM " + TABLE_HOUSES + " WHERE +id=" + id + "'";
+                Cursor cursor = db.rawQuery(selectQuery, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        TypeObject typeObject = new TypeObject();
+                        typeObject.setId(cursor.getString(0));
+                        typeObject.setName(cursor.getString(1));
+                        typeObject.setHostId(cursor.getString(2));
+                        hashMap.add(typeObject);
+                    } while (cursor.moveToNext());
+                }
+            } else {
+                if (!hashMap.isEmpty())
+                    hashMap.clear();
+
+                String selectQuery = "SELECT  * FROM " + TABLE_HOUSES;
+
+                Cursor cursor = db.rawQuery(selectQuery, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        TypeObject typeObject = new TypeObject();
+                        typeObject.setId(cursor.getString(0));
+                        typeObject.setName(cursor.getString(1));
+                        typeObject.setHostId(cursor.getString(2));
+                        hashMap.add(typeObject);
+                    } while (cursor.moveToNext());
+                }
+
+
             }
+
             return hashMap;
         } else if (type.equals("hosts")) {
 //                Log.d(TAG, "getTypes: start");

@@ -1,31 +1,24 @@
 package miles.identigate.soja;
 
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.BeepManager;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
@@ -48,7 +41,6 @@ import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
-import miles.identigate.soja.helpers.ZxingHelperActivity;
 
 public class ExpressCheckoutActivity extends AppCompatActivity {
     String visit_id;
@@ -67,8 +59,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.toolbar_title)
     TextViewBold toolbarTitle;
-    @BindView(R.id.check_out_switch)
-    Switch checkOutSwitch;
+
     @BindView(R.id.qr_scanner)
     DecoratedBarcodeView qrScanner;
     @BindView(R.id.info_image)
@@ -89,6 +80,8 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
     String lastText;
     Animation scale_up;
 
+    String[] filterItems = {"Visitor", "Resident"};
+
 
     private BarcodeCallback callback = new BarcodeCallback() {
         @Override
@@ -101,11 +94,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
             lastText = result.getText();
 //            barcodeView.setStatusText(result.getText());
 
-            if (checkOutSwitch.isChecked()) {
-                checkOutResident(lastText);
-            } else {
-                checkOutVisitor(lastText);
-            }
+            checkOut(lastText);
 
 
 //            Toast.makeText(ScanTicket.this, "QR is " + result.getText(), Toast.LENGTH_SHORT).show();
@@ -148,25 +137,8 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
         qrScanner.setStatusText("");
 
 
-        if (checkOutSwitch.isChecked()) {
-            toolbarTitle.setText("Resident Check Out");
-        } else {
-            toolbarTitle.setText("Visitor Check Out");
-        }
+        toolbarTitle.setText("Express Checkout");
 
-
-        checkOutSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                lastText = "";
-
-                if (isChecked) {
-                    toolbarTitle.setText("Resident Check Out");
-                } else {
-                    toolbarTitle.setText("Visitor Check Out");
-                }
-            }
-        });
 
         optionsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,10 +152,11 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
         if (preferences.isDarkModeOn()) {
             qrScanner.setTorchOn();
         }
+
     }
 
 
-    private void checkOutResident(String qr_code) {
+    private void checkOut(String qr_code) {
 
         String urlParameters = null;
         try {
@@ -201,63 +174,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
 
     }
 
-    private void checkOutVisitor(String qr_code) {
 
-        String urlParameters = null;
-
-        try {
-            urlParameters = "idNumber=" + URLEncoder.encode(qr_code, "UTF-8") +
-                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                    "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
-
-            new CheckoutService().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private class CheckoutService extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            changeUIState(Common.STATE_LOADING, "Checking Out");
-
-        }
-
-        protected String doInBackground(String... params) {
-            return NetworkHandler.executePost(params[0], params[1]);
-        }
-
-        protected void onPostExecute(String result) {
-            if (dialog != null && dialog.isShowing())
-                dialog.dismiss();
-            if (result != null) {
-                //Toast.makeText(ExpressCheckoutActivity.this,result, Toast.LENGTH_LONG).show();
-                Object json = null;
-                try {
-                    json = new JSONTokener(result).nextValue();
-                    if (json instanceof JSONObject) {
-                        JSONObject object = new JSONObject(result);
-                        int result_code = object.getInt("result_code");
-                        if (result_code == 0) {
-                            changeUIState(Common.STATE_SUCCESS, "Success. Pass Checked Out");
-                        } else {
-
-                            changeUIState(Common.STATE_INFO, "Visitor Already Checked Out or Unknown Visitor");
-
-
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                changeUIState(Common.STATE_FAILURE, "No network Connection");
-
-            }
-
-        }
-    }
 
     private class RecordQRCheckOut extends AsyncTask<String, Void, String> {
 
@@ -287,7 +204,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                         String resultContent = obj.getString("result_content");
                         if (resultText.equals("OK") && resultContent.equals("success")) {
 
-                            changeUIState(Common.STATE_SUCCESS, "Success. Pass Checked Out");
+                            changeUIState(Common.STATE_SUCCESS, "Pass Checked Out");
 
                         } else {
 

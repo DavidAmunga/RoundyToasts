@@ -512,7 +512,7 @@ public class ScanTicket extends AppCompatActivity {
     public void recordCheckIn(String qr_token) {
         String urlParameters = null;
         try {
-            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getCurrentUser().getDeviceId(), "UTF-8") +
+            urlParameters = "device_id=" + URLEncoder.encode(preferences.getCurrentUser().getDeviceId(), "UTF-8") +
                     "&premise_zone_id=" + URLEncoder.encode(preferences.getCurrentUser().getPremiseZoneId(), "UTF-8") +
                     "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                     "&qr=" + URLEncoder.encode(qr_token, "UTF-8");
@@ -531,7 +531,7 @@ public class ScanTicket extends AppCompatActivity {
     public void recordCheckInAsync(String qr_token) {
         String urlParameters = null;
         try {
-            urlParameters = "deviceID=" + URLEncoder.encode(preferences.getCurrentUser().getDeviceId(), "UTF-8") +
+            urlParameters = "device_id=" + URLEncoder.encode(preferences.getCurrentUser().getDeviceId(), "UTF-8") +
                     "&premise_zone_id=" + URLEncoder.encode(preferences.getCurrentUser().getPremiseZoneId(), "UTF-8") +
                     "&entryTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8") +
                     "&qr=" + URLEncoder.encode(qr_token, "UTF-8");

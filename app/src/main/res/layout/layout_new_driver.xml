@@ -166,7 +166,8 @@
                 android:id="@+id/ownerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <miles.identigate.soja.font.TextViewBold
                     android:id="@+id/openSansBold"
@@ -188,7 +189,8 @@
                     android:padding="10dp"
                     android:singleLine="true"
                     android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null" />
+                    android:textCursorDrawable="@null"
+                    android:visibility="gone" />
             </LinearLayout>
 
 

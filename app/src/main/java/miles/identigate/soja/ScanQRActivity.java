@@ -8,15 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
@@ -61,6 +61,8 @@ public class ScanQRActivity extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    String[] filterItems = {"Walk In", "Drive In"};
+
 
     ArrayList<TypeObject> houses;
     DatabaseHandler handler;
@@ -74,8 +76,7 @@ public class ScanQRActivity extends AppCompatActivity {
     String qr_contents = "";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.check_out_switch)
-    Switch checkOutSwitch;
+
     @BindView(R.id.qr_scanner)
     DecoratedBarcodeView qrScanner;
     @BindView(R.id.info_image)
@@ -109,14 +110,7 @@ public class ScanQRActivity extends AppCompatActivity {
             qr_code = result.getText();
 //            barcodeView.setStatusText(result.getText());
 
-            if (checkOutSwitch.isChecked()) {
-                Log.d(TAG, "barcodeResult: Drive");
-                getQRResidentDrive(qr_code);
-            } else {
-                Log.d(TAG, "barcodeResult: Walk");
-
-                checkInResidentWalk(qr_code);
-            }
+            checkInResident(qr_code);
 
 
 //            Toast.makeText(ScanTicket.this, "QR is " + result.getText(), Toast.LENGTH_SHORT).show();
@@ -148,7 +142,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Resident Walk In");
+        getSupportActionBar().setTitle("Resident Check In");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -157,7 +151,6 @@ public class ScanQRActivity extends AppCompatActivity {
 //        getSupportActionBar().setTitle("Residents");
 
         handler = new DatabaseHandler(this);
-        houses = handler.getTypes("houses", null);
 
 
         Collection<BarcodeFormat> formats = Arrays.asList(BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39);
@@ -168,26 +161,6 @@ public class ScanQRActivity extends AppCompatActivity {
         beepManager = new BeepManager(this);
         qrScanner.setStatusText("");
 
-
-        if (checkOutSwitch.isChecked()) {
-            getSupportActionBar().setTitle("Resident Drive In");
-        } else {
-            getSupportActionBar().setTitle("Resident Walk In");
-        }
-
-
-        checkOutSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                qr_code = "";
-
-                if (isChecked) {
-                    getSupportActionBar().setTitle("Resident Drive In");
-                } else {
-                    getSupportActionBar().setTitle("Resident Walk In");
-                }
-            }
-        });
 
         optionsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,17 +177,34 @@ public class ScanQRActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        return true;
+    }
 
-    private void checkInResidentWalk(String qr_code) {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_new_qr) {
+            showNewDriverDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void checkInResident(String qr_code) {
 
         try {
             Log.d(TAG, "Device ID: " + preferences.getDeviceId());
-            String urlParameters = "deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+            String urlParameters = "device_id=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
                     "&premise_zone_id=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
+                    "&entry_time=" + Constants.getCurrentTimeStamp() +
                     "&qr=" + qr_code;
 
+
             Log.d(TAG, "onActivityResult: " + preferences.getResidentsURL() + "qr_checkin?" + urlParameters);
-            new RecordQRCheckInWalk().execute(preferences.getResidentsURL() + "qr_checkin", urlParameters);
+            new RecordQRCheckIn().execute(preferences.getResidentsURL() + "qr_checkin", urlParameters);
 
 
         } catch (UnsupportedEncodingException e) {
@@ -223,27 +213,6 @@ public class ScanQRActivity extends AppCompatActivity {
 
     }
 
-
-    private void checkInResidentQRDrive(String qr_code) {
-
-
-        String urlParameters = null;
-        try {
-            urlParameters = "token=" + qr_code +
-                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
-                    "&premiseZoneId=" + URLEncoder.encode(preferences.getPremiseZoneId(), "UTF-8") +
-                    "&entry_time=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
-            new RecordQRCheckInDrive().execute(preferences.getBaseURL() + "qr_checkin", urlParameters);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void getQRResidentDrive(String qr_code) {
-
-        new GetQRDriveDetails().execute(preferences.getBaseURL() + "qr_data/" + qr_code);
-    }
 
     private void registerQRDrive(String qr_code, String carNumber) {
 
@@ -260,7 +229,7 @@ public class ScanQRActivity extends AppCompatActivity {
         }
     }
 
-    private void checkOutResidentWalk(String qr_code) {
+    private void checkOutResident(String qr_code) {
         String urlParameters = null;
         try {
             urlParameters = "qr=" + qr_code +
@@ -276,7 +245,7 @@ public class ScanQRActivity extends AppCompatActivity {
         }
     }
 
-    private class RecordQRCheckInWalk extends AsyncTask<String, Void, String> {
+    private class RecordQRCheckIn extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             changeUIState(Common.STATE_LOADING, "Checking In");
@@ -308,14 +277,14 @@ public class ScanQRActivity extends AppCompatActivity {
                         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
                             Log.d(TAG, "onPostExecute: Success");
 
-                            changeUIState(Common.STATE_SUCCESS, "Success" + residentName + " checked in");
+                            changeUIState(Common.STATE_SUCCESS, residentName + " checked in");
 
                         } else {
                             Log.d(TAG, "onPostExecute: Still in");
 
                             if (resultText.contains("still in")) {
                                 Log.d(TAG, "onPostExecute: " + resultText);
-                                checkOutResidentWalk(qr_code);
+                                checkOutResident(qr_code);
 
                             } else {
                                 changeUIState(Common.STATE_INFO, resultText);
@@ -358,7 +327,7 @@ public class ScanQRActivity extends AppCompatActivity {
                         String resultContent = obj.getString("result_content");
                         if (resultText.equals("OK") && resultContent.equals("success")) {
 //                            CheckIn Again QR
-                            checkInResidentWalk(qr_code);
+                            checkInResident(qr_code);
                         } else {
 
                             changeUIState(Common.STATE_FAILURE, resultText);
@@ -377,69 +346,7 @@ public class ScanQRActivity extends AppCompatActivity {
     }
 
 
-    private class GetQRDriveDetails extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            changeUIState(Common.STATE_LOADING, "Checking In...");
-        }
-
-        protected String doInBackground(String... params) {
-            return new NetworkHandler().GET(params[0]);
-        }
-
-        protected void onPostExecute(String result) {
-
-            if (result != null) {
-                Object json = null;
-                try {
-                    json = new JSONTokener(result).nextValue();
-                    if (json instanceof JSONObject) {
-
-
-                        JSONObject object = new JSONObject(result);
-
-                        Log.d(TAG, "onPostExecute:Result " + result);
-                        int result_code = object.getInt("result_code");
-                        JSONObject content = object.optJSONObject("result_content");
-                        if (result_code == 0) {
-
-
-//                            bundle.putInt("Type", 0);
-
-
-//                            String model = content.getString("model");
-//                            String type = content.getString("type");
-//                            String name = content.getString("name");
-//                            String house = content.getString("house");
-//                            Log.d(TAG, "onPostExecute: " + house);
-
-
-                            houses = handler.getTypes("houses", null);
-
-
-                            checkInResidentQRDrive(qr_code);
-
-
-                        } else {
-//                            Log.d(TAG, "onPostExecute: Start");
-//                            registerQRDrive(qr_code, registration);
-
-                            showNewDriverDialog(result_code);
-
-//                            bundle.putInt("Type", result_code);
-//                            intent.putExtras(bundle);
-//                            startActivity(intent);
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    private void showNewDriverDialog(int type) {
+    private void showNewDriverDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ScanQRActivity.this);
 
         View dialogView = getLayoutInflater().inflate(R.layout.layout_new_driver, null);
@@ -459,7 +366,10 @@ public class ScanQRActivity extends AppCompatActivity {
         ButtonRegular btnSave = dialogView.findViewById(R.id.btn_save);
 
 
+        houses = handler.getTypes("houses", null);
+
         TypeAdapter housesAdapter = new TypeAdapter(ScanQRActivity.this, R.layout.tv, houses);
+
 
         carHouse.setAdapter(housesAdapter);
         carHouse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -565,7 +475,7 @@ public class ScanQRActivity extends AppCompatActivity {
                         if (result_code == 0) {
                             changeUIState(Common.STATE_SUCCESS, "QR Sticker Assigned");
 
-                            getQRResidentDrive(qr_code);
+                            checkInResident(qr_code);
 
                         } else {
                             changeUIState(Common.STATE_FAILURE, "Invalid QR Code");

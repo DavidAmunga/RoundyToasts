@@ -35,8 +35,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 19
-        versionName "2.0.86"
+        versionCode 20
+        versionName "2.0.88"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"

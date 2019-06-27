@@ -24,17 +24,6 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
 
-            <Switch
-                android:id="@+id/check_out_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:backgroundTint="@color/black"
-                android:trackTint="@color/black" />
-
         </RelativeLayout>
     </android.support.design.widget.AppBarLayout>
 
