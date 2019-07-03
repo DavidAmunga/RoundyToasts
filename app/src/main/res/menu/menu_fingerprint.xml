@@ -7,4 +7,10 @@
         android:icon="@drawable/ic_refresh_white_24dp"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/nav_filter"
+        android:title="Filter"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_filter_list"
+        app:showAsAction="ifRoom" />
+
 </menu>

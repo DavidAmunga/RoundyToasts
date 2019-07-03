@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -49,7 +50,7 @@ public class SlipActivity extends SojaActivity {
     String result_slip;
     String vehicleNo;
     String checkInType, checkInMode;
-    int visit_id = 0;
+    String visit_id = "";
     private String ConnectType = "Bluetooth";
 
 
@@ -81,7 +82,7 @@ public class SlipActivity extends SojaActivity {
             idNumber = extras.getString("idNumber");
             house = extras.getString("house");
             result_slip = extras.getString("result_slip");
-            visit_id = extras.getInt("visit_id");
+            visit_id = extras.getString("visit_id");
             checkInType = extras.getString("checkInType");
             checkInMode = extras.getString("checkInMode");
             phoneNo = extras.getString("phoneNo");
@@ -236,7 +237,7 @@ public class SlipActivity extends SojaActivity {
             msg += "\n\n";
             msg += "HOST SIGN: " + "------------------";
             msg += "\n\n";
-            if (visit_id != 0) {
+            if (TextUtils.isEmpty(visit_id)) {
                 msg += "SCAN QR TO CHECKOUT VISITOR";
                 msg += "\n\n";
             }

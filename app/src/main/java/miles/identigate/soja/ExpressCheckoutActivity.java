@@ -175,7 +175,6 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
     }
 
 
-
     private class RecordQRCheckOut extends AsyncTask<String, Void, String> {
 
 
@@ -201,10 +200,14 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                         JSONObject obj = new JSONObject(result);
                         int resultCode = obj.getInt("result_code");
                         String resultText = obj.getString("result_text");
-                        String resultContent = obj.getString("result_content");
-                        if (resultText.equals("OK") && resultContent.equals("success")) {
+                        JSONObject resultContent = obj.optJSONObject("result_content");
 
-                            changeUIState(Common.STATE_SUCCESS, "Pass Checked Out");
+                        if (resultText.equals("OK") && resultCode == 0) {
+
+                            String name = resultContent.getString("name");
+
+
+                            changeUIState(Common.STATE_SUCCESS, name + " checked Out");
 
                         } else {
 

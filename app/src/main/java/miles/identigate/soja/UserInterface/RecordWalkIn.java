@@ -89,7 +89,7 @@ public class RecordWalkIn extends SojaActivity {
 
 
     String result_slip = "";
-    int visit_id = 0;
+    String visit_id = "";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.phoneNumberEdittext)
@@ -223,7 +223,6 @@ public class RecordWalkIn extends SojaActivity {
                 e.printStackTrace();
             }
         }
-
 
 //        Check if manual
         if (getIntent() != null) {
@@ -924,6 +923,7 @@ public class RecordWalkIn extends SojaActivity {
         }
     }
 
+
     private void resultHandler(String result) throws JSONException {
         //Log.d("WALKIN", result);
         JSONObject obj = new JSONObject(result);
@@ -932,7 +932,9 @@ public class RecordWalkIn extends SojaActivity {
         String resultContent = obj.getString("result_content");
         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
             result_slip = obj.getString("result_slip");
-            visit_id = obj.getInt("visit_id");
+            visit_id = obj.getString("id");
+
+
             recordOffline();
             parseResult();
         } else {

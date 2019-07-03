@@ -2,6 +2,7 @@ package miles.identigate.soja;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.client.android.BeepManager;
@@ -27,6 +31,7 @@ import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.DefaultDecoderFactory;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -40,6 +45,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import miles.identigate.soja.UserInterface.AssignQR;
+import miles.identigate.soja.UserInterface.RecordWalkIn;
 import miles.identigate.soja.adapters.TypeAdapter;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.ButtonRegular;
@@ -64,13 +71,13 @@ public class ScanQRActivity extends AppCompatActivity {
     String[] filterItems = {"Walk In", "Drive In"};
 
 
-    ArrayList<TypeObject> houses;
+    ArrayList<TypeObject> houses, licenses;
     DatabaseHandler handler;
 
 
     String selectedMode = "";
 
-    String selectedHouse;
+    String selectedHouse, selectedLicense;
 
 
     String qr_contents = "";
@@ -179,7 +186,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
+        getMenuInflater().inflate(R.menu.menu_scan_resident, menu);
         return true;
     }
 
@@ -188,7 +195,8 @@ public class ScanQRActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_new_qr) {
-            showNewDriverDialog();
+            startActivity(new Intent(ScanQRActivity.this, AssignQR.class));
+//            showNewDriverDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -368,6 +376,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
         houses = handler.getTypes("houses", null);
 
+
         TypeAdapter housesAdapter = new TypeAdapter(ScanQRActivity.this, R.layout.tv, houses);
 
 
@@ -490,6 +499,68 @@ public class ScanQRActivity extends AppCompatActivity {
             }
         }
     }
+
+    private class FetchDriverRegNo extends AsyncTask<Void, String, ArrayList<TypeObject>> {
+
+        MaterialDialog builder = new MaterialDialog.Builder(ScanQRActivity.this)
+                .title("Soja")
+                .titleGravity(GravityEnum.CENTER)
+                .titleColor(getResources().getColor(R.color.ColorPrimary))
+                .content("Fetching Unassigned Licenses")
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+
+
+        @Override
+        protected ArrayList<TypeObject> doInBackground(Void... voids) {
+
+            String licensesResult = NetworkHandler.GET(preferences.getBaseURL() + "driver_reg_no");
+
+            ArrayList<TypeObject> licensesList = new ArrayList<>();
+            Log.d(TAG, "doInBackground: " + licensesList.size());
+
+            if (licensesResult != null) {
+                try {
+                    JSONObject licensesObject = new JSONObject(licensesResult);
+                    if (licensesObject.getInt("result_code") == 0 && licensesObject.getString("result_text").equals("OK")) {
+                        JSONArray licensesArray = licensesObject.getJSONArray("result_content");
+                        for (int i = 0; i < licensesArray.length(); i++) {
+                            JSONObject license = licensesArray.getJSONObject(i);
+                            licenses.add(new TypeObject(license.getString("driver_reg_id"), license.getString("driver_reg_id")));
+//                        handler.insertHouse(house.getString("house_id"), house.getString("house_description"),house.getString("block_description"));
+                        }
+
+                        showNewDriverDialog();
+
+                        return licenses;
+                    } else {
+                        Toast.makeText(ScanQRActivity.this, "Couldn't retrieve Licenses", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return houses;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TypeObject> typeObjects) {
+            super.onPostExecute(typeObjects);
+            builder.dismiss();
+        }
+    }
+
 
     @Override
     public void onResume() {

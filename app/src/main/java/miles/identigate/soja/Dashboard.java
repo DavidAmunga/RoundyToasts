@@ -39,17 +39,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import io.paperdb.Paper;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.fragments.CheckIn;
 import miles.identigate.soja.fragments.CheckOut;
 import miles.identigate.soja.fragments.Invitees;
-import miles.identigate.soja.fragments.Logs;
 import miles.identigate.soja.helpers.CheckConnection;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
+import miles.identigate.soja.models.PremiseResident;
 import miles.identigate.soja.services.SyncService;
 import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
@@ -75,6 +77,7 @@ public class Dashboard extends SojaActivity {
     String houseResult;
     String premiseResidentResult;
     private String idTypesResult;
+    private String hostTypesResult;
 
     Preferences preferences;
     private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -429,6 +432,7 @@ public class Dashboard extends SojaActivity {
             incidentsResult = NetworkHandler.GET(preferences.getBaseURL() + "incident-types");
             genderResult = NetworkHandler.GET(preferences.getBaseURL() + "genders");
             idTypesResult = NetworkHandler.GET(preferences.getBaseURL() + "id_types");
+            hostTypesResult = NetworkHandler.GET(preferences.getResidentsURL() + "get_host_types");
 
 
 //            TODO : Change Endpoint
@@ -450,7 +454,7 @@ public class Dashboard extends SojaActivity {
     }
 
     public void getAllData() {
-        if (visitorResult == null || providerResult == null || incidentsResult == null || houseResult == null || premiseResidentResult == null || genderResult == null) {
+        if (visitorResult == null || providerResult == null || incidentsResult == null || houseResult == null || premiseResidentResult == null || genderResult == null || hostTypesResult == null && idTypesResult == null) {
             Toast.makeText(getApplicationContext(), "An error occurred", Toast.LENGTH_LONG).show();
         } else {
             try {
@@ -461,6 +465,7 @@ public class Dashboard extends SojaActivity {
                 JSONObject premiseResidentObject = new JSONObject(premiseResidentResult);
                 JSONObject genderObject = new JSONObject(genderResult);
                 JSONObject idTypesObject = new JSONObject(idTypesResult);
+                JSONObject hostTypesObject = new JSONObject(hostTypesResult);
 
                 SQLiteDatabase db = handler.getWritableDatabase();
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_VISITOR_TYPES);
@@ -470,6 +475,7 @@ public class Dashboard extends SojaActivity {
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_PREMISE_RESIDENTS);
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_GENDER_TYPES);
                 db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_ID_TYPES);
+                db.execSQL("DROP TABLE IF EXISTS " + DatabaseHandler.TABLE_HOST_TYPES);
 
                 db.execSQL(handler.CREATE_TABLE_INCIDENT_TYPES);
                 db.execSQL(handler.CREATE_TABLE_VISITOR_TYPES);
@@ -478,6 +484,7 @@ public class Dashboard extends SojaActivity {
                 db.execSQL(handler.CREATE_PREMISE_RESIDENTS_TABLE);
                 db.execSQL(handler.CREATE_GENDER_TYPES_TABLE);
                 db.execSQL(handler.CREATE_ID_TYPES_TABLE);
+                db.execSQL(handler.CREATE_HOST_TYPES_TABLE);
 
                 /*db.execSQL(handler.CREATE_TABLE_DRIVE_IN);
                 db.execSQL(handler.CREATE_TABLE_SERVICE_PROVIDERS);
@@ -564,10 +571,29 @@ public class Dashboard extends SojaActivity {
                             fingerPrint = null;
                         fingerPrint = fingerPrint.replaceAll("\\n", "");
                         fingerPrint = fingerPrint.replace("\\r", "");
-                        handler.insertPremiseVisitor(resident.getString("id"), resident.getString("id_number"), resident.getString("firstname"), resident.getString("lastname"), fingerPrint, length, resident.getString("house_id"), resident.getString("host_id"));
+                        handler.insertPremiseResident(resident.getString("id"), resident.getString("id_number"), resident.getString("firstname"), resident.getString("lastname"), fingerPrint, length, resident.getString("house_id"), resident.getString("host_id"), resident.getString("host_type"));
+
+
                     }
+
                 } else {
                     Toast.makeText(Dashboard.this, "Couldn't retrieve premise residents", Toast.LENGTH_SHORT).show();
+                }
+
+                Log.d(TAG, "getAllData: Get Host Types " + hostTypesObject.toString());
+
+                if (hostTypesObject.getInt("result_code") == 0 && hostTypesObject.getString("result_text").equals("OK")) {
+                    JSONArray hostTypesArray = hostTypesObject.getJSONArray("result_content");
+                    for (int i = 0; i < hostTypesArray.length(); i++) {
+                        JSONObject hostType = hostTypesArray.getJSONObject(i);
+//                        int length = 0;
+//                        if (hostType.getString("length") != "null") {
+//                            length = Integer.valueOf(hostType.getString("length"));
+//                        }
+                        handler.insertHostType(hostType.getString("id"), hostType.getString("description"));
+                    }
+                } else {
+                    Toast.makeText(Dashboard.this, "Couldn't retrieve host types", Toast.LENGTH_SHORT).show();
                 }
 
 

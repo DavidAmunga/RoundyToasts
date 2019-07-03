@@ -2,6 +2,7 @@ package miles.identigate.soja;
 
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -23,14 +24,18 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import miles.identigate.soja.UserInterface.Login;
+import miles.identigate.soja.UserInterface.Visitors;
 import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.font.TextViewRegular;
 import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
+import miles.identigate.soja.models.PremiseResident;
 
 public class AdminSettingsActivity extends SojaActivity {
     static {
@@ -77,8 +82,17 @@ public class AdminSettingsActivity extends SojaActivity {
     Switch recordInvitees;
     @BindView(R.id.lin_record_invitees)
     LinearLayout linRecordInvitees;
+    @BindView(R.id.residents_list)
+    TextViewBold residentsList;
+    @BindView(R.id.lin_filter_residents)
+    LinearLayout linFilterResidents;
 
+    ArrayList<String> hostTypes = new ArrayList<>();
+    ArrayList<String> selectedHostTypes = new ArrayList<>();
 
+    CharSequence filterItems[];
+
+    boolean[] checkedColors;
 
 
     @Override
@@ -209,6 +223,13 @@ public class AdminSettingsActivity extends SojaActivity {
             }
         });
 
+        linFilterResidents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFilterResidentsDialog();
+            }
+        });
+
 
         linServer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -306,6 +327,102 @@ public class AdminSettingsActivity extends SojaActivity {
 
     }
 
+    private void showFilterResidentsDialog() {
+
+        ArrayList<PremiseResident> premiseResidents = new ArrayList<>();
+
+        handler = new DatabaseHandler(this);
+
+
+        premiseResidents.clear();
+
+        for (int i = 0; i < handler.getPremiseResidentsWithoutFingerprint().size(); i++) {
+//            Toast.makeText(context, handler.getPremiseResidentsWithoutFingerprint().get(i).getFirstName(), Toast.LENGTH_SHORT).show();
+            premiseResidents.add(handler.getPremiseResidentsWithoutFingerprint().get(i));
+        }
+
+
+        for (PremiseResident premiseResident : premiseResidents) {
+            if (premiseResident.getHostType() != null && !premiseResident.getHostType().equals("null")
+            ) {
+
+                if (!hostTypes.contains(premiseResident.getHostType())) {
+                    hostTypes.add(premiseResident.getHostType());
+                }
+
+            }
+        }
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AdminSettingsActivity.this);
+
+
+        filterItems = new CharSequence[hostTypes.size()];
+        checkedColors = new boolean[hostTypes.size()];
+
+        for (int i = 0; i < hostTypes.size(); i++) {
+
+            filterItems[i] = hostTypes.get(i);
+
+        }
+
+
+        builder.setMultiChoiceItems(filterItems, checkedColors, (DialogInterface.OnMultiChoiceClickListener) (dialog, which, isChecked) -> {
+            checkedColors[which] = isChecked;
+
+        });
+
+
+        // Specify the dialog is not
+        // cancelable
+        builder.setCancelable(false);
+
+        // Set a title for alert dialog
+        builder.setTitle("Filter Residents By");
+
+        residentsList.setText("");
+        // Set the positive/yes button click listener
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do something when click positive button
+//                tv.setText("Your preferred colors..... \n");
+                Log.d(TAG, "onClick: " + checkedColors.length);
+
+                for (int i = 0; i < checkedColors.length; i++) {
+                    boolean checked = checkedColors[i];
+
+                    if (checked) {
+
+                        residentsList.setText(residentsList.getText() + hostTypes.get(i) + ",");
+
+                    }
+                }
+            }
+        });
+
+
+        AlertDialog dialog = builder.create();
+        // Display the alert dialog on interface
+        dialog.show();
+
+    }
+
+    private ArrayList<String> getSelectedHostTypes() {
+        String residentListString = residentsList.getText().toString();
+        String[] parts = residentListString.split(",");
+        for (int i = 0; i < parts.length; i++) {
+            if (!TextUtils.isEmpty(parts[i])) {
+
+                selectedHostTypes.add(parts[i]);
+                Log.d(TAG, "getSelectedHostTypes: Host Type " + parts[i]);
+
+            }
+        }
+
+        return selectedHostTypes;
+    }
+
     private void saveSettings() {
         preferences.setCanPrint(printerSwitch.isChecked());
         preferences.setPhoneNumberEnabled(phoneSwitch.isChecked());
@@ -317,6 +434,8 @@ public class AdminSettingsActivity extends SojaActivity {
         preferences.setRecordInvitees(recordInvitees.isChecked());
 //                preferences.setScanPicture(scan_photo.isChecked());
         preferences.setDarkModeOn(preferences.isDarkModeOn());
+//        preferences.setHostTypes(getSelectedHostTypes());
+
 
 //                if (customServer) {
 //                    String ip = custom_ip.getText().toString().trim();

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_SERVICE_PROVIDERS_TYPES = "serviceProviderTypes";
     public static final String TABLE_HOUSES = "houses";
     public static final String TABLE_PREMISE_RESIDENTS = "premiseResidents";
+    public static final String TABLE_HOST_TYPES = "host_types";
     public static final String TABLE_ID_TYPES = "idTypes";
 
 
@@ -54,6 +56,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String category = "category";
     public static final String description = "description";
     public static final String hostId = "hostId";
+    public static final String hostType = "hostType";
 
     //Premise residents
     public static final String FIRSTNAME = "firstName";
@@ -100,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             + TABLE_HOUSES + "(" + id + " TEXT, " + description + " TEXT, " + hostId + " TEXT " + ");";
 
     public final String CREATE_PREMISE_RESIDENTS_TABLE = "CREATE TABLE "
-            + TABLE_PREMISE_RESIDENTS + "(" + IDNUMBER + " TEXT, " + FIRSTNAME + " TEXT, " + LASTNAME + " TEXT, " + FINGERPRINT + " TEXT, " + FINGERPRINTLEN + " INTEGER, " + id + " TEXT, " + house + " TEXT, " + hostId + " TEXT "
+            + TABLE_PREMISE_RESIDENTS + "(" + IDNUMBER + " TEXT, " + FIRSTNAME + " TEXT, " + LASTNAME + " TEXT, " + FINGERPRINT + " TEXT, " + FINGERPRINTLEN + " INTEGER, " + id + " TEXT, " + house + " TEXT, " + hostId + " TEXT ," + hostType + " TEXT "
             + ");";
 
     public final String CREATE_GENDER_TYPES_TABLE = "CREATE TABLE "
@@ -108,6 +111,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public final String CREATE_ID_TYPES_TABLE = "CREATE TABLE "
             + TABLE_ID_TYPES + "(" + id + " TEXT, " + description + " TEXT " + ");";
+
+    public final String CREATE_HOST_TYPES_TABLE = "CREATE TABLE "
+            + TABLE_HOST_TYPES + "(" + id + " TEXT, " + name + " TEXT " + ");";
 
     public DatabaseHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -126,6 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_PREMISE_RESIDENTS_TABLE);
         db.execSQL(CREATE_GENDER_TYPES_TABLE);
         db.execSQL(CREATE_ID_TYPES_TABLE);
+        db.execSQL(CREATE_HOST_TYPES_TABLE);
 
     }
 
@@ -147,13 +154,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PREMISE_RESIDENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GENDER_TYPES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ID_TYPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HOST_TYPES);
 
         onCreate(db);
 
     }
 
 
-    public void insertPremiseVisitor(String _id, String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId) {
+    public void insertPremiseResident(String _id, String idNumber, String firstName, String lastName, String fingerprint, int fingerprintLen, String _house, String _hostId, String host_type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -165,6 +173,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(FINGERPRINTLEN, fingerprintLen);
         values.put(house, _house);
         values.put(hostId, _hostId);
+        values.put(hostType, host_type);
         db.insert(TABLE_PREMISE_RESIDENTS, null, values);
         db.close();
     }
@@ -185,6 +194,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 premiseResident.setId(cursor.getString(5));
                 premiseResident.setHouse(cursor.getString(6));
                 premiseResident.setHostId(cursor.getString(7));
+                premiseResident.setHostType(cursor.getString(8));
 
                 premiseResidents.add(premiseResident);
             } while (cursor.moveToNext());
@@ -211,6 +221,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 premiseResident.setId(cursor.getString(5));
                 premiseResident.setHouse(cursor.getString(6));
                 premiseResident.setHostId(cursor.getString(7));
+                if (cursor.getString(7) != null && !TextUtils.isEmpty(cursor.getString(7))) {
+                    premiseResident.setHostType(cursor.getString(8));
+                }
 
                 premiseResidents.add(premiseResident);
             } while (cursor.moveToNext());
@@ -532,6 +545,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 item.setDob(cursor.getString(7));
                 item.setSex(cursor.getString(8));
                 item.setIdType(cursor.getString(9));
+                item.setIdType(cursor.getString(10));
                 if (type == 0) {
                     if (item.getExitTime().equals("NULL")) {
                         items.add(item);
@@ -647,6 +661,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void insertHostType(String id, String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHandler.name, name);
+        values.put(DatabaseHandler.id, id);
+        db.insert(TABLE_HOST_TYPES, null, values);
+        db.close();
+    }
+
     public void insertIDTypes(String id, String description) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -737,6 +760,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             if (!hashMap.isEmpty())
                 hashMap.clear();
             String selectQuery = "SELECT  * FROM " + TABLE_INCIDENT_TYPES;
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    TypeObject typeObject = new TypeObject();
+                    typeObject.setId(cursor.getString(0));
+                    typeObject.setName(cursor.getString(1));
+                    hashMap.add(typeObject);
+                } while (cursor.moveToNext());
+            }
+            return hashMap;
+        } else if (type.equals("host-types")) {
+            if (!hashMap.isEmpty())
+                hashMap.clear();
+            String selectQuery = "SELECT  * FROM " + TABLE_HOST_TYPES;
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToFirst()) {
                 do {

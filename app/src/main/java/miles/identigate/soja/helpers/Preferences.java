@@ -3,6 +3,8 @@ package miles.identigate.soja.helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 import io.paperdb.Paper;
 import miles.identigate.soja.models.User;
 
@@ -266,5 +268,12 @@ public class Preferences {
         return settings.getString("organizationId", "SOJA");
     }
 
+    public ArrayList<String> getHostTypes() {
+        return Paper.book().read("selectedHostTypes");
+    }
+
+    public void setHostTypes(ArrayList<String> hostTypes) {
+        Paper.book().write("selectedHostTypes", hostTypes);
+    }
 
 }

@@ -5,6 +5,7 @@ public class PremiseResident {
     String firstName;
     String lastName;
     String fingerPrint;
+    String hostType;
 
     String house;
 
@@ -76,5 +77,32 @@ public class PremiseResident {
         this.fingerPrintLen = fingerPrintLen;
     }
 
+    public String getHostType() {
+        return hostType;
+    }
+
+    public void setHostType(String hostType) {
+        this.hostType = hostType;
+    }
+
     int fingerPrintLen;
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof PremiseResident) {
+            PremiseResident temp = (PremiseResident) obj;
+            if (this.firstName.equals(temp.firstName) && this.lastName.equals(temp.lastName) &&
+                    this.idNumber.equals(temp.idNumber) && this.hostId.equals(temp.hostId))
+                return true;
+        }
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.firstName.hashCode() + this.lastName.hashCode() + this.idNumber.hashCode() + this.hostId.hashCode());
+
+    }
 }

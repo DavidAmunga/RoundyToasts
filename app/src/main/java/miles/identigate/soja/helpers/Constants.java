@@ -209,11 +209,11 @@ public class Constants {
             drawables.add(R.drawable.ic_walk_in_new);
 
 
-            if (preferences.isFingerprintsEnabled()) {
-                titles.add("Biometric Checkout");
-                descriptions.add("Checkout out using biometrics");
-                drawables.add(R.drawable.ic_fingerprint);
-            }
+//            if (preferences.isFingerprintsEnabled()) {
+//                titles.add("Biometric Checkout");
+//                descriptions.add("Checkout out using biometrics");
+//                drawables.add(R.drawable.ic_fingerprint);
+//            }
 
 
         } else if (preferences.getBaseURL().contains("events")) {

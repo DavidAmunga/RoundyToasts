@@ -145,7 +145,6 @@ public class SelectEvent extends Fragment implements OnEventClick {
                         JSONArray resultContent = jsonObject.optJSONArray("result_content");
 
 
-                        Log.d(TAG, "onResponse: " + resultContent.toString());
 
 //                        Log.d(TAG, "onResponse: Result Text"+resultText);
                         if (resultCode == 0 && resultText.equals("OK") && resultContent != null) {

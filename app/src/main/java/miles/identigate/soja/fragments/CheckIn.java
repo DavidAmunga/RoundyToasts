@@ -19,6 +19,7 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import miles.identigate.soja.FingerprintActivity;
 import miles.identigate.soja.activities.CheckInGuest;
 import miles.identigate.soja.activities.GuestList;
 import miles.identigate.soja.activities.ScanTicket;
@@ -157,9 +158,9 @@ public class CheckIn extends Fragment {
                         break;
                     case "Biometric Checkin":
                         if (preferences.isFingerprintsEnabled()) {
-//                            Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
-//                            fingerPrint.putExtra("CHECKOUT", false);
-//                            startActivity(fingerPrint);
+                            Intent fingerPrint = new Intent(getActivity(), FingerprintActivity.class);
+                            fingerPrint.putExtra("CHECKOUT", false);
+                            startActivity(fingerPrint);
                         } else {
                             startActivity(new Intent(getActivity(), Incident.class));
                         }

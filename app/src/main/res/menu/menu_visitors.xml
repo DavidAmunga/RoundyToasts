@@ -12,7 +12,6 @@
         android:id="@+id/nav_filter"
         android:icon="@drawable/ic_filter_list"
         android:title="Filter"
-        app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="collapseActionView|ifRoom" />
 
 </menu>

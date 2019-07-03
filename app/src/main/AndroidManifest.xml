@@ -46,7 +46,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:theme">
-        <activity android:name=".activities.TicketList"></activity>
+        <activity
+            android:name=".UserInterface.AssignQR"
+            android:parentActivityName=".ScanQRActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activities.TicketList" />
         <activity android:name=".activities.ScanTicket" />
         <activity
             android:name=".activities.InviteeResults"
@@ -202,6 +206,11 @@
         <activity
             android:name=".logs.Incidents"
             android:label="Soja"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".FingerprintActivity"
+            android:label="Scan Fingerprint"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity

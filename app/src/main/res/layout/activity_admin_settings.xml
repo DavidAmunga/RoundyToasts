@@ -346,6 +346,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/grey" />
+
+
+                <LinearLayout
+                    android:id="@+id/lin_filter_residents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:visibility="gone">
+
+                    <miles.identigate.soja.font.TextViewRegular
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Filter Residents"
+                        android:textColor="?attr/textColor"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <miles.identigate.soja.font.TextViewBold
+                        android:id="@+id/residents_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="?attr/textColor"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
             </LinearLayout>
 
             <Button
