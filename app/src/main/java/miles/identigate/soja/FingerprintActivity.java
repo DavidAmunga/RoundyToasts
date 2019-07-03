@@ -68,10 +68,8 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
     private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     @BindView(R.id.title)
     TextViewBold title;
-    @BindView(R.id.place_finger)
-    TextViewBold placeFinger;
-    @BindView(R.id.hint_layout)
-    LinearLayout hintLayout;
+
+
     @BindView(R.id.fingerprint_in)
     ImageView fingerprintIn;
     @BindView(R.id.record_type_in)
@@ -137,13 +135,16 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                         if (image != null) {
                             image.setImageBitmap(capturedImage);
 
-                            if (capturedTemplate.quality == 100) {
-                                isGoodQuality = true;
-
+                            if (capturedTemplate != null) {
+                                if (capturedTemplate.quality == 100) {
+                                    isGoodQuality = true;
+                                } else {
+                                    isGoodQuality = false;
+                                }
                             } else {
                                 isGoodQuality = false;
                             }
-//                            Toast.makeText(FingerprintActivity.this, String.valueOf("Quality " + capturedTemplate.quality), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FingerprintActivity.this, String.valueOf("Fingerprint Quality " + capturedTemplate.quality + "%"), Toast.LENGTH_SHORT).show();
 
                         } else {
                             image.setVisibility(View.INVISIBLE);
@@ -254,7 +255,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                                 }
                             }
                         } else {
-                            placeFinger.setText("Please place your finger correctly");
+                            Toast.makeText(FingerprintActivity.this, "Please place your finger correctly", Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -271,7 +272,7 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        placeFinger.setText("Please place your finger correctly.");
+                        Toast.makeText(FingerprintActivity.this, "Please place your finger correctly", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -342,7 +343,6 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
             @Override
             public void onClick(View v) {
 
-                hintLayout.setVisibility(View.VISIBLE);
 
                 isCheckout = false;
 
@@ -363,8 +363,6 @@ public class FingerprintActivity extends SojaActivity implements FingerprintRegi
         fingerprintOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                hintLayout.setVisibility(View.VISIBLE);
 
 
                 isCheckout = true;

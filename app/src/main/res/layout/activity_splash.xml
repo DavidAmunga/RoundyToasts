@@ -4,40 +4,46 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor">
 
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="25dp"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/soja_logo_only" />
 
-    <miles.identigate.soja.font.BrandonGrotesqueBold
-        android:id="@+id/soja_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/imgLogo"
-        android:layout_centerHorizontal="true"
-        android:text="SOJA"
-        android:textColor="@color/colorPrimary"
-        android:textSize="80sp"
-        android:textStyle="bold"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        />
 
-    <miles.identigate.soja.font.OpenSansItalic
-        android:id="@+id/soja_slogan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/soja_name"
-        android:layout_centerHorizontal="true"
-        android:text="Streamlining Visitor Management"
-        android:textColor="?attr/textColor"
-        android:textSize="15sp"
-        android:textStyle="bold"
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_margin="25dp"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/soja_logo_only" />
 
-        />
+        <miles.identigate.soja.font.BrandonGrotesqueBold
+            android:id="@+id/soja_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgLogo"
+            android:text="SOJA"
+            android:textColor="@color/colorPrimary"
+            android:textSize="80sp"
+            android:textStyle="bold"
+
+            />
+
+        <miles.identigate.soja.font.OpenSansItalic
+            android:id="@+id/soja_slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/soja_name"
+            android:text="Streamlining Visitor Management"
+            android:textColor="?attr/textColor"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 
     <View
         android:id="@+id/barBottom"

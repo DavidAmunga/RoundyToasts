@@ -10,17 +10,17 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,10 +39,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.paperdb.Paper;
+import miles.identigate.soja.UserInterface.Login;
 import miles.identigate.soja.app.Common;
+import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.fragments.CheckIn;
 import miles.identigate.soja.fragments.CheckOut;
 import miles.identigate.soja.fragments.Invitees;
@@ -51,9 +53,7 @@ import miles.identigate.soja.helpers.DatabaseHandler;
 import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
-import miles.identigate.soja.models.PremiseResident;
 import miles.identigate.soja.services.SyncService;
-import miles.identigate.soja.UserInterface.Login;
 //import miles.identigate.soja.UserInterface.Login;
 
 public class Dashboard extends SojaActivity {
@@ -66,6 +66,10 @@ public class Dashboard extends SojaActivity {
     private static final int CAMERA_REQUEST = 200;
     private static final int STORAGE_REQUEST = 300;
     private static final int PHONE_STATE_REQUEST = 400;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.title)
+    TextViewBold title;
     private MaterialDialog dialog;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -110,11 +114,14 @@ public class Dashboard extends SojaActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        ButterKnife.bind(this);
         handler = new DatabaseHandler(this);
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setTitle("");
 
+
+        title.setText(Common.capitalizer(preferences.getCurrentUser().getPremiseName()));
 //        Clear Variables
         Paper.init(this);
         Paper.book().delete(Common.PREF_CURRENT_DRIVER_PASS);
@@ -221,7 +228,7 @@ public class Dashboard extends SojaActivity {
 
 
     private void askPermissions() {
-        if (ContextCompat.checkSelfPermission(Dashboard.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(Dashboard.this, permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(Dashboard.this, new String[]{permission.CAMERA}, CAMERA_REQUEST);
         }
         if (ContextCompat.checkSelfPermission(Dashboard.this, permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

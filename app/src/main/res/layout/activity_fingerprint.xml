@@ -19,31 +19,6 @@
 
 
         <LinearLayout
-            android:id="@+id/hint_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@color/colorPrimary"
-            android:elevation="5dp"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:visibility="invisible">
-
-            <miles.identigate.soja.font.TextViewBold
-                android:id="@+id/place_finger"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Place finger on the fingerprint reader"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
