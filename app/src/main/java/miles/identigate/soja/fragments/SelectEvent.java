@@ -145,7 +145,6 @@ public class SelectEvent extends Fragment implements OnEventClick {
                         JSONArray resultContent = jsonObject.optJSONArray("result_content");
 
 
-
 //                        Log.d(TAG, "onResponse: Result Text"+resultText);
                         if (resultCode == 0 && resultText.equals("OK") && resultContent != null) {
 
@@ -159,6 +158,7 @@ public class SelectEvent extends Fragment implements OnEventClick {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("eventID", event.getId());
                                 bundle.putString("eventName", event.getName());
+                                bundle.putBoolean("direct", true);
 
                                 ((CheckInGuest) getActivity()).displaySelectedScreen(R.id.nav_scan_event_ticket, bundle);
                             } else {
@@ -176,6 +176,8 @@ public class SelectEvent extends Fragment implements OnEventClick {
                             Bundle bundle = new Bundle();
                             bundle.putString("eventID", event.getId());
                             bundle.putString("eventName", event.getName());
+                            bundle.putBoolean("direct", true);
+
 
                             ((CheckInGuest) getActivity()).displaySelectedScreen(R.id.nav_scan_event_ticket, bundle);
 

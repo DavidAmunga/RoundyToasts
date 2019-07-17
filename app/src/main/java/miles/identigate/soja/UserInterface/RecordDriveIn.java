@@ -88,7 +88,7 @@ public class RecordDriveIn extends SojaActivity {
 
     String firstName, lastName, idNumber;
     String result_slip = "";
-    int visit_id = 0;
+    String visit_id;
     int driverPassengers = 1;
 
 
@@ -179,7 +179,7 @@ public class RecordDriveIn extends SojaActivity {
             @Override
             public void onClick(View v) {
                 if (CheckConnection.check(RecordDriveIn.this)) {
-                    if (vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("")) {
+                    if (selectedDestination == null || vehicleRegNo.getText().toString().equals(null) || vehicleRegNo.getText().toString().equals("")) {
                         Snackbar.make(v, "All fields are required.", Snackbar.LENGTH_SHORT).setActionTextColor(getResources().getColor(R.color.white)).show();
                     } else {
                         recordInternt();
@@ -293,7 +293,9 @@ public class RecordDriveIn extends SojaActivity {
 
 
 //        CHECK IF DRIVER PASS EXISTS
-        if (Paper.book().read(Common.PREF_CURRENT_DRIVER_PASS) != null) {
+        if (Paper.book().
+
+                read(Common.PREF_CURRENT_DRIVER_PASS) != null) {
             driverPassengers = Paper.book().read(Common.PREF_CURRENT_DRIVER_PASS);
             Log.d(TAG, "onCreate: Same Driver");
 
@@ -550,10 +552,10 @@ public class RecordDriveIn extends SojaActivity {
             intent.putExtra("checkInType", "drive");
             intent.putExtra("checkInMode", "ID No");
             intent.putExtra("peopleNo", numberOfPeople.getText().toString());
+
             if (preferences.isSelectHostsEnabled() && selectedHost != null) {
                 intent.putExtra("host", selectedHost.getName());
             }
-
 
             startActivity(intent);
         } else {
@@ -628,7 +630,7 @@ public class RecordDriveIn extends SojaActivity {
         Log.d(TAG, "resultHandler: " + obj.toString());
         if (resultText.equals("OK") && resultContent.equals("success")) {
             result_slip = obj.getString("result_slip");
-            visit_id = obj.getInt("visit_id");
+            visit_id = obj.getString("id");
 
             Paper.book().write(Common.PREF_CURRENT_VISIT_ID, visit_id);
 

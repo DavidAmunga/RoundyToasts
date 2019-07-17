@@ -204,10 +204,11 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
 
                         if (resultText.equals("OK") && resultCode == 0) {
 
-                            String name = resultContent.getString("name");
+                            String name = resultContent.optString("name");
 
 
-                            changeUIState(Common.STATE_SUCCESS, name + " checked Out");
+                            changeUIState(Common.STATE_SUCCESS, ((name == null || name.isEmpty()) ? "" : name) + " checked Out")
+                            ;
 
                         } else {
 

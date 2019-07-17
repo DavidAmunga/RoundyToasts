@@ -51,6 +51,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
     DatabaseHandler handler;
     TypeObject selectedDestination, selectedType, selectedHost;
     TextView spinnerDestination, spinnerHost;
+    private String visit_id = "";
 
 
     @Override
@@ -262,11 +263,11 @@ public class SmsCheckInActivity extends AppCompatActivity {
         if (!phoneNo.equals("")) {
             try {
                 urlParameters =
-                        "phone=" + URLEncoder.encode(phoneNo, "UTF-8")+
-                "&organisationID=" + URLEncoder.encode(preferences.getOrganizationId(), "UTF-8")
+                        "phone=" + URLEncoder.encode(phoneNo, "UTF-8") +
+                                "&organisationID=" + URLEncoder.encode(preferences.getOrganizationId(), "UTF-8")
                 ;
 
-                Log.d(TAG, "sendConfirmationCode: "+urlParameters);
+                Log.d(TAG, "sendConfirmationCode: " + urlParameters);
 
 
                 new SMSCheckInAsync().execute(preferences.getBaseURL() + "send_code", urlParameters);
@@ -531,6 +532,9 @@ public class SmsCheckInActivity extends AppCompatActivity {
             if (!edtPeopleNo.getText().toString().equals("")) {
                 intent.putExtra("peopleNo", edtPeopleNo.getText().toString());
             }
+
+            intent.putExtra("visit_id", visit_id);
+
             intent.putExtra("phoneNo", edtPhoneNo.getText().toString());
             intent.putExtra("checkInMode", "SMS");
 
@@ -565,6 +569,8 @@ public class SmsCheckInActivity extends AppCompatActivity {
         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
             Toast.makeText(this, "Success! Visitor Checked In", Toast.LENGTH_SHORT).show();
 //            parseResult();
+            visit_id = obj.getString("id");
+
 
             if (preferences.canPrint()) {
                 parseResult();
@@ -602,7 +608,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                             }
                         })
                         .show();
-                Log.d(TAG, "recordResultHandler: "+result);
+                Log.d(TAG, "recordResultHandler: " + result);
 
             } else {
                 new MaterialDialog.Builder(this)
@@ -617,7 +623,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                             }
                         })
                         .show();
-                Log.d(TAG, "recordResultHandler: "+result);
+                Log.d(TAG, "recordResultHandler: " + result);
             }
 
         }
@@ -668,7 +674,7 @@ public class SmsCheckInActivity extends AppCompatActivity {
                                         }
                                     })
                                     .show();
-                            Log.d(TAG, "onPostExecute: "+result.toString());
+                            Log.d(TAG, "onPostExecute: " + result.toString());
                             Toast.makeText(SmsCheckInActivity.this, result, Toast.LENGTH_SHORT).show();
                         }
                     } else {

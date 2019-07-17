@@ -94,6 +94,7 @@ public class ScanEventTicket extends Fragment {
             lastText = result.getText();
 //            barcodeView.setStatusText(result.getText());
 
+
             if (!direct) {
                 checkInTicketManagedService(result.getText());
             } else {
@@ -142,10 +143,19 @@ public class ScanEventTicket extends Fragment {
             ((CheckInGuest) getActivity()).getSupportActionBar().setTitle("Scan " + serviceName + " Ticket");
         }
 
+        triggerScan();
+
         if (bundle.getBoolean("direct")) {
             direct = bundle.getBoolean("direct");
         }
 
+
+        optionsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                triggerScan();
+            }
+        });
 
         mResidentsService = Common.getResidentsDataService(getActivity());
         mEventsService = Common.getEventsDataService(getActivity());
@@ -178,6 +188,7 @@ public class ScanEventTicket extends Fragment {
                         String result_text = object.getString("result_text");
 
                         if (result_code == 0) {
+
                             changeUIState(Common.STATE_SUCCESS, "Success. Ticket Checked In");
                         } else {
                             if (result_text.contains("still in")) {
@@ -382,6 +393,7 @@ public class ScanEventTicket extends Fragment {
     }
 
     public void triggerScan() {
+        lastText = "";
         qrScanner.decodeSingle(callback);
     }
 

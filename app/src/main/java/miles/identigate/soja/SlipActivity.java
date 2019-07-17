@@ -21,9 +21,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import HPRTAndroidSDK.HPRTPrinterHelper;
 import HPRTAndroidSDK.PublicFunction;
+import io.paperdb.Paper;
 import miles.identigate.soja.Printer.DeviceListActivity;
 import miles.identigate.soja.Printer.PrinterProperty;
 import miles.identigate.soja.Printer.PublicAction;
+import miles.identigate.soja.UserInterface.RecordDriveIn;
+import miles.identigate.soja.app.Common;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.helpers.SojaActivity;
@@ -55,6 +58,7 @@ public class SlipActivity extends SojaActivity {
 
 
     Preferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -274,6 +278,7 @@ public class SlipActivity extends SojaActivity {
     void showSuccess() {
         dialog.dismiss();
         LocalBroadcastManager.getInstance(SlipActivity.this).sendBroadcast(new Intent(Constants.RECORDED_VISITOR));
+
         dialog = new MaterialDialog.Builder(this)
                 .title("PRINTED")
                 .titleGravity(GravityEnum.CENTER)
@@ -304,6 +309,7 @@ public class SlipActivity extends SojaActivity {
         TextView messageText = (TextView) view.findViewById(R.id.message);
         messageText.setText("Visitor has been successfully recorded.");
         dialog.show();
+
     }
 
     private void CapturePrinterFunction() {

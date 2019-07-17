@@ -1,6 +1,9 @@
 package miles.identigate.soja.models;
 
-public class DriveInPassenger {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class DriveInPassenger implements Parcelable {
     private String phone;
     private String companyName;
     private String house;
@@ -26,6 +29,42 @@ public class DriveInPassenger {
 
     public DriveInPassenger() {
     }
+
+    protected DriveInPassenger(Parcel in) {
+        phone = in.readString();
+        companyName = in.readString();
+        house = in.readString();
+        firstName = in.readString();
+        scan_id_type = in.readString();
+        visitType = in.readString();
+        deviceID = in.readString();
+        premiseZoneID = in.readString();
+        visitorTypeID = in.readString();
+        houseID = in.readString();
+        hostID = in.readString();
+        paxinvehicle = in.readInt();
+        entryTime = in.readString();
+        vehicleRegNO = in.readString();
+        birthDate = in.readString();
+        genderID = in.readString();
+        lastName = in.readString();
+        idType = in.readString();
+        idNumber = in.readString();
+        nationality = in.readString();
+        nationCode = in.readString();
+    }
+
+    public static final Creator<DriveInPassenger> CREATOR = new Creator<DriveInPassenger>() {
+        @Override
+        public DriveInPassenger createFromParcel(Parcel in) {
+            return new DriveInPassenger(in);
+        }
+
+        @Override
+        public DriveInPassenger[] newArray(int size) {
+            return new DriveInPassenger[size];
+        }
+    };
 
     public String getPhone() {
         return phone;
@@ -193,5 +232,36 @@ public class DriveInPassenger {
 
     public void setNationCode(String nationCode) {
         this.nationCode = nationCode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(phone);
+        dest.writeValue(companyName);
+        dest.writeValue(house);
+        dest.writeValue(firstName);
+        dest.writeValue(scan_id_type);
+        dest.writeValue(visitType);
+        dest.writeValue(deviceID);
+        dest.writeValue(premiseZoneID);
+        dest.writeValue(visitorTypeID);
+        dest.writeValue(houseID);
+        dest.writeValue(hostID);
+        dest.writeValue(paxinvehicle);
+        dest.writeValue(entryTime);
+        dest.writeValue(vehicleRegNO);
+        dest.writeValue(birthDate);
+        dest.writeValue(genderID);
+        dest.writeValue(lastName);
+        dest.writeValue(idType);
+        dest.writeValue(idNumber);
+        dest.writeValue(nationality);
+        dest.writeValue(nationCode);
+
     }
 }

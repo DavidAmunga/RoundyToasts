@@ -159,6 +159,8 @@ public class ScanQRActivity extends AppCompatActivity {
 
         handler = new DatabaseHandler(this);
 
+        triggerScan();
+
 
         Collection<BarcodeFormat> formats = Arrays.asList(BarcodeFormat.QR_CODE, BarcodeFormat.CODE_39);
         qrScanner.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(formats));
@@ -285,6 +287,7 @@ public class ScanQRActivity extends AppCompatActivity {
                         if (resultCode == 0 && resultText.equals("OK") && resultContent.equals("success")) {
                             Log.d(TAG, "onPostExecute: Success");
 
+
                             changeUIState(Common.STATE_SUCCESS, residentName + " checked in");
 
                         } else {
@@ -332,8 +335,9 @@ public class ScanQRActivity extends AppCompatActivity {
                         JSONObject obj = new JSONObject(result);
                         int resultCode = obj.getInt("result_code");
                         String resultText = obj.getString("result_text");
-                        String resultContent = obj.getString("result_content");
-                        if (resultText.equals("OK") && resultContent.equals("success")) {
+                        JSONObject resultContent = obj.getJSONObject("result_content");
+                        if (resultText.equals("OK") && resultContent != null) {
+
 //                            CheckIn Again QR
                             checkInResident(qr_code);
                         } else {
@@ -342,8 +346,8 @@ public class ScanQRActivity extends AppCompatActivity {
 
                         }
                     } else {
-                        changeUIState(Common.STATE_FAILURE, "Poor Internet Connection");
 
+                        changeUIState(Common.STATE_FAILURE, "Poor Internet Connection");
 
                     }
                 } catch (JSONException e) {
