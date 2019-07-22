@@ -102,6 +102,9 @@ public class EntryTypeFragment extends Fragment {
             case Common.WALK_IN:
                 record_type.setText("RECORD WALK IN");
                 break;
+            case Common.CHECK_OUT_USER:
+                record_type.setText("CHECK OUT ID");
+                break;
             case Common.SERVICE_PROVIDER:
                 record_type.setText("RECORD SERVICE PROVIDER");
                 break;
@@ -138,7 +141,7 @@ public class EntryTypeFragment extends Fragment {
 
         if (preferences.getBaseURL().contains("events")) {
             manualBtn.setVisibility(View.VISIBLE);
-        }else{
+        } else {
 
             manualBtn.setVisibility(View.GONE);
         }

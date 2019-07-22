@@ -207,7 +207,7 @@ public class ExpressCheckoutActivity extends AppCompatActivity {
                             String name = resultContent.optString("name");
 
 
-                            changeUIState(Common.STATE_SUCCESS, ((name == null || name.isEmpty()) ? "" : name) + " checked Out")
+                            changeUIState(Common.STATE_SUCCESS, name + " checked Out")
                             ;
 
                         } else {

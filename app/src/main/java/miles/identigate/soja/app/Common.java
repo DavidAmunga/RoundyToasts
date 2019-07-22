@@ -60,6 +60,7 @@ public class Common extends Application {
     public static final int RESIDENTS = 3;
     public static final int INCIDENT = 4;
     public static final int REGISTER_GUEST = 5;
+    public static final int CHECK_OUT_USER = 12;
     public static final int ISSUE_TICKET = 6;
     public static final int CHECK_IN_GUEST = 7;
 

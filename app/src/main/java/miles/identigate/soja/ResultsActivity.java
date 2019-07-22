@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -17,10 +19,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.enums.eVisualFieldType;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +46,7 @@ import miles.identigate.soja.activities.RegisterGuest;
 import miles.identigate.soja.app.Common;
 import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.helpers.Constants;
+import miles.identigate.soja.helpers.NetworkHandler;
 import miles.identigate.soja.helpers.Preferences;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -165,6 +174,9 @@ public class ResultsActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
                         finish();
                         break;
+                    case Common.CHECK_OUT_USER:
+                        checkOutUser();
+                        break;
                     case Common.ISSUE_TICKET:
                         startActivity(new Intent(getApplicationContext(), RecordResident.class));
                         overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
@@ -188,6 +200,105 @@ public class ResultsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void checkOutUser() {
+        String urlParameters = null;
+        try {
+            urlParameters = "idNumber=" + URLEncoder.encode(txtIdNo.getText().toString(), "UTF-8") +
+                    "&deviceID=" + URLEncoder.encode(preferences.getDeviceId(), "UTF-8") +
+                    "&exitTime=" + URLEncoder.encode(Constants.getCurrentTimeStamp(), "UTF-8");
+            new ExitAsync().execute(preferences.getBaseURL() + "record-visitor-exit", urlParameters);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class ExitAsync extends AsyncTask<String, Void, String> {
+        MaterialDialog builder = new MaterialDialog.Builder(ResultsActivity.this)
+                .title("Exit")
+                .content("Removing visitor...")
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .cancelable(false)
+                .widgetColorRes(R.color.colorPrimary)
+                .build();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            builder.show();
+        }
+
+        protected String doInBackground(String... params) {
+            return NetworkHandler.executePost(params[0], params[1]);
+        }
+
+        protected void onPostExecute(String result) {
+            builder.dismiss();
+            if (result != null) {
+                try {
+                    if (result.contains("result_code")) {
+                        JSONObject obj = new JSONObject(result);
+                        int resultCode = obj.getInt("result_code");
+                        String resultText = obj.getString("result_text");
+                        String resultContent = obj.getString("result_content");
+                        if (resultText.equals("OK") && resultContent.equals("success")) {
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+                            v.vibrate(400);
+
+                            new MaterialDialog.Builder(ResultsActivity.this)
+                                    .title("Success")
+                                    .content(txtVisitorName.getText().toString() + " checked out")
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                            startActivity(new Intent(ResultsActivity.this, Dashboard.class));
+                                            finish();
+                                            //finish();
+                                        }
+                                    })
+                                    .show();
+
+
+                        } else {
+                            new MaterialDialog.Builder(ResultsActivity.this)
+                                    .title("ERROR")
+                                    .content(resultText)
+                                    .positiveText("OK")
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog dialog) {
+                                            dialog.dismiss();
+                                            //finish();
+                                        }
+                                    })
+                                    .show();
+                            Log.d(TAG, "Error: " + result);
+                        }
+                    } else {
+                        new MaterialDialog.Builder(ResultsActivity.this)
+                                .title("Result")
+                                .content("Poor internet connection.")
+                                .positiveText("Ok")
+                                .show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                new MaterialDialog.Builder(ResultsActivity.this)
+                        .title("Result")
+                        .content("Poor internet connection.")
+                        .positiveText("Ok")
+                        .show();
+            }
+        }
+    }
+
 
     @Override
     protected void onPause() {

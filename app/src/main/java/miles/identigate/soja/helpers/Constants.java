@@ -154,8 +154,7 @@ public class Constants {
             drawables.add(R.drawable.ic_qr);
 
 
-        } else
-            {
+        } else {
             titles.add("Drive In");
             titles.add("Walk In");
             titles.add("Residents");
@@ -191,7 +190,6 @@ public class Constants {
 //            drawables.add(R.drawable.ic_scan_icon);
 
 
-
 //            Temp Events
 
 
@@ -225,19 +223,32 @@ public class Constants {
 
         } else {
             titles.add("Express Checkout");
-            titles.add("Drive Out");
-            titles.add("Walk Out");
-            titles.add("Residents");
+            titles.add("ID Checkout");
 
-            descriptions.add("Scan QR to check out visitor");
-            descriptions.add("Check out a driving visitor");
-            descriptions.add("Check out a visitor on foot");
-            descriptions.add("Check out a resident");
+            descriptions.add("Scan QR to check out");
+            descriptions.add("Scan ID to check out");
 
             drawables.add(R.drawable.ic_scan_icon);
-            drawables.add(R.drawable.ic_drive_in_new);
-            drawables.add(R.drawable.ic_walk_in_new);
-            drawables.add(R.drawable.ic_resident_icon_new);
+            drawables.add(R.drawable.ic_card);
+
+            if(preferences.isManualVisitorCheckOutEnabled()){
+                titles.add("Drive Out");
+                titles.add("Walk Out");
+
+                descriptions.add("Check out a driving visitor");
+                descriptions.add("Check out a visitor on foot");
+
+
+                drawables.add(R.drawable.ic_drive_in_new);
+                drawables.add(R.drawable.ic_walk_in_new);
+
+            }
+
+            if (preferences.isManualResidentCheckOutEnabled()) {
+                titles.add("Residents");
+                descriptions.add("Check out a resident");
+                drawables.add(R.drawable.ic_resident_icon_new);
+            }
 
 
             if (preferences.isFingerprintsEnabled()) {

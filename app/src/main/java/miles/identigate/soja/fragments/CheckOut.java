@@ -9,8 +9,10 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import miles.identigate.soja.ScanActivity;
 import miles.identigate.soja.adapters.CheckInAdapter;
 import miles.identigate.soja.ExpressCheckoutActivity;
+import miles.identigate.soja.app.Common;
 import miles.identigate.soja.helpers.Constants;
 import miles.identigate.soja.helpers.Preferences;
 import miles.identigate.soja.UserInterface.Visitors;
@@ -72,6 +74,13 @@ public class CheckOut extends ListFragment {
                 Intent driveOut = new Intent(getActivity().getApplicationContext(), Visitors.class);
                 driveOut.putExtra("TYPE", "DRIVE");
                 startActivity(driveOut);
+                break;
+            case "ID Checkout":
+                Intent intent = new Intent(getActivity(), ScanActivity.class);
+                Bundle extras = new Bundle();
+                extras.putInt("TargetActivity", Common.CHECK_OUT_USER);
+                intent.putExtras(extras);
+                startActivity(intent);
                 break;
             case "Walk Out":
                 Intent walkOut = new Intent(getActivity().getApplicationContext(), Visitors.class);

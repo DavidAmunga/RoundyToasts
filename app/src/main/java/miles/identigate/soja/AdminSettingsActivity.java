@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import miles.identigate.soja.UserInterface.Login;
-import miles.identigate.soja.UserInterface.Visitors;
 import miles.identigate.soja.font.TextViewBold;
 import miles.identigate.soja.font.TextViewRegular;
 import miles.identigate.soja.helpers.DatabaseHandler;
@@ -93,6 +92,14 @@ public class AdminSettingsActivity extends SojaActivity {
     CharSequence filterItems[];
 
     boolean[] checkedColors;
+    @BindView(R.id.manual_resident_check_out)
+    Switch manualResidentCheckOut;
+    @BindView(R.id.lin_manual_resident_check_out)
+    LinearLayout linManualResidentCheckOut;
+    @BindView(R.id.manual_visitor_check_out)
+    Switch manualVisitorCheckOut;
+    @BindView(R.id.lin_manual_visitor_check_out)
+    LinearLayout linManualVisitorCheckOut;
 
 
     @Override
@@ -146,6 +153,8 @@ public class AdminSettingsActivity extends SojaActivity {
         darkMode.setChecked(preferences.isDarkModeOn());
         premiseName.setText(preferences.getPremiseName());
         sentryName.setText(preferences.getName());
+        manualResidentCheckOut.setChecked(preferences.isManualResidentCheckOutEnabled());
+        manualVisitorCheckOut.setChecked(preferences.isManualVisitorCheckOutEnabled());
 
 
         if (phoneSwitch.isChecked()) {
@@ -189,7 +198,7 @@ public class AdminSettingsActivity extends SojaActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (getDeviceName().contains("Ruggbo")) {
+                    if (getDeviceName().contains("Ruggbo") || getDeviceName().contains("SF360")) {
                     } else {
                         Toast.makeText(AdminSettingsActivity.this, "Not a Fingerprint Device", Toast.LENGTH_SHORT).show();
                         fingerprints.setChecked(false);
@@ -434,6 +443,8 @@ public class AdminSettingsActivity extends SojaActivity {
         preferences.setRecordInvitees(recordInvitees.isChecked());
 //                preferences.setScanPicture(scan_photo.isChecked());
         preferences.setDarkModeOn(preferences.isDarkModeOn());
+        preferences.setManualResidentCheckOutEnabled(manualResidentCheckOut.isChecked());
+        preferences.setManualVisitorCheckOutEnabled(manualVisitorCheckOut.isChecked());
 //        preferences.setHostTypes(getSelectedHostTypes());
 
 

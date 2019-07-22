@@ -139,6 +139,7 @@ public class Preferences {
         editor.commit();
     }
 
+
     public String getPremiseName() {
 
         return settings.getString("premise_name", "SOJA");
@@ -159,6 +160,27 @@ public class Preferences {
         editor.putBoolean("record_phone_number", isEnabled);
         editor.commit();
     }
+
+    public boolean isManualResidentCheckOutEnabled() {
+        return settings.getBoolean("manualResidentCheckOutEnabled", true);
+    }
+
+    public void setManualResidentCheckOutEnabled(boolean isEnabled) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("manualResidentCheckOutEnabled", isEnabled);
+        editor.commit();
+    }
+
+    public boolean isManualVisitorCheckOutEnabled() {
+        return settings.getBoolean("manualVisitorCheckOutEnabled", true);
+    }
+
+    public void setManualVisitorCheckOutEnabled(boolean isEnabled) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("manualVisitorCheckOutEnabled", isEnabled);
+        editor.commit();
+    }
+
 
     public boolean isPhoneVerificationEnabled() {
         return settings.getBoolean("verify_phone_number", false);

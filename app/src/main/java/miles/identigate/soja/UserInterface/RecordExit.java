@@ -158,7 +158,7 @@ public class RecordExit extends SojaActivity {
         String newDate="";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-        SimpleDateFormat newDateFormat = new SimpleDateFormat("EEE dd, MMM YYYY hh:mm:aa");
+        SimpleDateFormat newDateFormat = new SimpleDateFormat("EEE dd, MMM yyyy hh:mm:aa");
 
         Date convertedDate=new Date();
         try{

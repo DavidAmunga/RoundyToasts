@@ -946,10 +946,9 @@ public class RegisterGuest extends AppCompatActivity {
 
 
     private void PrintSlip() {
-        Log.d(TAG, "PrintSlip: Start");
         try {
-//            byte[] data = new byte[]{0x1b, 0x40};
-//            HPRTPrinterHelper.WriteData(data);
+            byte[] data = new byte[]{0x1b, 0x40};
+            HPRTPrinterHelper.WriteData(data);
             PAct.LanguageEncode();
             PAct.BeforePrintAction();
             HPRTPrinterHelper.PrintText(

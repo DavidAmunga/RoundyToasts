@@ -342,6 +342,7 @@
 
                 </LinearLayout>
 
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -376,10 +377,59 @@
 
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/lin_manual_resident_check_out"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <Switch
+                        android:id="@+id/manual_resident_check_out"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Enable Manual Resident Check Out"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/grey" />
+
+
+                <LinearLayout
+                    android:id="@+id/lin_manual_visitor_check_out"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <Switch
+                        android:id="@+id/manual_visitor_check_out"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Enable Manual Visitor Check Out"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <Button

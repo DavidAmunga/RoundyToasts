@@ -384,8 +384,6 @@ public class GuestList extends SojaActivity implements OnItemClick {
     }
 
     private void PrintSlip() {
-        Log.d(TAG, "PrintSlip: Start");
-        Log.d(TAG, "PrintSlip: QR Code"+qrCode);
         try {
             byte[] data = new byte[]{0x1b, 0x40};
             HPRTPrinterHelper.WriteData(data);
@@ -397,7 +395,7 @@ public class GuestList extends SojaActivity implements OnItemClick {
             String msg = Common.centerString(18, selectedGuest.getCompany() != null ? selectedGuest.getCompany() + "\n" : "");
 
 
-//            HPRTPrinterHelper.PrintText(msg, 32, 0, 16);
+            HPRTPrinterHelper.PrintText(msg, 32, 0, 16);
 //            if(!idNumber.equals("") && idNumber!=null){
 //                Log.d(TAG, "PrintSlip: ID No");
 

@@ -10,7 +10,7 @@
         android:id="@+id/image"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:paddingLeft="10dp"
+        android:paddingLeft="15dp"
         android:src="@drawable/ic_action_car"
         android:tint="?attr/iconColor" />
 
