@@ -128,7 +128,7 @@ public class EntryTypeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mListener.OnEntrySelected(Common.SCAN);
-                //StartActivity(Common.SCAN);
+                //StonartActivity(Common.SCAN);
             }
         });
         manual.setOnClickListener(new View.OnClickListener() {

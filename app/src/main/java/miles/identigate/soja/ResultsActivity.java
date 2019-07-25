@@ -388,12 +388,16 @@ public class ResultsActivity extends AppCompatActivity {
         super.onResume();
     }
 
+
     public String formatDate(String date) {
         Log.d(TAG, "formatDate: " + date);
-        SimpleDateFormat format = new SimpleDateFormat("mm/dd/yy");
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yy");
 
         try {
             Date oldDate = format.parse(date);
+
+            Log.d(TAG, "formatDate: Month" + oldDate.getMonth());
+
             String newDate;
             newDate = new SimpleDateFormat("EEE dd, MMM yyyy").format(oldDate);
             return newDate;
