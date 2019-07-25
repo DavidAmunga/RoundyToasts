@@ -498,7 +498,7 @@ public class RecordDriveIn extends SojaActivity {
                             "&visitorTypeID=" + URLEncoder.encode(driveInPassenger.getVisitorTypeID(), "UTF-8") +
                             "&houseID=" + URLEncoder.encode(driveInPassenger.getHouseID(), "UTF-8") +
                             (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(driveInPassenger.getHostID())) : "") +
-                            (preferences.isRecordPassengerDetails() ?
+                            (!preferences.isRecordPassengerDetails() ?
                                     "&paxinvehicle=" + (passengers) :
                                     "&paxinvehicle=" + (driveInPassenger.getPaxinvehicle() >= 1 ? driveInPassenger.getPaxinvehicle() : 1)
 
@@ -571,7 +571,12 @@ public class RecordDriveIn extends SojaActivity {
             intent.putExtra("vehicleNo", vehicleRegNo.getText().toString());
             intent.putExtra("checkInType", "drive");
             intent.putExtra("checkInMode", "ID No");
-            intent.putExtra("peopleNo", numberOfPeople.getText().toString());
+
+            if (!preferences.isRecordPassengerDetails()) {
+                intent.putExtra("peopleNo", txtPassengersNo.getText().toString());
+
+            }
+
 
             if (preferences.isSelectHostsEnabled() && selectedHost != null) {
                 intent.putExtra("host", selectedHost.getName());
