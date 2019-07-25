@@ -342,6 +342,35 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey" />
+
+
+                <LinearLayout
+                    android:id="@+id/lin_record_passenger_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <Switch
+                        android:id="@+id/record_passenger_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:checked="false"
+                        android:gravity="left"
+                        android:padding="10dp"
+                        android:text="Record Passenger Details"
+                        android:textColor="?attr/textColor" />
+
+                </LinearLayout>
+
+
 
                 <View
                     android:layout_width="match_parent"

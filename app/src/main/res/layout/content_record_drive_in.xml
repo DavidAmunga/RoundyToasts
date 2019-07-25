@@ -265,10 +265,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/numberOfPeopleLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/numberOfPeopleLayout"
                 android:visibility="gone">
 
                 <miles.identigate.soja.font.TextViewBold
@@ -296,6 +296,39 @@
                     android:textColorHint="?attr/textColorHint"
                     android:textCursorDrawable="@null" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lin_passenger_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <miles.identigate.soja.font.TextViewBold
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5.0dip"
+                    android:text="Enter Number of Passengers"
+                    android:textColor="?attr/textColor"
+                    android:textSize="16sp" />
+
+                <miles.identigate.soja.font.EditTextRegular
+                    android:id="@+id/txt_passengers_no"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/border"
+                    android:ems="10"
+                    android:inputType="phone"
+                    android:maxLength="2"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="?attr/textColor"
+                    android:textColorHint="?attr/textColorHint"
+                    android:textCursorDrawable="@null" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/phoneNumberLayout"

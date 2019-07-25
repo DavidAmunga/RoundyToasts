@@ -100,6 +100,10 @@ public class AdminSettingsActivity extends SojaActivity {
     Switch manualVisitorCheckOut;
     @BindView(R.id.lin_manual_visitor_check_out)
     LinearLayout linManualVisitorCheckOut;
+    @BindView(R.id.record_passenger_details)
+    Switch recordPassengerDetails;
+    @BindView(R.id.lin_record_passenger_details)
+    LinearLayout linRecordPassengerDetails;
 
 
     @Override
@@ -155,6 +159,7 @@ public class AdminSettingsActivity extends SojaActivity {
         sentryName.setText(preferences.getName());
         manualResidentCheckOut.setChecked(preferences.isManualResidentCheckOutEnabled());
         manualVisitorCheckOut.setChecked(preferences.isManualVisitorCheckOutEnabled());
+        recordPassengerDetails.setChecked(preferences.isRecordPassengerDetails());
 
 
         if (phoneSwitch.isChecked()) {
@@ -445,6 +450,7 @@ public class AdminSettingsActivity extends SojaActivity {
         preferences.setDarkModeOn(preferences.isDarkModeOn());
         preferences.setManualResidentCheckOutEnabled(manualResidentCheckOut.isChecked());
         preferences.setManualVisitorCheckOutEnabled(manualVisitorCheckOut.isChecked());
+        preferences.setRecordPassengerDetails(recordPassengerDetails.isChecked());
 //        preferences.setHostTypes(getSelectedHostTypes());
 
 

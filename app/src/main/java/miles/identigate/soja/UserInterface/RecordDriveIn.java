@@ -79,6 +79,10 @@ public class RecordDriveIn extends SojaActivity {
     EditText phoneNumberEdittext, companyNameEdittext;
     @BindView(R.id.numberOfPeopleLayout)
     LinearLayout numberOfPeopleLayout;
+    @BindView(R.id.txt_passengers_no)
+    EditTextRegular txtPassengersNo;
+    @BindView(R.id.lin_passenger_no)
+    LinearLayout linPassengerNo;
 
     private Boolean doubleBackToExitPressedOnce = true;
 
@@ -170,6 +174,12 @@ public class RecordDriveIn extends SojaActivity {
         phoneNumberLayout.setVisibility(preferences.isPhoneNumberEnabled() ? View.VISIBLE : View.GONE);
         companyNameLayout.setVisibility(preferences.isCompanyNameEnabled() ? View.VISIBLE : View.GONE);
 
+
+        if (preferences.isRecordPassengerDetails()) {
+            linPassengerNo.setVisibility(View.GONE);
+        } else {
+            linPassengerNo.setVisibility(View.VISIBLE);
+        }
 
 //        Initialize Passenger
         driveInPassenger = new DriveInPassenger();
@@ -466,13 +476,19 @@ public class RecordDriveIn extends SojaActivity {
             driveInPassenger.setNationality(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME).replace("^", "\n"));
             driveInPassenger.setNationCode(Constants.documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE).replace("^", "\n"));
 
+            int passengers = 0;
+
+            if (!preferences.isRecordPassengerDetails()) {
+                passengers = Integer.parseInt(txtPassengersNo.getText().toString());
+            }
+
             urlParameters =
                     "mrz=" + URLEncoder.encode(mrzLines, "UTF-8") +
                             "&phone=" + URLEncoder.encode(driveInPassenger.getPhone(), "UTF-8") +
                             (preferences.isCompanyNameEnabled() && !driveInPassenger.getCompanyName().equals("") ?
                                     ("&company=" + URLEncoder.encode(driveInPassenger.getCompanyName(), "UTF-8")) : "") +
                             //Passengers Check   //
-                            (Paper.book().read(Common.PREF_CURRENT_VISIT_ID) != null ?
+                            (preferences.isRecordPassengerDetails() && Paper.book().read(Common.PREF_CURRENT_VISIT_ID) != null ?
                                     ("&driverVisitID=" + Paper.book().read(Common.PREF_CURRENT_VISIT_ID)) : "") +
 //
                             "&scan_id_type=" + URLEncoder.encode(driveInPassenger.getScan_id_type(), "UTF-8") +
@@ -482,7 +498,11 @@ public class RecordDriveIn extends SojaActivity {
                             "&visitorTypeID=" + URLEncoder.encode(driveInPassenger.getVisitorTypeID(), "UTF-8") +
                             "&houseID=" + URLEncoder.encode(driveInPassenger.getHouseID(), "UTF-8") +
                             (preferences.isSelectHostsEnabled() && selectedHost != null ? ("&hostID=" + URLEncoder.encode(driveInPassenger.getHostID())) : "") +
-                            "&paxinvehicle=" + (driveInPassenger.getPaxinvehicle() >= 1 ? driveInPassenger.getPaxinvehicle() : 1) +
+                            (preferences.isRecordPassengerDetails() ?
+                                    "&paxinvehicle=" + (passengers) :
+                                    "&paxinvehicle=" + (driveInPassenger.getPaxinvehicle() >= 1 ? driveInPassenger.getPaxinvehicle() : 1)
+
+                            ) +
                             "&entryTime=" + URLEncoder.encode(driveInPassenger.getEntryTime(), "UTF-8") +
                             "&vehicleRegNO=" + URLEncoder.encode(driveInPassenger.getVehicleRegNO(), "UTF-8") +
                             "&birthDate=" + URLEncoder.encode(driveInPassenger.getBirthDate(), "UTF-8") +
@@ -559,49 +579,74 @@ public class RecordDriveIn extends SojaActivity {
 
             startActivity(intent);
         } else {
-            new MaterialDialog.Builder(RecordDriveIn.this)
-                    .title("SUCCESS")
-                    .content("Visitor recorded successfully. " +
-                            "Do you want to record another passenger for Car "
-                            + (passengersList.size() > 0 ? passengersList.get(0).getVehicleRegNO() : vehicleRegNo.getText().toString()) +
-                            " under " +
-                            (passengersList.size() > 0 ? passengersList.get(0).getFirstName() : firstName)
-                            + "?"
-                    )
-                    .positiveText("YES")
-                    .negativeText("NO")
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
+
+            if (preferences.isRecordPassengerDetails()) {
+                new MaterialDialog.Builder(RecordDriveIn.this)
+                        .title("SUCCESS")
+                        .content("Visitor recorded successfully. " +
+                                "Do you want to record another passenger for Car "
+                                + (passengersList.size() > 0 ? passengersList.get(0).getVehicleRegNO() : vehicleRegNo.getText().toString()) +
+                                " under " +
+                                (passengersList.size() > 0 ? passengersList.get(0).getFirstName() : firstName)
+                                + "?"
+                        )
+                        .positiveText("YES")
+                        .negativeText("NO")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
 //                            Go to next Passenger
-                            driverPassengers++;
-                            passengersList.add(driveInPassenger);
-                            Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, driverPassengers);
+                                driverPassengers++;
+                                passengersList.add(driveInPassenger);
+                                Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, driverPassengers);
 
-                            Log.d(TAG, "onPositive: Visit ID " + String.valueOf(visit_id));
+                                Log.d(TAG, "onPositive: Visit ID " + String.valueOf(visit_id));
 
-                            Paper.book().write(Common.PREF_CURRENT_PASSENGERS_LIST, passengersList);
+                                Paper.book().write(Common.PREF_CURRENT_PASSENGERS_LIST, passengersList);
 
-                            dialog.dismiss();
-                            Intent intent = new Intent(RecordDriveIn.this, ScanActivity.class);
-                            Bundle extras = new Bundle();
+                                dialog.dismiss();
+                                Intent intent = new Intent(RecordDriveIn.this, ScanActivity.class);
+                                Bundle extras = new Bundle();
 
-                            extras.putInt("TargetActivity", Common.DRIVE_IN);
-                            intent.putExtras(extras);
-                            startActivity(intent);
-                            finish();
-                        }
+                                extras.putInt("TargetActivity", Common.DRIVE_IN);
+                                intent.putExtras(extras);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                        @Override
-                        public void onNegative(MaterialDialog dialog) {
-                            Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, 1);
-                            dialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
-                            finish();
-                        }
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, 1);
+                                dialog.dismiss();
+                                startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                                finish();
+                            }
 
-                    })
-                    .show();
+                        })
+                        .show();
+            } else {
+                new MaterialDialog.Builder(RecordDriveIn.this)
+                        .title("SUCCESS")
+                        .content("Visitor recorded successfully"
+                        )
+                        .positiveText("OK")
+                        .callback(new MaterialDialog.ButtonCallback() {
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+//                            Go to next Passenger
+                                Paper.book().write(Common.PREF_CURRENT_DRIVER_PASS, 1);
+                                dialog.dismiss();
+                                startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                                finish();
+                            }
+
+
+                        })
+                        .show();
+
+            }
+
+
             // Get instance of Vibrator from current Context
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 

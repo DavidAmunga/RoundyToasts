@@ -181,6 +181,16 @@ public class Preferences {
         editor.commit();
     }
 
+    public boolean isRecordPassengerDetails() {
+        return settings.getBoolean("recordPassengerDetails", false);
+    }
+
+    public void setRecordPassengerDetails(boolean isEnabled) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("recordPassengerDetails", isEnabled);
+        editor.commit();
+    }
+
 
     public boolean isPhoneVerificationEnabled() {
         return settings.getBoolean("verify_phone_number", false);
