@@ -231,24 +231,21 @@ public class Constants {
             drawables.add(R.drawable.ic_scan_icon);
             drawables.add(R.drawable.ic_card);
 
-            if(preferences.isManualVisitorCheckOutEnabled()){
-                titles.add("Drive Out");
-                titles.add("Walk Out");
+            if (preferences.isManualResidentCheckOutEnabled()) {
+                titles.add("Check Out");
 
-                descriptions.add("Check out a driving visitor");
-                descriptions.add("Check out a visitor on foot");
+                descriptions.add("Check out a person");
 
 
-                drawables.add(R.drawable.ic_drive_in_new);
                 drawables.add(R.drawable.ic_walk_in_new);
 
             }
 
-            if (preferences.isManualResidentCheckOutEnabled()) {
-                titles.add("Residents");
-                descriptions.add("Check out a resident");
-                drawables.add(R.drawable.ic_resident_icon_new);
-            }
+//            if (preferences.isManualResidentCheckOutEnabled()) {
+//                titles.add("Residents");
+//                descriptions.add("Check out a resident");
+//                drawables.add(R.drawable.ic_resident_icon_new);
+//            }
 
 
             if (preferences.isFingerprintsEnabled()) {

@@ -8,7 +8,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 
-import miles.identigate.soja.adapters.DriveInRecyclerAdapter;
+import miles.identigate.soja.adapters.VisitorAdapter;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
@@ -34,26 +34,26 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        View foregroundView = ((DriveInRecyclerAdapter.DriveInViewHolder) viewHolder).viewForeground;
+        View foregroundView = ((VisitorAdapter.VisitorViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().clearView(foregroundView);
     }
 
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((DriveInRecyclerAdapter.DriveInViewHolder) viewHolder).viewForeground;
+        View foregroundView = ((VisitorAdapter.VisitorViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override
     public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((DriveInRecyclerAdapter.DriveInViewHolder) viewHolder).viewForeground;
+        View foregroundView = ((VisitorAdapter.VisitorViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override
     public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
-            View foregroundView = ((DriveInRecyclerAdapter.DriveInViewHolder) viewHolder).viewForeground;
+            View foregroundView = ((VisitorAdapter.VisitorViewHolder) viewHolder).viewForeground;
             getDefaultUIUtil().clearView(foregroundView);
         }
     }

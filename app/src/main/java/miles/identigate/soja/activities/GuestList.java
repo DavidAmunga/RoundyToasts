@@ -140,6 +140,7 @@ public class GuestList extends SojaActivity implements OnItemClick {
         PAct = new PublicAction(GuestList.this);
 
 
+
 //        EnableBluetooth();
 //        InitSetting();
 

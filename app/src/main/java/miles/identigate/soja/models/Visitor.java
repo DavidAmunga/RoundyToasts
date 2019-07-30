@@ -52,6 +52,7 @@ public class Visitor  {
         return entry_time;
     }
 
+
     public void setEntry_time(String entry_time) {
         this.entry_time = entry_time;
     }

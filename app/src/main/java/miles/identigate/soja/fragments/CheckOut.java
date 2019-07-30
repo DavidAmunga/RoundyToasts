@@ -67,10 +67,11 @@ public class CheckOut extends ListFragment {
         String item = l.getItemAtPosition(position).toString();
 
         switch (item) {
+
             case "Express Checkout":
                 startActivity(new Intent(getActivity().getApplicationContext(), ExpressCheckoutActivity.class));
                 break;
-            case "Drive Out":
+            case "Visitors":
                 Intent driveOut = new Intent(getActivity().getApplicationContext(), Visitors.class);
                 driveOut.putExtra("TYPE", "DRIVE");
                 startActivity(driveOut);
@@ -89,7 +90,7 @@ public class CheckOut extends ListFragment {
                 break;
             case "Check Out":
                 Intent checkOut = new Intent(getActivity().getApplicationContext(), Visitors.class);
-                checkOut.putExtra("TYPE", "RESIDENTS");
+                checkOut.putExtra("TYPE", "All Check Ins");
                 startActivity(checkOut);
                 break;
             case "Residents":

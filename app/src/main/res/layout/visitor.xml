@@ -37,8 +37,8 @@
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:padding="10dp">
 
 
         <LinearLayout
@@ -74,12 +74,31 @@
                     android:text="ID: 33166582"
                     android:textColor="?attr/textColor"
                     android:textStyle="bold" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="8dp">
+
+                    <miles.identigate.soja.font.TextViewRegular
+                        android:id="@+id/visitor_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="Visitor Type"
+                        android:textColor="@color/white" />
+
+                </android.support.v7.widget.CardView>
+
             </LinearLayout>
 
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorGreyLight3"/>
+                android:background="@color/colorGreyLight3" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -115,6 +134,7 @@
 
 
         </LinearLayout>
+
 
     </RelativeLayout>
 

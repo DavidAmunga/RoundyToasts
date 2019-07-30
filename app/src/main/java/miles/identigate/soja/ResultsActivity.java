@@ -360,7 +360,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         txtIdNo.setText(idNumber);
         txtIdType.setText(scan_id_type);
-        txtBirthDate.setText(formatDate(dateOfBirth));
+        txtBirthDate.setText(dateOfBirth);
         txtGender.setText(gender.equals("M") ? "Male" : "Female");
         txtVisitorName.setText(Common.capitalizer(visitorName));
         txtNationality.setText(nationality);

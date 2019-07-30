@@ -17,6 +17,7 @@
 
     <!--</LinearLayout>-->
 
+
     <devs.mulham.horizontalcalendar.HorizontalCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
@@ -28,6 +29,15 @@
         app:textSizeDayName="12sp"
         app:textSizeDayNumber="14sp"
         app:textSizeMonthName="12sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/visitor_type_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendarView"
+        android:background="@color/colorPrimary"
+        android:padding="10dp" />
+
 
     <!--<LinearLayout-->
     <!--android:id="@+id/search_layout"-->
@@ -81,7 +91,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/calendarView"
+        android:layout_below="@id/visitor_type_list"
         android:visibility="gone" />
 
     <!--<ListView-->
