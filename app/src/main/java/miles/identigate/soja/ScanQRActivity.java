@@ -249,7 +249,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
 
             Log.d(TAG, "onNegative: " + preferences.getResidentsURL() + "qr_checkout?" + urlParameters);
-            new RecordQRCheckOut().execute(preferences.getResidentsURL() + "qfr_checkout", urlParameters);
+            new RecordQRCheckOut().execute(preferences.getResidentsURL() + "qr_checkout", urlParameters);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

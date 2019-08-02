@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -249,7 +251,21 @@ public class SojaActivity extends AppCompatActivity implements
 
         Paper.book().read("offline", isConnected);
 
+//        ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+//        NetworkInfo m3G = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+//
+//        if(m3G!=null){
+//            if (connManager.isActiveNetworkMetered() && m3G.isConnected() && !isConnected) {
+//
+//                Toast.makeText(this, "Insufficient Bundles", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+
+
         if (!isConnected) {
+
+
+
 //            Toast.makeText(this, "Please make sure you have an active Internet Connection", Toast.LENGTH_LONG).show();
         }
     }

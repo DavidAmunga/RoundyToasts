@@ -2,6 +2,8 @@ package miles.identigate.soja.helpers;
 
 import android.content.Context;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -14,6 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import miles.identigate.soja.R;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 /**
  * Created by myles on 10/30/15.
@@ -257,5 +261,27 @@ public class Constants {
 
         }
     }
+
+//    public void checkConnection(Context context) {
+//
+//
+//        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//        NetworkInfo mEthernet = connManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
+//        NetworkInfo m3G = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+//
+//       if(connManager.isActiveNetworkMetered() && !m3G.isConnected()){
+//
+//       }else if(connManager.is){
+//
+//       }
+//
+//
+//
+//        if (mWifi != null) isOnWifi = mWifi.isConnected();
+//        if (mEthernet != null) isOnEthernet = mEthernet.isConnected();
+//        if (m3G != null) is3G = m3G.isConnected();
+//    }
 
 }
