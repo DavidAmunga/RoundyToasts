@@ -203,7 +203,7 @@ public class AdminSettingsActivity extends SojaActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (getDeviceName().contains("Ruggbo") || getDeviceName().contains("SF360")) {
+                    if (getDeviceName().contains("Ruggbo") || getDeviceName().contains("SF360") || getDeviceName().contains("TPS360")) {
                     } else {
                         Toast.makeText(AdminSettingsActivity.this, "Not a Fingerprint Device", Toast.LENGTH_SHORT).show();
                         fingerprints.setChecked(false);
