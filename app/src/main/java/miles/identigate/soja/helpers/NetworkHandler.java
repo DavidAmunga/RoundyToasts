@@ -30,8 +30,9 @@ public class NetworkHandler {
             //Create connection
             url = new URL(targetURL.trim());
 
-            Log.d(TAG, "executePost: URL"+url);
-            connection = (HttpURLConnection)url.openConnection();
+            Log.d(TAG, "executePost: URL" + url);
+            Log.d(TAG, "executePost: Params" + urlParameters);
+            connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
            /* connection.setRequestProperty("Content-Type",
                     "application/x-www-form-urlencoded");
@@ -40,7 +41,7 @@ public class NetworkHandler {
                     Integer.toString(urlParameters.getBytes().length));
             connection.setRequestProperty("Content-Language", "en-US");*/
             //connection.setRequestProperty("Authorization",authorizationString);
-            connection.setUseCaches (false);
+            connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
             connection.setConnectTimeout(5000);
@@ -48,26 +49,26 @@ public class NetworkHandler {
             //Send request
             DataOutputStream wr = new DataOutputStream(
                     connection.getOutputStream());
-            wr.writeBytes (urlParameters);
-            wr.flush ();
-            wr.close ();
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
             //Get Response
-            InputStream is ;
-            if(connection.getResponseCode()/100 ==2){
-                is=connection.getInputStream();
-            }else{
-                is=connection.getErrorStream();
+            InputStream is;
+            if (connection.getResponseCode() / 100 == 2) {
+                is = connection.getInputStream();
+            } else {
+                is = connection.getErrorStream();
             }
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
             StringBuffer response = new StringBuffer();
-            while((line = rd.readLine()) != null) {
+            while ((line = rd.readLine()) != null) {
                 response.append(line);
                 response.append('\r');
             }
             rd.close();
-            Log.d(TAG, "executePost: " + response.toString());
-            Log.d(TAG, "executePostURL: " + response.toString());
+            Log.d(TAG, "executePost:Response " + response.toString());
+//            Log.d(TAG, "executePostURL: " + response.toString());
 
             return response.toString();
 
@@ -78,37 +79,38 @@ public class NetworkHandler {
 
         } finally {
 
-            if(connection != null) {
+            if (connection != null) {
                 connection.disconnect();
             }
         }
     }
-    public static String GET(String path){
-        Log.d(TAG, "GET: path"+path);
 
-        HttpURLConnection httpURLConnection=null;
+    public static String GET(String path) {
+        Log.d(TAG, "GET: path" + path);
+
+        HttpURLConnection httpURLConnection = null;
        /* String authorizationString = "Basic " + Base64.encodeToString(
                 ("admin" + ":" + "1234").getBytes(),
                 Base64.NO_WRAP); //Base64.NO_WRAP flag*/
         try {
-            URL url=new URL(path);
-            httpURLConnection=(HttpURLConnection)url.openConnection();
+            URL url = new URL(path);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
             //httpURLConnection.setRequestProperty("Authorization",authorizationString);
-            httpURLConnection.setUseCaches (false);
+            httpURLConnection.setUseCaches(false);
             httpURLConnection.setConnectTimeout(5000);
 
             //Get Response
-            InputStream is ;
-            if(httpURLConnection.getResponseCode()/100 ==2){
-                is=httpURLConnection.getInputStream();
-            }else{
-                is=httpURLConnection.getErrorStream();
+            InputStream is;
+            if (httpURLConnection.getResponseCode() / 100 == 2) {
+                is = httpURLConnection.getInputStream();
+            } else {
+                is = httpURLConnection.getErrorStream();
             }
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
             StringBuffer response = new StringBuffer();
-            while((line = rd.readLine()) != null) {
+            while ((line = rd.readLine()) != null) {
                 response.append(line);
                 response.append('\r');
             }
@@ -123,8 +125,8 @@ public class NetworkHandler {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }finally {
-            if (httpURLConnection != null){
+        } finally {
+            if (httpURLConnection != null) {
                 httpURLConnection.disconnect();
             }
         }

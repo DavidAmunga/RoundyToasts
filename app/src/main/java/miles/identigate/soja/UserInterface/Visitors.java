@@ -99,7 +99,6 @@ public class Visitors extends AppCompatActivity implements RecyclerItemTouchHelp
 
     Date selectedDate = new Date();
     TextView toolbarTitle;
-    ;
 
 
     /**

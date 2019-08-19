@@ -141,6 +141,7 @@ public class Dashboard extends SojaActivity {
         final Typeface font = Typeface.createFromAsset(this.getAssets(), "fonts/OpenSans-Semibold.ttf");
 
 
+
         SmartTabLayout tabLayout = findViewById(R.id.tabs);
 
 //        Custom Font Tab
